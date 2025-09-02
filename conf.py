@@ -69,20 +69,29 @@ html_static_path = ['_static']
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  See the documentation for a list of options available for each theme.
 html_theme_options = {
-    'canonical_url': '',
-    'analytics_id': '',
+    # Branding
     'logo_only': False,
-    'display_version': True,
-    'prev_next_buttons_location': 'bottom',
-    'style_external_links': False,
-    'vcs_pageview_mode': '',
-    'style_nav_header_background': '#2980B9',
-    # Toc options
-    'collapse_navigation': True,
+    'style_nav_header_background': '#1f4e79',  # Professional blue
+    
+    # Navigation
+    'collapse_navigation': False,  # Keep sections expanded for easy access
     'sticky_navigation': True,
-    'navigation_depth': 4,
+    'navigation_depth': 3,  # Good balance for technical docs
     'includehidden': True,
-    'titles_only': False
+    'titles_only': False,
+    
+    # User experience
+    'prev_next_buttons_location': 'both',  # Navigation at top and bottom
+    'style_external_links': True,  # Clear indication of external links
+    
+    # SEO (update when you have final URL)
+    'canonical_url': 'https://vervestacks-docs.readthedocs.io/',
+    
+    # Analytics (add when ready)
+    'analytics_id': '',
+    
+    # Version control integration
+    'vcs_pageview_mode': 'view',  # Links to GitHub source
 }
 
 # Custom sidebar templates, must be a dictionary that maps document names
