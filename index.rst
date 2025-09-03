@@ -12,20 +12,6 @@ Most modeling projects begin by building the model. VerveStacks begins where oth
 managed so quality can scale. The emphasis is on **results and interpretation**, not on forcing every
 user to become a model builder.
 
-The 30-Year Journey
--------------------
-
-VerveStacks represents the culmination of three decades of energy modeling evolution:
-
-- **1994-2000**: Co-created the TIMES mathematical framework used globally
-- **2000-2015**: 15 years perfecting artisanal model craftsmanship  
-- **2015-2022**: Systematic automation through IEMM and KiNESYS platforms
-- **2025**: Democratic revolution — 30 years of expertise compressed into 5-minute execution
-
-When the **co-creator of TIMES**, **creator of VEDA**, and **architect of government-scale 
-energy platforms** says *"I can now build models in minutes"*, the entire energy modeling 
-industry should listen.
-
 Open‑Use Vision
 ---------------
 
@@ -42,7 +28,7 @@ Open‑Use Vision
 By the Numbers
 --------------
 
-- **190+ countries**: Ready-to-use models available immediately
+- **100+ countries**: Ready-to-use models available immediately
 - **5 minutes**: From country selection to running scenarios  
 - **8760 hours**: Native hourly resolution with intelligent aggregation
 - **50×50km**: Spatial resolution for renewable resource modeling
