@@ -126,8 +126,6 @@ Experience the Revolution
    platform/customization
    integration/times
    integration/osemosys
-   integration/pypsa
-   integration/leap
    integration/formats
 
 .. toctree::
@@ -138,7 +136,6 @@ Experience the Revolution
    tutorials/intermediate
    tutorials/advanced
    tutorials/policy-bundles
-   tutorials/multi-iso-analysis
 
 .. toctree::
    :maxdepth: 1
