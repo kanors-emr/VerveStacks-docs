@@ -1,116 +1,177 @@
-VerveStacks Documentation
-=========================
+.. title:: VerveStacks — Open‑Use Energy Modeling
 
-**VerveStacks** is a comprehensive energy systems modeling platform that automates the creation of country-specific VEDA/TIMES energy models. Built on 30+ years of energy modeling expertise, VerveStacks transforms months of manual model building into minutes of automated generation.
+=============================================
+VerveStacks — Open‑Use Energy Modeling
+=============================================
 
-.. note::
-   VerveStacks represents the evolution of energy modeling from artisanal craftsmanship to automated excellence, democratizing access to world-class energy system analysis.
+**Energy system modeling — reimagined for use.**
 
-Key Features
-------------
+Most modeling projects begin by building the model. VerveStacks begins where others stop — with
+**ready‑to‑use, decision‑grade power‑sector models** you can explore immediately. We call this
+**open‑use**: models and assumptions are open to *use, inspect, and question*; pipelines may remain
+managed so quality can scale. The emphasis is on **results and interpretation**, not on forcing every
+user to become a model builder.
 
-* **Automated Model Generation**: Create complete VEDA/TIMES models for 190+ countries in minutes
-* **Comprehensive Data Integration**: Seamlessly integrates IRENA, EMBER, GEM, REZoning, Atlite, and NGFS datasets
-* **Grid Modeling**: Advanced PyPSA-based network modeling with renewable energy zones
-* **Professional Outputs**: Automated Excel workbooks with comprehensive documentation
-* **Version Control**: Built-in Git integration for model versioning and collaboration
+The 30-Year Journey
+-------------------
 
-Quick Start
------------
+VerveStacks represents the culmination of three decades of energy modeling evolution:
 
-.. code-block:: bash
+- **1994-2000**: Co-created the TIMES mathematical framework used globally
+- **2000-2015**: 15 years perfecting artisanal model craftsmanship  
+- **2015-2022**: Systematic automation through IEMM and KiNESYS platforms
+- **2025**: Democratic revolution — 30 years of expertise compressed into 5-minute execution
 
-   # Install VerveStacks
-   pip install -r requirements.txt
-   
-   # Generate a model for Germany
-   python main.py --iso DEU --tsopt ts12_clu
-   
-   # Generate with grid modeling
-   python main.py --iso DEU --grid-modeling
+When the **co-creator of TIMES**, **creator of VEDA**, and **architect of government-scale 
+energy platforms** says *"I can now build models in minutes"*, the entire energy modeling 
+industry should listen.
+
+Open‑Use Vision
+---------------
+
+- **Liberate the user.** Many domain experts are *too deep in reality* to spend months building
+  infrastructure just to test a question. VerveStacks brings them in — policymakers, consultants,
+  planners, analysts, and teachers who want trustworthy, transparent models they can run today.
+- **Managed complexity.** Proprietary tools hide complexity; open‑source can expose it raw. VerveStacks
+  makes complexity *usable* — transparent data, explicit methods, and practical defaults that travel
+  well across contexts.
+- **Use over build.** We separate the craft of building pipelines from the skill of using models. The
+  latter is where decisions live. VerveStacks exists to create a **new class of modelers — expert users**
+  who ask better questions, run scenarios fast, and interpret results with confidence.
+
+By the Numbers
+--------------
+
+- **190+ countries**: Ready-to-use models available immediately
+- **5 minutes**: From country selection to running scenarios  
+- **8760 hours**: Native hourly resolution with intelligent aggregation
+- **50×50km**: Spatial resolution for renewable resource modeling
+- **6+ datasets**: Integrated global energy data (IRENA, EMBER, GEM, REZoning, Atlite, AR6)
+- **Free access**: Complete modeling value chain at no cost
+
+What you get (the offering)
+---------------------------
+
+- **Model Library**: high‑resolution, per‑ISO power‑sector models with transparent assumptions, versioned
+  model cards, and known‑gap notes.
+- **Immediate exploration in Veda Online (VO)**: run scenarios, compare results, and share insight without
+  setup.
+- **Scenario templates**: sensible defaults for common analyses (policy toggles, cost sensitivities,
+  demand variants, climate categories).
+- **Interoperable exports**: artifacts for TIMES, OSeMOSYS, PyPSA, LEAP; plus CSV/Excel for audit and
+  reporting.
+- **Methods & data transparency**: clear documentation of time‑slice design, renewable gap‑filling,
+  storage/adequacy treatment, retrofit logic, transmission/REZ mapping, data sources, and calibration.
+
+Technical Excellence
+--------------------
+
+- **Stress-based timeslice design**: Automated identification of critical operational periods
+- **Multi-resolution spatial clustering**: Demand regions, generation clusters, renewable zones
+- **Geographic realism**: Transmission connections based on actual spatial overlaps
+- **Conservative resource assessment**: Land-use constraints applied to renewable potentials
+- **Complete data lineage**: Every parameter traceable to source with transformation logic
+
+Expectations & ethos
+--------------------
+
+- **A new class of modelers**: We expect many users who never touched ESOMs to become *model users* —
+  "story‑builders" who shape scenarios and interpret trade‑offs without becoming pipeline engineers.
+- **Versioned, decision‑grade artifacts**: every release is pinned, cited, and never overwritten.
+- **Open improvement loop**: challenge our assumptions; propose better ones; we'll regenerate and version
+  results. *Quality grows through use.*
+
+Experience the Revolution
+-------------------------
+
+- **Try it now**: :doc:`Browse available countries </model-library/coverage-map>` and run your first scenario in 5 minutes
+- **See the science**: :doc:`Explore the methodology </methods/stress-timeslices>` behind automated model generation  
+- **Join the movement**: :doc:`Learn about Open-Use </community/open-use-movement>` energy modeling
+- **Real impact**: :doc:`Read success stories </community/success-stories>` from users worldwide
 
 .. toctree::
    :maxdepth: 2
-   :caption: Getting Started
-   
-   getting-started/prerequisites
-   getting-started/installation
-   getting-started/quick-start
-   getting-started/tutorials
+   :caption: Get Started (5 minutes)
+
+   getting-started/quickstart
+   getting-started/first-scenario
+   getting-started/understanding-results
+   getting-started/customization-basics
+   getting-started/faq
+
+.. toctree::
+   :maxdepth: 2  
+   :caption: Explore Models
+
+   model-library/coverage-map
+   model-library/iso-template
+   model-library/model-validation
+   model-library/version-history
+   case-studies/japan-fossil-transition
+   case-studies/developing-country-access
+   case-studies/academic-research
+   case-studies/policy-analysis
 
 .. toctree::
    :maxdepth: 2
-   :caption: Data Processing & Integration
-   
-   data-processing/overview
-   data-processing/existing-stock
-   data-processing/vre-integration
-   data-processing/demand-anchoring
-   data-processing/grid-modeling
-   data-processing/spatial-gap-filling
+   :caption: Understand the Science
+
+   methods/stress-timeslices
+   methods/spatial-clustering
+   methods/transmission-modeling
+   methods/rez-gapfilling
+   methods/storage-adequacy
+   methods/retrofit-ccs
+   architecture/data-pipeline
+   architecture/clustering-algorithms
+   architecture/quality-assurance
+   data-assumptions/index
+   data-assumptions/sources
+   data-assumptions/data-lineage
+   data-assumptions/validation-metrics
 
 .. toctree::
    :maxdepth: 2
-   :caption: Mathematical Specification
-   
-   mathematical/times-formulation
-   mathematical/parameter-definitions
-   mathematical/optimization-workflow
-   mathematical/timeslice-aggregation
+   :caption: Platform & Integration
+
+   platform/veda-online
+   platform/queue-management
+   platform/github-integration
+   platform/customization
+   integration/times
+   integration/osemosys
+   integration/pypsa
+   integration/leap
+   integration/formats
 
 .. toctree::
    :maxdepth: 2
-   :caption: Methodology & Validation
-   
-   methodology/data-lineage
-   methodology/quality-assurance
-   methodology/validation-approaches
-   methodology/assumptions-documentation
+   :caption: Advanced Usage
 
-.. toctree::
-   :maxdepth: 2
-   :caption: User Guides
-   
-   guides/batch-processing
-   guides/customization
-   guides/troubleshooting
-   guides/best-practices
-
-.. toctree::
-   :maxdepth: 2
-   :caption: API Reference
-   
-   api/core-modules
-   api/data-processors
-   api/model-creators
-   api/utilities
+   tutorials/beginner
+   tutorials/intermediate
+   tutorials/advanced
+   tutorials/policy-bundles
+   tutorials/multi-iso-analysis
 
 .. toctree::
    :maxdepth: 1
-   :caption: Development & Community
-   
-   development/contributing
-   development/changelog
-   development/roadmap
+   :caption: Community & Support
+
+   community/open-use-movement
+   community/success-stories
+   community/academic-network
+   community/developer-ecosystem
+   community/roadmap
+   community/partners
    community/support
-   community/publications
 
-About VerveStacks
------------------
+.. toctree::
+   :maxdepth: 1
+   :caption: Reference
 
-VerveStacks is developed by `KanORS-EMR <https://kanors.com>`_, building on decades of experience in energy systems modeling. The platform represents the culmination of expertise gained from co-creating the TIMES framework, developing VEDA interfaces, and building large-scale energy models for governments and organizations worldwide.
-
-The Journey
-~~~~~~~~~~~
-
-* **1994-2000**: Mathematical foundations with MARKAL and TIMES co-creation
-* **2000-2015**: 15 years of artisanal model building excellence  
-* **2015-2022**: Systematic automation with IEMM and KiNESYS platforms
-* **2025**: Democratic revolution with VerveStacks automated generation
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   reference/glossary
+   reference/parameters
+   reference/changelog
+   reference/license
+   reference/citation
