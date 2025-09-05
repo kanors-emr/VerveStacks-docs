@@ -1,0 +1,62 @@
+/* Custom CSS for VerveStacks Documentation */
+
+/* Enable text wrapping in longtable class tables */
+.longtable table {
+    width: 100%;
+    table-layout: auto;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.longtable td {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    hyphens: auto;
+    padding: 8px;
+    vertical-align: top;
+    max-width: 300px;
+}
+
+.longtable th {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    padding: 8px;
+    font-weight: bold;
+    max-width: 300px;
+}
+
+/* Enable text wrapping in CSV tables */
+.csv-table table {
+    width: 100%;
+    table-layout: auto;
+}
+
+.csv-table td {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    padding: 8px;
+    vertical-align: top;
+}
+
+.csv-table th {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    padding: 8px;
+    font-weight: bold;
+}
+
+/* Responsive table behavior */
+@media (max-width: 768px) {
+    .longtable table, .csv-table table {
+        font-size: 0.9em;
+    }
+    
+    .longtable td, .longtable th, .csv-table td, .csv-table th {
+        padding: 4px;
+        max-width: 200px;
+    }
+}

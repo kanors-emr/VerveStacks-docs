@@ -30,6 +30,8 @@ VerveStacks begins with the most comprehensive global power plant database avail
 .. list-table:: **GEM Database Processing Rules**
    :widths: 30 70
    :header-rows: 1
+   :class: longtable
+   :align: left
 
    * - **Filter/Transform**
      - **Business Logic**
@@ -38,11 +40,84 @@ VerveStacks begins with the most comprehensive global power plant database avail
    * - Technology Standardization
      - Use Technology field; fallback to Type if Technology is null
    * - Capacity Threshold
-     - Individual tracking for plants ≥100 MW (configurable per fuel type)
+     - Dynamic fuel-specific thresholds per ISO (10-1000 MW based on system scale)
+     - Fossil fuels: Combined threshold targeting ≤200 units per country
+     - Renewables: Individual thresholds with 200 MW minimum for solar/wind
+     - Nuclear: Always 0.0 (track all units individually)
    * - Vintage Filtering
      - Include only plants with Start year ≤ 2022 (base year)
    * - Spatial Assignment
      - Map plants to grid buses (thermal) or REZ zones (renewables)
+
+**Dynamic Capacity Threshold System**
+
+VerveStacks implements a sophisticated capacity threshold system that adapts to each country's power system scale and complexity. Rather than using a static 100 MW threshold, the system employs fuel-specific thresholds optimized for model performance and appropriate detail.
+
+.. list-table:: **Threshold Strategy by Fuel Type**
+   :widths: 25 25 50
+   :header-rows: 1
+   :class: longtable
+   :align: left
+
+   * - **Fuel Group**
+     - **Threshold Logic**
+     - **Rationale**
+   * - Fossil Fuels (Coal, Gas, Oil)
+     - Combined threshold targeting ≤200 units
+     - Fossil plants create ~3x more model variables due to CCS retrofit options
+   * - Nuclear
+     - Always 0.0 (track all)
+     - Critical infrastructure requiring individual modeling
+   * - Hydro + Geothermal
+     - Combined threshold targeting ≤100 units
+     - Grid flexibility and storage characteristics
+   * - Solar/Wind
+     - Individual thresholds, minimum 200 MW
+     - Utility-scale focus with economic viability considerations
+   * - Other Renewables
+     - Default 50 MW threshold
+     - Standard renewable technology handling
+
+**System-Scale Examples:**
+
+.. list-table:: **Threshold Variations by Country Scale**
+   :widths: 20 20 20 20 20
+   :header-rows: 1
+   :class: longtable
+   :align: left
+
+   * - **Country**
+     - **Fossil (MW)**
+     - **Hydro (MW)**
+     - **Solar (MW)**
+     - **Wind (MW)**
+   * - China (Large)
+     - 1000
+     - 1000
+     - 500
+     - 360
+   * - USA (Large)
+     - 860
+     - 190
+     - 200
+     - 260
+   * - Germany (Medium)
+     - 110
+     - 10
+     - 200
+     - 200
+   * - Small Countries
+     - 10
+     - 10
+     - 200
+     - 200
+
+**Configuration Source:**
+
+Thresholds are automatically generated from the Global Energy Monitor database using the `count_power_plants_by_iso.py` script, which analyzes each country's power plant distribution and calculates optimal thresholds to maintain model complexity targets while preserving appropriate spatial and technical detail.
+
+.. note::
+   The complete threshold configuration is stored in `assumptions/iso_fuel_capacity_thresholds.csv` with metadata in `assumptions/iso_fuel_capacity_thresholds_metadata.yaml`. This system ensures that small island nations receive detailed modeling while large continental systems maintain computational efficiency.
 
 **Technology Mapping Logic**
 
@@ -62,9 +137,46 @@ The system uses a sophisticated fuel type mapping that handles the complexity of
 
 Plants are intelligently aggregated based on capacity thresholds and spatial proximity:
 
-- **Large Plants (≥100 MW)**: Tracked individually with full spatial and technical detail
-- **Small Plants (<100 MW)**: Aggregated by technology and region to reduce model complexity
+- **Large Plants (Above Fuel-Specific Threshold)**: Tracked individually with full spatial and technical detail
+- **Small Plants (Below Fuel-Specific Threshold)**: Aggregated by technology and region to reduce model complexity
 - **Mothballed Plants**: Tracked separately with '__m' suffix for potential reactivation scenarios
+- **Dynamic Thresholds**: Automatically calculated per country and fuel type to optimize model performance
+
+**Threshold Generation Methodology**
+
+The capacity thresholds are generated through systematic analysis of each country's power plant portfolio:
+
+.. list-table:: **Generation Process**
+   :widths: 20 80
+   :header-rows: 1
+   :class: longtable
+   :align: left
+
+   * - **Step**
+     - **Process**
+   * - Data Analysis
+     - Load operational plants ≥10 MW from GEM database
+   * - Fuel Grouping
+     - Separate plants into fossil, hydro-geo, solar-wind, and other categories
+   * - Threshold Calculation
+     - For each fuel group, find capacity of Nth largest plant (N = target count)
+   * - Rounding
+     - Round thresholds to nearest 10 MW for cleaner values
+   * - Validation
+     - Ensure thresholds meet model complexity targets
+   * - Export
+     - Generate CSV configuration file with metadata
+
+**Target Complexity Limits:**
+- **Fossil Units**: ≤200 per country (due to CCS retrofit complexity)
+- **Hydro+Geothermal**: ≤100 per country (grid flexibility modeling)
+- **Solar/Wind**: ≤100 each per country (utility-scale focus)
+- **Minimum Solar/Wind**: 200 MW (economic viability threshold)
+
+**Quality Assurance:**
+- All thresholds validated against actual plant counts
+- Metadata includes generation parameters and methodology
+- Notes column indicates if targets were exceeded (e.g., `F207_HG30`)
 
 Stage 2: Statistical Reconciliation
 -----------------------------------
@@ -78,6 +190,8 @@ Even the comprehensive GEM database has coverage gaps, particularly for smaller 
 .. list-table:: **IRENA Gap-Filling Process**
    :widths: 25 75
    :header-rows: 1
+   :class: longtable
+   :align: left
 
    * - **Step**
      - **Methodology**
@@ -95,7 +209,7 @@ Even the comprehensive GEM database has coverage gaps, particularly for smaller 
 .. list-table:: **EMBER Gap-Filling Process**
    :widths: 25 75
    :header-rows: 1
-
+   :class: longtable
    * - **Step**
      - **Methodology**
    * - Statistical Baseline
@@ -124,13 +238,14 @@ Every power plant receives comprehensive techno-economic parameters sourced from
 
 .. epigraph::
 
-   **Key Innovation**: VerveStacks implements a sophisticated **WEO region-level inheritance system** where ISOs inherit technology costs, efficiencies, and performance parameters from their assigned World Energy Outlook regions, then apply country-specific multipliers for local economic conditions. This ensures globally consistent technology assumptions while capturing regional cost variations.
+   **Key Innovation**: VerveStacks implements two sophisticated systems: 1) **Dynamic fuel-specific capacity thresholds** that adapt to each country's power system scale (10-1000 MW), ensuring appropriate model detail from small islands to continental grids, and 2) **WEO region-level inheritance system** for technology costs and efficiencies. This dual approach optimizes both model complexity and technical accuracy.
 
 **Cost Parameter Integration**
 
 .. list-table:: **Techno-Economic Parameter Sources**
    :widths: 30 40 30
    :header-rows: 1
+   :class: longtable
 
    * - **Parameter**
      - **Source File**
@@ -184,6 +299,8 @@ Thermal power plants also receive detailed operational flexibility parameters th
 .. list-table:: **Unit Commitment Parameters Added to Thermal Plants**
    :widths: 25 25 50
    :header-rows: 1
+   :class: longtable
+   :align: left
 
    * - **Parameter**
      - **Units**
@@ -688,8 +805,9 @@ VerveStacks provides complete transparency about data coverage and gap-filling:
      - **Coverage**
      - **Quality Notes**
    * - GEM Individual Plants
-     - 75-90%
+     - 75-90% (varies by country scale and fuel type)
      - Excellent for large thermal and utility-scale renewables
+     - Dynamic thresholds ensure appropriate detail for each system scale
    * - IRENA Statistical Gaps
      - 5-15%
      - Primarily small-scale solar and distributed wind
@@ -716,6 +834,9 @@ VerveStacks provides complete transparency about data coverage and gap-filling:
      - All fuel types mapped to standardized model categories
    * - UC Parameter Coverage
      - All thermal plants >50 MW receive UC parameters
+   * - Threshold Appropriateness
+     - Fuel-specific thresholds align with country power system scale
+     - Model complexity targets maintained (≤200 fossil units per country)
    * - Vintage Validation
      - Start years between 1950-2022 (base year)
 
