@@ -1,0 +1,52 @@
+﻿size,model_name,2020,2010,2000,1990,…,1920
+> 300MW,ep_bioenergy,0.35,0.33,0.31,0.285,,0.2
+> 300MW,ep_coal_CFB,0.385,0.375,0.365,0.35,,0.28
+> 300MW,ep_coal_IGCC,0.435,0.42,0.41,0.4,,0.32
+> 300MW,ep_coal_subcritical,0.36,0.36,0.36,0.36,,0.225
+> 300MW,ep_coal_subcritical_CCS,0.305,0.3,0.3,0.3,,0.24
+> 300MW,ep_coal_supercritical,0.425,0.415,0.395,0.39,,0.3
+> 300MW,ep_coal_supercritical_CCS,0.355,0.35,0.34,0.33,,0.24
+> 300MW,ep_coal_ultra-supercritical,0.445,0.435,0.42,0.41,,0.31
+> 300MW,ep_coal_ultra-supercritical_CCS,0.385,0.375,0.36,0.35,,0.25
+> 300MW,ep_gas_internal_combustion,0.36,0.355,0.345,0.33,,0.265
+> 300MW,ep_oil_internal_combustion,0.355,0.35,0.34,0.325,,0.26
+> 300MW,ep_gas_combined_cycle,0.6,0.58,0.545,0.525,,0.36
+> 300MW,ep_oil_combined_cycle,0.58,0.56,0.52,0.5,,0.34
+> 300MW,ep_gas_gas_turbine,0.33,0.32,0.3,0.275,,0.2
+> 300MW,ep_oil_gas_turbine,0.32,0.31,0.29,0.265,,0.19
+> 300MW,ep_gas_steam_turbine,0.365,0.365,0.36,0.35,,0.25
+> 300MW,ep_oil_steam_turbine,0.355,0.355,0.35,0.34,,0.24
+50-300MW,ep_bioenergy,0.33,0.31,0.29,0.265,,0.19
+50-300MW,ep_coal_CFB,0.365,0.355,0.345,0.33,,0.26
+50-300MW,ep_coal_IGCC,0.415,0.4,0.39,0.38,,0.3
+50-300MW,ep_coal_subcritical,0.34,0.34,0.34,0.34,,0.215
+50-300MW,ep_coal_subcritical_CCS,0.285,0.28,0.28,0.28,,0.22
+50-300MW,ep_coal_supercritical,0.405,0.395,0.375,0.37,,0.28
+50-300MW,ep_coal_supercritical_CCS,0.335,0.33,0.32,0.31,,0.22
+50-300MW,ep_coal_ultra-supercritical,0.425,0.415,0.4,0.39,,0.29
+50-300MW,ep_coal_ultra-supercritical_CCS,0.365,0.355,0.34,0.33,,0.23
+50-300MW,ep_gas_internal_combustion,0.36,0.355,0.345,0.33,,0.265
+50-300MW,ep_oil_internal_combustion,0.355,0.35,0.34,0.325,,0.26
+50-300MW,ep_gas_combined_cycle,0.58,0.56,0.52,0.5,,0.34
+50-300MW,ep_oil_combined_cycle,0.56,0.54,0.5,0.48,,0.32
+50-300MW,ep_gas_gas_turbine,0.32,0.31,0.29,0.265,,0.19
+50-300MW,ep_oil_gas_turbine,0.31,0.3,0.28,0.255,,0.18
+50-300MW,ep_gas_steam_turbine,0.345,0.345,0.34,0.33,,0.24
+50-300MW,ep_oil_steam_turbine,0.335,0.335,0.33,0.32,,0.23
+<50MW,ep_bioenergy,0.32,0.3,0.28,0.255,,0.18
+<50MW,ep_coal_CFB,0.355,0.345,0.335,0.32,,0.25
+<50MW,ep_coal_IGCC,0.395,0.38,0.37,0.36,,0.28
+<50MW,ep_coal_subcritical,0.33,0.33,0.33,0.33,,0.205
+<50MW,ep_coal_subcritical_CCS,0.265,0.26,0.26,0.26,,0.2
+<50MW,ep_coal_supercritical,0.385,0.375,0.355,0.35,,0.26
+<50MW,ep_coal_supercritical_CCS,0.315,0.31,0.3,0.29,,0.2
+<50MW,ep_coal_ultra-supercritical,0.405,0.395,0.38,0.37,,0.27
+<50MW,ep_coal_ultra-supercritical_CCS,0.345,0.335,0.32,0.31,,0.21
+<50MW,ep_gas_internal_combustion,0.36,0.355,0.345,0.33,,0.265
+<50MW,ep_oil_internal_combustion,0.355,0.35,0.34,0.325,,0.26
+<50MW,ep_gas_combined_cycle,0.56,0.54,0.5,0.48,,0.32
+<50MW,ep_oil_combined_cycle,0.54,0.52,0.48,0.46,,0.3
+<50MW,ep_gas_gas_turbine,0.31,0.3,0.28,0.255,,0.18
+<50MW,ep_oil_gas_turbine,0.3,0.29,0.27,0.245,,0.17
+<50MW,ep_gas_steam_turbine,0.335,0.335,0.33,0.32,,0.23
+<50MW,ep_oil_steam_turbine,0.325,0.325,0.32,0.31,,0.22

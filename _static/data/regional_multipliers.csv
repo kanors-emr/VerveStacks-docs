@@ -1,0 +1,10 @@
+region,efficiency,capex,fixom,varom,Notes
+European Union,1.03,1.1,1.1,1.05,"High-cost, high-tech region; strict efficiency standards"
+United States,1.0,1.0,1.0,1.0,Baseline for many international benchmarks
+Japan,1.02,1.2,1.15,1.05,"High labor costs; small plant sites, advanced tech"
+Russia,0.92,0.8,0.85,0.9,Legacy stock + low labor costs; older designs
+China,1.0,0.75,0.8,0.8,Local EPC firms dominate; ultra-supercritical widespread
+India,0.96,0.7,0.75,0.8,"Domestic tech, moderate efficiency gains post-2000"
+Middle East,0.93,0.9,0.95,0.95,Harsh ambient conditions lower GT efficiency
+Africa,0.9,0.85,0.9,0.9,"Smaller plants, older tech, fewer advanced designs"
+Brazil,0.96,0.85,0.9,0.9,"CCGT fleet newer, other tech mid-efficiency"

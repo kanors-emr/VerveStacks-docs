@@ -1,0 +1,28 @@
+Source,Type,model_fuel,model_tech
+EMBER,Bioenergy,bioenergy,bioenergy
+EMBER,Other Renewables,bioenergy,bioenergy
+EMBER,Coal,coal,coal
+EMBER,Gas,gas,gas
+EMBER,Other Fossil,oil,oil
+EMBER,Hydro,hydro,hydro
+EMBER,Nuclear,nuclear,nuclear
+EMBER,Solar,solar,solar
+EMBER,Wind,windon,windon
+IRENA,Biogas,bioenergy,bioenergy
+IRENA,Liquid biofuels,bioenergy,bioenergy
+IRENA,Renewable municipal waste,bioenergy,bioenergy
+IRENA,Solid biofuels,bioenergy,bioenergy
+IRENA,Coal and peat,coal,coal
+IRENA,Fossil fuels n.e.s.,oil,oil
+IRENA,Natural gas,gas,gas
+IRENA,Oil,oil,oil
+IRENA,Other non-renewable energy,oil,oil
+IRENA,Geothermal energy,geothermal,geothermal
+IRENA,Mixed Hydro Plants,hydro,hydro
+IRENA,Pumped storage,hydro,ps
+IRENA,Renewable hydropower,hydro,hydro
+IRENA,Nuclear,nuclear,nuclear
+IRENA,Solar photovoltaic,solar,solar pv
+IRENA,Solar thermal energy,solar,csp
+IRENA,Offshore wind energy,windoff,offshore
+IRENA,Onshore wind energy,windon,onshore

@@ -1,0 +1,62 @@
+Type,Technology,model_fuel,model_tech,model_name
+bioenergy,bioenergy,bioenergy,,ep_bioenergy
+coal,CFB,coal,CFB,ep_coal_CFB
+coal,IGCC,coal,IGCC,ep_coal_IGCC
+coal,subcritical,coal,subcritical,ep_coal_subcritical
+coal,subcritical/CCS,coal,subcritical_CCS,ep_coal_subcritical_CCS
+coal,supercritical,coal,supercritical,ep_coal_supercritical
+coal,supercritical/CCS,coal,supercritical_CCS,ep_coal_supercritical_CCS
+coal,ultra-supercritical,coal,ultra-supercritical,ep_coal_ultra-supercritical
+coal,ultra-supercritical/CCS,coal,ultra-supercritical_CCS,ep_coal_ultra-supercritical_CCS
+coal,unknown,coal,subcritical,ep_coal_subcritical
+coal,unknown/CCS,coal,supercritical_CCS,ep_coal_supercritical_CCS
+geothermal,advanced geothermal systems (AGS),geothermal,,ep_geothermal
+geothermal,binary cycle,geothermal,,ep_geothermal
+geothermal,dry steam,geothermal,,ep_geothermal
+geothermal,enhanced geothermal systems (EGS),geothermal,,ep_geothermal
+geothermal,flash steam - double,geothermal,,ep_geothermal
+geothermal,flash steam - single,geothermal,,ep_geothermal
+geothermal,flash steam - triple,geothermal,,ep_geothermal
+geothermal,flash steam - unknown,geothermal,,ep_geothermal
+geothermal,geopressured geothermal system (GGS),geothermal,,ep_geothermal
+geothermal,unknown type,geothermal,,ep_geothermal
+hydropower,conventional and pumped storage,hydro,dam,ep_hydro_dam
+hydropower,conventional and run-of-river,hydro,ror,ep_hydro_ror
+hydropower,conventional storage,hydro,dam,ep_hydro_dam
+hydropower,pumped storage,hydro,ps,ep_hydro_ps
+hydropower,run-of-river,hydro,ror,ep_hydro_ror
+hydropower,unknown,hydro,ror,ep_hydro_ror
+nuclear,boiling water reactor,nuclear,,ep_nuclear
+nuclear,fast breeder reactor,nuclear,,ep_nuclear
+nuclear,fast neutron reactor,nuclear,,ep_nuclear
+nuclear,gas-cooled reactor,nuclear,,ep_nuclear
+nuclear,high temperature gas reactor,nuclear,,ep_nuclear
+nuclear,light water graphite reactor,nuclear,,ep_nuclear
+nuclear,liquid-metal-cooled fast reactor,nuclear,,ep_nuclear
+nuclear,molten salt reactor,nuclear,,ep_nuclear
+nuclear,pressurized heavy water reactor,nuclear,,ep_nuclear
+nuclear,pressurized water reactor,nuclear,,ep_nuclear
+nuclear,small modular reactor,nuclear,smr,ep_nuclear_smr
+nuclear,unknown,nuclear,,ep_nuclear
+oil/gas,ICCC,gas,internal_combustion,ep_gas_internal_combustion
+oil/gas,ICCC,oil,internal_combustion,ep_oil_internal_combustion
+oil/gas,IGCC,gas,combined_cycle,ep_gas_combined_cycle
+oil/gas,ISCC,gas,combined_cycle,ep_gas_combined_cycle
+oil/gas,combined cycle,gas,combined_cycle,ep_gas_combined_cycle
+oil/gas,combined cycle,oil,combined_cycle,ep_oil_combined_cycle
+oil/gas,gas turbine,gas,gas_turbine,ep_gas_gas_turbine
+oil/gas,gas turbine,oil,gas_turbine,ep_oil_gas_turbine
+oil/gas,internal combustion,gas,internal_combustion,ep_gas_internal_combustion
+oil/gas,internal combustion,oil,internal_combustion,ep_oil_internal_combustion
+oil/gas,steam turbine,gas,steam_turbine,ep_gas_steam_turbine
+oil/gas,steam turbine,oil,steam_turbine,ep_oil_steam_turbine
+oil/gas,unknown,gas,steam_turbine,ep_gas_steam_turbine
+oil/gas,unknown,oil,steam_turbine,ep_oil_steam_turbine
+solar,Assumed PV,solar,pv,ep_solar_pv
+solar,PV,solar,pv,ep_solar_pv
+solar,Solar Thermal,solar,thermal,ep_solar_thermal
+wind,Offshore floating,windoff,wind,ep_windoff_wind
+wind,Offshore hard mount,windoff,wind,ep_windoff_wind
+wind,Offshore mount unknown,windoff,wind,ep_windoff_wind
+wind,Onshore,windon,wind,ep_windon_wind
+wind,Unknown,windon,wind,ep_windon_wind

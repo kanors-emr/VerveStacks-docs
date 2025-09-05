@@ -91,14 +91,12 @@ Experience the Revolution
 
 .. toctree::
    :maxdepth: 2
-   :caption: Understand the Science
+   :caption: Under the Hood
 
+   methods/existing-stock-characterization
+   methods/renewable-characterization
    methods/stress-timeslices
    methods/spatial-clustering
-   methods/transmission-modeling
-   methods/rez-gapfilling
-   methods/storage-adequacy
-   methods/retrofit-ccs
    architecture/data-pipeline
    architecture/clustering-algorithms
    architecture/quality-assurance

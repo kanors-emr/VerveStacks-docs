@@ -1,0 +1,8 @@
+technology,model_name
+CCGT,"ep_gas_combined_cycle,ep_oil_combined_cycle"
+Diesel,"ep_gas_internal_combustion,ep_oil_internal_combustion"
+Gas/Oil Steam,"ep_gas_steam_turbine,ep_oil_steam_turbine"
+Nuclear,"ep_nuclear,ep_nuclear_smr"
+OCGT (Peaker),"ep_gas_gas_turbine,ep_oil_gas_turbine"
+Subcritical Coal,"ep_bioenergy,ep_coal_CFB,ep_coal_IGCC,ep_coal_subcritical,ep_coal_subcritical_CCS"
+Supercritical Coal,"ep_coal_supercritical,ep_coal_supercritical_CCS,ep_coal_ultra-supercritical,ep_coal_ultra-supercritical_CCS"

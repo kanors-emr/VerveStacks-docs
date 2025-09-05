@@ -1,0 +1,15 @@
+technology,Size Class,Min Stable Factor (%),Min Up Time (h),Min Down Time (h),Max Ramp Up (%/h),Max Ramp Down (%/h),Startup Time (h),Startup Cost ($/MW),Shutdown Cost ($/MW),decomissioning_cost
+OCGT (Peaker),<50 MW,25,0.5,0.5,120,120,0.5,10,2,50
+OCGT (Peaker),50-200 MW,30,1.0,1.0,100,100,0.75,15,4,40
+OCGT (Peaker),>200 MW,35,1.5,1.5,80,80,1.25,20,6,30
+CCGT,<300 MW,50,2.0,2.0,60,60,1.75,25,6,60
+CCGT,>300 MW,55,4.0,4.0,45,45,3.0,40,9,50
+Gas/Oil Steam,<200 MW,35,3.0,3.0,40,40,2.0,25,5,70
+Gas/Oil Steam,>200 MW,40,5.0,5.0,30,30,3.0,35,7,60
+Diesel,<20 MW,30,1.0,1.0,120,120,0.4,10,2,40
+Diesel,>20 MW,35,2.0,2.0,60,60,1.5,20,6,30
+Subcritical Coal,<300 MW,38,5.0,5.0,30,30,5.0,40,10,100
+Subcritical Coal,>300 MW,42,7.0,7.0,20,20,8.0,60,14,90
+Supercritical Coal,<500 MW,45,6.0,6.0,25,25,6.0,50,12,110
+Supercritical Coal,>500 MW,48,8.0,8.0,15,15,9.0,70,16,100
+Nuclear,All,70,24.0,24.0,5,5,48.0,100,50,500

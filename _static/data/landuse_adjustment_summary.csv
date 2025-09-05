@@ -1,0 +1,8 @@
+Impact Category,Before Adjustment,After Adjustment,Change (%)
+Solar Generation (TWh),125000,118750,-5.0
+Wind Generation (TWh),180000,162000,-10.0
+Total Generation (TWh),305000,280750,-7.9
+Solar Capacity (GW),45000,42750,-5.0
+Wind Capacity (GW),60000,54000,-10.0
+Grid Cells Adjusted,45000,45000,0.0
+ISOs Processed,195,195,0.0
