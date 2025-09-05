@@ -6,24 +6,15 @@ VerveStacks — Open‑Use Energy Modeling
 
 **Energy system modeling — reimagined for use.**
 
-Most modeling projects begin by building the model. VerveStacks begins where others stop — with
-**ready‑to‑use, decision‑grade power‑sector models** you can explore immediately. We call this
-**open‑use**: models and assumptions are open to *use, inspect, and question*; pipelines may remain
-managed so quality can scale. The emphasis is on **results and interpretation**, not on forcing every
-user to become a model builder.
+Most modeling projects begin by building the model. VerveStacks begins where others stop — with **ready‑to‑use, decision‑grade power‑sector models** you can explore immediately. We call this **open‑use**: models and assumptions are open to *use, inspect, and question*; pipelines may remain managed so quality can scale. The emphasis is on **results and interpretation**, not on forcing every user to become a model builder.
 
 Open‑Use Vision
 ---------------
 
-- **Liberate the user.** Many domain experts are *too deep in reality* to spend months building
-  infrastructure just to test a question. VerveStacks brings them in — policymakers, consultants,
-  planners, analysts, and teachers who want trustworthy, transparent models they can run today.
-- **Managed complexity.** Proprietary tools hide complexity; open‑source can expose it raw. VerveStacks
-  makes complexity *usable* — transparent data, explicit methods, and practical defaults that travel
-  well across contexts.
-- **Use over build.** We separate the craft of building pipelines from the skill of using models. The
-  latter is where decisions live. VerveStacks exists to create a **new class of modelers — expert users**
-  who ask better questions, run scenarios fast, and interpret results with confidence.
+- **Lower the skill barrier to entry.** Proprietary tools have licensing barriers and open-source tools have high skill barriers. Open-use aims to lower both barriers by making the full modeling value chain available to all. Lowering the skill barrier is a pre-requisite for making any system truly impactful.
+- **Liberate the models.** We separate the craft of building pipelines and models from the skill of using models. The latter is where decisions live. VerveStacks exists to create a **new class of modelers — expert users** who ask better questions, run scenarios fast, and interpret results with confidence - **all without having to build the model**. Model builders do not have the best context for the application of the model. They have been monopolizing model interpretation only because models have been designed for self-use.
+- **Liberate the user.** Many domain experts are *too deep in reality* to spend months building infrastructure just to test a question. VerveStacks brings them in — policymakers, consultants, researchers, analysts, and teachers who want trustworthy, transparent models they can run today.
+- **Managed complexity.** Proprietary tools hide complexity; open‑source can expose it raw. VerveStacks makes complexity *usable* — transparent data, explicit methods, and practical defaults that travel well across contexts. Any part of the model can be modified or enhanced without having to build the **whole system** from scratch.
 
 By the Numbers
 --------------
