@@ -292,6 +292,68 @@ Technology costs are adjusted for local economic conditions using regional multi
    JOIN regional_multipliers M ON R.region = M.region
    WHERE R.iso = '{country_iso_code}'
 
+**Life Extension Cost Integration**
+
+VerveStacks incorporates sophisticated life extension cost modeling that captures the economic reality of aging thermal infrastructure. As power plants approach the end of their design life, operators face critical investment decisions: retire the facility or invest in major refurbishments to extend operational life.
+
+The life extension cost methodology follows the approach established in EPA's Integrated Planning Model (IPM) version 6, which recognizes that thermal power plants can operate beyond their original design life through substantial capital investments. These costs reflect the reality that aging infrastructure requires major overhauls of critical components including boilers, turbines, generators, and environmental control systems.
+
+.. list-table:: **Life Extension Cost Assumptions (IPM v6 Methodology)**
+   :widths: 40 20 40
+   :header-rows: 1
+   :class: longtable
+   :align: left
+
+   * - **Technology Type**
+     - **Design Life (years)**
+     - **Life Extension Cost ($/kW)**
+   * - Biomass Steam
+     - 40
+     - $253
+   * - Coal Steam
+     - 40
+     - $203
+   * - Combined Cycle Gas Turbine
+     - 30
+     - $82
+   * - Combustion Turbine (Peaker)
+     - 30
+     - $242
+   * - Internal Combustion Engine
+     - 30
+     - $226
+   * - Oil/Gas Steam
+     - 40
+     - $174
+   * - Integrated Gasification Combined Cycle
+     - 40
+     - $258
+   * - Landfill Gas
+     - 20
+     - $135
+
+**Economic Logic and Implementation**
+
+The life extension cost framework operates on the principle that thermal power plants face discrete investment decisions at the end of their design life. Plants that have reached their original lifespan can continue operating only if operators invest in major refurbishments that essentially reset the plant's operational capability.
+
+Key characteristics of the life extension cost methodology:
+
+- **Threshold-Based Application**: Life extension costs are triggered only when plants operate beyond their technology-specific design life
+- **Technology-Specific Costs**: Reflect the varying complexity and capital intensity of different thermal technologies
+- **One-Time Investment**: Life extension costs represent a discrete capital investment, not ongoing maintenance
+- **Operational Realism**: Captures the actual decision-making process utilities face with aging assets
+
+**Technology-Specific Considerations**
+
+The variation in life extension costs across technologies reflects fundamental differences in plant complexity and refurbishment requirements:
+
+- **Combined Cycle Gas Turbines** ($82/kW): Lower costs reflect modular design and standardized components
+- **Coal Steam Plants** ($203/kW): Moderate costs for mature technology with established refurbishment practices
+- **IGCC Plants** ($258/kW): Highest costs due to complex gasification systems and limited operational experience
+- **Combustion Turbines** ($242/kW): High costs despite simple design due to intensive operational duty cycles
+
+This approach ensures that fossil plant retirement decisions reflect realistic economics rather than arbitrary assumptions, enabling more accurate modeling of energy transition pathways and stranded asset risks.
+
 **Unit Commitment Parameter Integration**
 
 Thermal power plants also receive detailed operational flexibility parameters that capture their constraints - critical for high-renewable energy system modeling:
