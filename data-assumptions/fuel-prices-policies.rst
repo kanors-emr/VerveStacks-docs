@@ -185,7 +185,7 @@ Data Quality and Limitations
   * Embedded assumptions about technology costs and availability
 
 .. note::
-   All carbon pricing data processing code and extracted datasets are available in the VerveStacks repository (``scenario_drivers/ar6_exploration.ipynb``), ensuring full reproducibility of trajectory construction methodology.
+   All carbon pricing trajectories are derived from peer-reviewed IPCC AR6 scenarios with full methodological transparency and reproducibility.
 
 Renewable Policies
 ------------------
