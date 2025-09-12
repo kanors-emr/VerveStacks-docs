@@ -25,11 +25,243 @@ All available models are hosted in the public repository: `VerveStacks Models <h
 Available Countries
 ===================
 
-.. note::
-   
-   **Live Coverage**: The current list of available models is maintained automatically from the repository. Visit the `GitHub repository <https://github.com/akanudia/vervestacks_models>`_ for the most up-to-date model availability.
+**Last Updated:** 12 Sep 25
 
-**Current Status**: Models are being generated and added to the repository on an ongoing basis as the platform develops.
+**Total Models Available:** 29
+
+.. note::
+   This table is automatically generated from the `VerveStacks Models Repository <https://github.com/akanudia/vervestacks_models>`_.
+   Click on model names to access model files directly.
+
+.. list-table:: VerveStacks Model Library
+   :header-rows: 1
+   :widths: 15 15 10 10 15 15 20
+   :class: model-library-table
+
+   * - Model
+     - Branch Name
+     - Status
+     - Files
+     - Size (MB)
+     - Last Updated
+     - Download
+   * - Australia
+     - `AUS <https://github.com/akanudia/vervestacks_models/tree/AUS>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 07 Aug 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/AUS>`__
+   * - Austria
+     - `AUT <https://github.com/akanudia/vervestacks_models/tree/AUT>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 31 Jul 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/AUT>`__
+   * - Belgium
+     - `BEL <https://github.com/akanudia/vervestacks_models/tree/BEL>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 31 Jul 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/BEL>`__
+   * - Bulgaria (Grids)
+     - `BGR_grids <https://github.com/akanudia/vervestacks_models/tree/BGR_grids>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 03 Sep 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/BGR_grids>`__
+   * - Bulgaria
+     - `BGR <https://github.com/akanudia/vervestacks_models/tree/BGR>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 10 Sep 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/BGR>`__
+   * - Bolivia
+     - `BOL <https://github.com/akanudia/vervestacks_models/tree/BOL>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 03 Aug 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/BOL>`__
+   * - Brazil (Grids)
+     - `BRA_grids <https://github.com/akanudia/vervestacks_models/tree/BRA_grids>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 11 Sep 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/BRA_grids>`__
+   * - Brazil
+     - `BRA <https://github.com/akanudia/vervestacks_models/tree/BRA>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 10 Sep 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/BRA>`__
+   * - Canada
+     - `CAN <https://github.com/akanudia/vervestacks_models/tree/CAN>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 07 Aug 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/CAN>`__
+   * - Switzerland (Grids)
+     - `CHE_grids <https://github.com/akanudia/vervestacks_models/tree/CHE_grids>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 03 Sep 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/CHE_grids>`__
+   * - Switzerland
+     - `CHE <https://github.com/akanudia/vervestacks_models/tree/CHE>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 10 Sep 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/CHE>`__
+   * - China
+     - `CHN <https://github.com/akanudia/vervestacks_models/tree/CHN>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 07 Aug 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/CHN>`__
+   * - Czech Republic
+     - `CZE <https://github.com/akanudia/vervestacks_models/tree/CZE>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 31 Jul 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/CZE>`__
+   * - Germany (Grids)
+     - `DEU_grids <https://github.com/akanudia/vervestacks_models/tree/DEU_grids>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 03 Sep 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/DEU_grids>`__
+   * - Germany
+     - `DEU <https://github.com/akanudia/vervestacks_models/tree/DEU>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 10 Sep 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/DEU>`__
+   * - Spain (Grids)
+     - `ESP_grids <https://github.com/akanudia/vervestacks_models/tree/ESP_grids>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 03 Sep 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/ESP_grids>`__
+   * - Spain
+     - `ESP <https://github.com/akanudia/vervestacks_models/tree/ESP>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 10 Sep 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/ESP>`__
+   * - Estonia
+     - `EST <https://github.com/akanudia/vervestacks_models/tree/EST>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 31 Jul 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/EST>`__
+   * - Finland (Grids)
+     - `FIN_grids <https://github.com/akanudia/vervestacks_models/tree/FIN_grids>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 03 Sep 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/FIN_grids>`__
+   * - Finland
+     - `FIN <https://github.com/akanudia/vervestacks_models/tree/FIN>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 10 Sep 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/FIN>`__
+   * - France (Grids)
+     - `FRA_grids <https://github.com/akanudia/vervestacks_models/tree/FRA_grids>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 03 Sep 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/FRA_grids>`__
+   * - France
+     - `FRA <https://github.com/akanudia/vervestacks_models/tree/FRA>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 10 Sep 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/FRA>`__
+   * - Greece (Grids)
+     - `GRC_grids <https://github.com/akanudia/vervestacks_models/tree/GRC_grids>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 03 Sep 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/GRC_grids>`__
+   * - Greece
+     - `GRC <https://github.com/akanudia/vervestacks_models/tree/GRC>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 10 Sep 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/GRC>`__
+   * - Hungary
+     - `HUN <https://github.com/akanudia/vervestacks_models/tree/HUN>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 31 Jul 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/HUN>`__
+   * - Indonesia
+     - `IDN <https://github.com/akanudia/vervestacks_models/tree/IDN>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 07 Aug 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/IDN>`__
+   * - India
+     - `IND <https://github.com/akanudia/vervestacks_models/tree/IND>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 07 Aug 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/IND>`__
+   * - Iceland
+     - `ISL <https://github.com/akanudia/vervestacks_models/tree/ISL>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 03 Aug 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/ISL>`__
+   * - Italy (Grids)
+     - `ITA_grids <https://github.com/akanudia/vervestacks_models/tree/ITA_grids>`__
+     - 🔄 In Progress
+     - 0 Excel
+     - 0.0
+     - 03 Sep 25
+     - `Branch <https://github.com/akanudia/vervestacks_models/tree/ITA_grids>`__
+
+Model Status Legend
+-------------------
+
+.. list-table::
+   :widths: 20 80
+   :class: status-legend
+
+   * - ✅ **Available**
+     - Complete model with Excel files ready for download and use
+   * - 🔄 **In Progress** 
+     - Model under development, partial files available
+   * - 📋 **Planned**
+     - Model scheduled for development, placeholder branch exists
 
 Data Coverage Requirements
 ==========================
