@@ -178,7 +178,7 @@ The capacity thresholds are generated through systematic analysis of each countr
 - Metadata includes generation parameters and methodology
 - Notes column indicates if targets were exceeded (e.g., `F207_HG30`)
 
-Stage 2: Statistical Reconciliation
+Stage 2: Data Reconciliation
 -----------------------------------
 
 **Gap-Filling Methodology**

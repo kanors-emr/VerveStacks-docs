@@ -30,7 +30,7 @@ What you get (the offering)
 ---------------------------
 
 - **Model Library**: high‑resolution, per‑ISO power‑sector models with transparent assumptions, versioned
-  model cards, and known‑gap notes.
+  model documentation, and known‑gap notes.
 - **Immediate exploration in Veda Online (VO)**: run scenarios, compare results, and share insight without
   setup.
 - **Scenario templates**: sensible defaults for common analyses (policy toggles, cost sensitivities,
@@ -64,7 +64,6 @@ Experience the Revolution
 - **Try it now**: :doc:`Browse available countries </model-library/coverage-map>` and run your first scenario in 5 minutes
 - **See the science**: :doc:`Explore the methodology </methods/stress-timeslices>` behind automated model generation  
 - **Join the movement**: :doc:`Learn about Open-Use </community/open-use-movement>` energy modeling
-- **Real impact**: :doc:`Read success stories </community/success-stories>` from users worldwide
 
 .. toctree::
    :maxdepth: 2
@@ -95,6 +94,7 @@ Experience the Revolution
 
    methods/existing-stock-characterization
    methods/renewable-characterization
+   methods/hydro-availability-scenarios
    methods/stress-timeslices
    methods/spatial-clustering
    architecture/data-pipeline
@@ -131,12 +131,17 @@ Experience the Revolution
    :caption: Community & Support
 
    community/open-use-movement
-   community/success-stories
    community/academic-network
    community/developer-ecosystem
    community/roadmap
    community/partners
    community/support
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Technical Reference
+
+   technical-reference/index
 
 .. toctree::
    :maxdepth: 1
