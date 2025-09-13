@@ -1,19 +1,289 @@
 {
-  "GRC": {
-    "country_name": "Greece",
-    "iso_code": "GRC",
-    "total_gw": "23.3",
-    "total_twh": "52.0",
-    "co2_mt": "19.3",
-    "calibration_pct": "99.0",
+  "AUS": {
+    "country_name": "Australia",
+    "iso_code": "AUS",
+    "total_gw": "102.0",
+    "total_twh": "273.0",
+    "co2_mt": "149.0",
+    "calibration_pct": "94.0",
+    "last_updated": "13 Sep 25"
+  },
+  "AUT": {
+    "country_name": "Austria",
+    "iso_code": "AUT",
+    "total_gw": "28.9",
+    "total_twh": "64.0",
+    "co2_mt": "5.3",
+    "calibration_pct": "58.0",
+    "last_updated": "13 Sep 25"
+  },
+  "BEL": {
+    "country_name": "Belgium",
+    "iso_code": "BEL",
+    "last_updated": "31 Jul 25",
+    "total_gw": "TBD",
+    "total_twh": "TBD",
+    "co2_mt": "TBD",
+    "calibration_pct": "TBD"
+  },
+  "BGR_GRIDS": {
+    "country_name": "Bulgaria (Grids)",
+    "iso_code": "BGR_grids",
+    "last_updated": "03 Sep 25",
+    "total_gw": "TBD",
+    "total_twh": "TBD",
+    "co2_mt": "TBD",
+    "calibration_pct": "TBD"
+  },
+  "BGR": {
+    "country_name": "Bulgaria",
+    "iso_code": "BGR",
+    "last_updated": "12 Sep 25",
+    "total_gw": "TBD",
+    "total_twh": "TBD",
+    "co2_mt": "TBD",
+    "calibration_pct": "TBD"
+  },
+  "BOL": {
+    "country_name": "Bolivia",
+    "iso_code": "BOL",
+    "last_updated": "03 Aug 25",
+    "total_gw": "TBD",
+    "total_twh": "TBD",
+    "co2_mt": "TBD",
+    "calibration_pct": "TBD"
+  },
+  "BRA_GRIDS": {
+    "country_name": "Brazil (Grids)",
+    "iso_code": "BRA_grids",
+    "last_updated": "11 Sep 25",
+    "total_gw": "TBD",
+    "total_twh": "TBD",
+    "co2_mt": "TBD",
+    "calibration_pct": "TBD"
+  },
+  "BRA": {
+    "country_name": "Brazil",
+    "iso_code": "BRA",
+    "total_gw": "205.0",
+    "total_twh": "677.0",
+    "co2_mt": "36.5",
+    "calibration_pct": "52.0",
+    "last_updated": "13 Sep 25"
+  },
+  "CAN": {
+    "country_name": "Canada",
+    "iso_code": "CAN",
+    "last_updated": "11 Sep 25",
+    "total_gw": "TBD",
+    "total_twh": "TBD",
+    "co2_mt": "TBD",
+    "calibration_pct": "TBD"
+  },
+  "CHE_GRIDS": {
+    "country_name": "Switzerland (Grids)",
+    "iso_code": "CHE_grids",
+    "last_updated": "08 Sep 25",
+    "total_gw": "TBD",
+    "total_twh": "TBD",
+    "co2_mt": "TBD",
+    "calibration_pct": "TBD"
+  },
+  "CHE": {
+    "country_name": "Switzerland",
+    "iso_code": "CHE",
+    "last_updated": "12 Sep 25",
+    "total_gw": "45.2",
+    "total_twh": "67.8",
+    "co2_mt": "12.3",
+    "calibration_pct": "94.0"
+  },
+  "CHN": {
+    "country_name": "China",
+    "iso_code": "CHN",
+    "total_gw": "2469.0",
+    "total_twh": "8777.0",
+    "co2_mt": "4853.0",
+    "calibration_pct": "93.0",
+    "last_updated": "13 Sep 25"
+  },
+  "CZE": {
+    "country_name": "Czech Republic",
+    "iso_code": "CZE",
+    "last_updated": "31 Jul 25",
+    "total_gw": "TBD",
+    "total_twh": "TBD",
+    "co2_mt": "TBD",
+    "calibration_pct": "TBD"
+  },
+  "DEU_GRIDS": {
+    "country_name": "Germany (Grids)",
+    "iso_code": "DEU_grids",
+    "total_gw": "223.0",
+    "total_twh": "532.0",
+    "co2_mt": "238.0",
+    "calibration_pct": "100.0",
     "last_updated": "13 Sep 25"
   },
   "DEU": {
     "country_name": "Germany",
     "iso_code": "DEU",
-    "total_gw": "223.0",
-    "total_twh": "532.0",
-    "co2_mt": "237.0",
+    "last_updated": "13 Sep 25",
+    "total_gw": "132.5",
+    "total_twh": "580",
+    "co2_mt": "245.2",
+    "calibration_pct": "89"
+  },
+  "ESP_GRIDS": {
+    "country_name": "Spain (Grids)",
+    "iso_code": "ESP_grids",
+    "total_gw": "119.0",
+    "total_twh": "286.0",
+    "co2_mt": "64.0",
+    "calibration_pct": "103.0",
+    "last_updated": "13 Sep 25"
+  },
+  "ESP": {
+    "country_name": "Spain",
+    "iso_code": "ESP",
+    "last_updated": "13 Sep 25",
+    "total_gw": "119.0",
+    "total_twh": "286.0",
+    "co2_mt": "64.0",
+    "calibration_pct": "103.0"
+  },
+  "EST": {
+    "country_name": "Estonia",
+    "iso_code": "EST",
+    "last_updated": "31 Jul 25",
+    "total_gw": "TBD",
+    "total_twh": "TBD",
+    "co2_mt": "TBD",
+    "calibration_pct": "TBD"
+  },
+  "FIN_GRIDS": {
+    "country_name": "Finland (Grids)",
+    "iso_code": "FIN_grids",
+    "last_updated": "09 Sep 25",
+    "total_gw": "TBD",
+    "total_twh": "TBD",
+    "co2_mt": "TBD",
+    "calibration_pct": "TBD"
+  },
+  "FIN": {
+    "country_name": "Finland",
+    "iso_code": "FIN",
+    "last_updated": "13 Sep 25",
+    "total_gw": "22.3",
+    "total_twh": "72.0",
+    "co2_mt": "9.31",
+    "calibration_pct": "99.0"
+  },
+  "FRA_GRIDS": {
+    "country_name": "France (Grids)",
+    "iso_code": "FRA_grids",
+    "last_updated": "09 Sep 25",
+    "total_gw": "TBD",
+    "total_twh": "TBD",
+    "co2_mt": "TBD",
+    "calibration_pct": "TBD"
+  },
+  "FRA": {
+    "country_name": "France",
+    "iso_code": "FRA",
+    "last_updated": "13 Sep 25",
+    "total_gw": "152.0",
+    "total_twh": "469.0",
+    "co2_mt": "37.6",
+    "calibration_pct": "102.0"
+  },
+  "GRC_GRIDS": {
+    "country_name": "Greece (Grids)",
+    "iso_code": "GRC_grids",
+    "last_updated": "28 Aug 25",
+    "total_gw": "TBD",
+    "total_twh": "TBD",
+    "co2_mt": "TBD",
+    "calibration_pct": "TBD"
+  },
+  "GRC": {
+    "country_name": "Greece",
+    "iso_code": "GRC",
+    "last_updated": "13 Sep 25",
+    "total_gw": "23.3",
+    "total_twh": "52.0",
+    "co2_mt": "19.3",
+    "calibration_pct": "99.0"
+  },
+  "HUN": {
+    "country_name": "Hungary",
+    "iso_code": "HUN",
+    "last_updated": "31 Jul 25",
+    "total_gw": "TBD",
+    "total_twh": "TBD",
+    "co2_mt": "TBD",
+    "calibration_pct": "TBD"
+  },
+  "IDN": {
+    "country_name": "Indonesia",
+    "iso_code": "IDN",
+    "last_updated": "08 Aug 25",
+    "total_gw": "TBD",
+    "total_twh": "TBD",
+    "co2_mt": "TBD",
+    "calibration_pct": "TBD"
+  },
+  "IND": {
+    "country_name": "India",
+    "iso_code": "IND",
+    "last_updated": "13 Sep 25",
+    "total_gw": "440.0",
+    "total_twh": "1829.0",
+    "co2_mt": "1289.0",
+    "calibration_pct": "100.0"
+  },
+  "ISL": {
+    "country_name": "Iceland",
+    "iso_code": "ISL",
+    "last_updated": "31 Jul 25",
+    "total_gw": "TBD",
+    "total_twh": "TBD",
+    "co2_mt": "TBD",
+    "calibration_pct": "TBD"
+  },
+  "ITA_GRIDS": {
+    "country_name": "Italy (Grids)",
+    "iso_code": "ITA_grids",
+    "total_gw": "130.0",
+    "total_twh": "280.0",
+    "co2_mt": "107.0",
+    "calibration_pct": "101.0",
+    "last_updated": "13 Sep 25"
+  },
+  "ITA": {
+    "country_name": "Italy",
+    "iso_code": "ITA",
+    "total_gw": "130.0",
+    "total_twh": "280.0",
+    "co2_mt": "106.0",
+    "calibration_pct": "100.0",
+    "last_updated": "13 Sep 25"
+  },
+  "JPN_grids": {
+    "country_name": "Japan (Grids)",
+    "iso_code": "JPN_grids",
+    "total_gw": "325",
+    "total_twh": "1041",
+    "co2_mt": "536",
+    "calibration_pct": "99%",
+    "last_updated": "13 Sep 25"
+  },
+  "JPN": {
+    "country_name": "Japan",
+    "iso_code": "JPN",
+    "total_gw": "325.0",
+    "total_twh": "1041.0",
+    "co2_mt": "536.0",
     "calibration_pct": "99.0",
     "last_updated": "13 Sep 25"
   },
@@ -26,67 +296,22 @@
     "calibration_pct": "100.0",
     "last_updated": "13 Sep 25"
   },
-  "CHE": {
-    "country_name": "Switzerland",
-    "iso_code": "CHE",
-    "total_gw": "45.2",
-    "total_twh": "67.8",
-    "co2_mt": "12.3",
-    "calibration_pct": "94.0",
-    "last_updated": "13 Sep 25"
-  },
-  "JPN": {
-    "country_name": "Japan",
-    "iso_code": "JPN",
+  "JPN_GRIDS": {
+    "country_name": "Japan (Grids)",
+    "iso_code": "JPN_grids",
     "total_gw": "325.0",
     "total_twh": "1041.0",
     "co2_mt": "536.0",
     "calibration_pct": "99.0",
     "last_updated": "13 Sep 25"
   },
-  "IND": {
-    "country_name": "India",
-    "iso_code": "IND",
-    "total_gw": "440.0",
-    "total_twh": "1829.0",
-    "co2_mt": "1289.0",
-    "calibration_pct": "100.0",
-    "last_updated": "13 Sep 25"
-  },
-  "FIN": {
-    "country_name": "Finland",
-    "iso_code": "FIN",
-    "total_gw": "22.3",
-    "total_twh": "72.0",
-    "co2_mt": "9.31",
-    "calibration_pct": "99.0",
-    "last_updated": "13 Sep 25"
-  },
-  "FRA": {
-    "country_name": "France",
-    "iso_code": "FRA",
-    "total_gw": "152.0",
-    "total_twh": "469.0",
-    "co2_mt": "37.6",
-    "calibration_pct": "102.0",
-    "last_updated": "13 Sep 25"
-  },
-  "ESP": {
-    "country_name": "Spain",
-    "iso_code": "ESP",
-    "total_gw": "119.0",
-    "total_twh": "286.0",
-    "co2_mt": "64.0",
-    "calibration_pct": "103.0",
-    "last_updated": "13 Sep 25"
-  },
-  "ITA": {
-    "country_name": "Italy",
-    "iso_code": "ITA",
-    "total_gw": "130.0",
-    "total_twh": "280.0",
-    "co2_mt": "91.0",
-    "calibration_pct": "85.0",
+  "NZL_GRIDS": {
+    "country_name": "New Zealand (Grids)",
+    "iso_code": "NZL_grids",
+    "total_gw": "12.1",
+    "total_twh": "43.6",
+    "co2_mt": "3.54",
+    "calibration_pct": "72.0",
     "last_updated": "13 Sep 25"
   }
 }
