@@ -1,0 +1,92 @@
+{
+  "GRC": {
+    "country_name": "Greece",
+    "iso_code": "GRC",
+    "total_gw": "23.3",
+    "total_twh": "52.0",
+    "co2_mt": "19.3",
+    "calibration_pct": "99.0",
+    "last_updated": "13 Sep 25"
+  },
+  "DEU": {
+    "country_name": "Germany",
+    "iso_code": "DEU",
+    "total_gw": "223.0",
+    "total_twh": "532.0",
+    "co2_mt": "237.0",
+    "calibration_pct": "99.0",
+    "last_updated": "13 Sep 25"
+  },
+  "USA": {
+    "country_name": "United States",
+    "iso_code": "USA",
+    "total_gw": "1245.0",
+    "total_twh": "4287.0",
+    "co2_mt": "1656.0",
+    "calibration_pct": "100.0",
+    "last_updated": "13 Sep 25"
+  },
+  "CHE": {
+    "country_name": "Switzerland",
+    "iso_code": "CHE",
+    "total_gw": "45.2",
+    "total_twh": "67.8",
+    "co2_mt": "12.3",
+    "calibration_pct": "94.0",
+    "last_updated": "13 Sep 25"
+  },
+  "JPN": {
+    "country_name": "Japan",
+    "iso_code": "JPN",
+    "total_gw": "325.0",
+    "total_twh": "1041.0",
+    "co2_mt": "536.0",
+    "calibration_pct": "99.0",
+    "last_updated": "13 Sep 25"
+  },
+  "IND": {
+    "country_name": "India",
+    "iso_code": "IND",
+    "total_gw": "440.0",
+    "total_twh": "1829.0",
+    "co2_mt": "1289.0",
+    "calibration_pct": "100.0",
+    "last_updated": "13 Sep 25"
+  },
+  "FIN": {
+    "country_name": "Finland",
+    "iso_code": "FIN",
+    "total_gw": "22.3",
+    "total_twh": "72.0",
+    "co2_mt": "9.31",
+    "calibration_pct": "99.0",
+    "last_updated": "13 Sep 25"
+  },
+  "FRA": {
+    "country_name": "France",
+    "iso_code": "FRA",
+    "total_gw": "152.0",
+    "total_twh": "469.0",
+    "co2_mt": "37.6",
+    "calibration_pct": "102.0",
+    "last_updated": "13 Sep 25"
+  },
+  "ESP": {
+    "country_name": "Spain",
+    "iso_code": "ESP",
+    "total_gw": "119.0",
+    "total_twh": "286.0",
+    "co2_mt": "64.0",
+    "calibration_pct": "103.0",
+    "last_updated": "13 Sep 25"
+  },
+  "ITA": {
+    "country_name": "Italy",
+    "iso_code": "ITA",
+    "total_gw": "130.0",
+    "total_twh": "280.0",
+    "co2_mt": "91.0",
+    "calibration_pct": "85.0",
+    "last_updated": "13 Sep 25"
+  }
+}
