@@ -922,4 +922,4 @@ VerveStacks provides complete transparency about data coverage and gap-filling:
 This comprehensive methodology ensures that every ISO receives a complete, spatially-intelligent, and operationally-realistic characterization of its existing power generation fleet - the foundation for all subsequent energy system modeling and scenario analysis.
 
 .. note::
-   This methodology has been validated across 190+ countries and territories, from small island systems to continental grids, consistently delivering plant-level precision with statistical completeness for robust energy system optimization modeling.
+   This methodology has been validated across 100+ countries and territories, from small island systems to continental grids, consistently delivering plant-level precision with statistical completeness for robust energy system optimization modeling.

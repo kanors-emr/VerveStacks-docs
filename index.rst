@@ -94,17 +94,11 @@ Experience the Revolution
 
    methods/existing-stock-characterization
    methods/renewable-characterization
+   methods/grid-representation
    methods/hydro-availability-scenarios
    methods/stress-timeslices
-   methods/spatial-clustering
-   architecture/data-pipeline
-   architecture/clustering-algorithms
-   architecture/quality-assurance
-   data-assumptions/index
-   data-assumptions/sources
-   data-assumptions/data-lineage
-   data-assumptions/validation-metrics
-
+   methods/demands-and-prices
+   
 .. toctree::
    :maxdepth: 2
    :caption: Platform & Integration

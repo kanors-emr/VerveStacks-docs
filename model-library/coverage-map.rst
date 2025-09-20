@@ -40,6 +40,12 @@ Available Countries
      - Mt CO2
      - Calibration %
      - Last Updated
+   * - `Algeria (Grids) <https://github.com/akanudia/vervestacks_models/tree/DZA_grids>`__
+     - 24.2
+     - 88.0
+     - 56.0
+     - 100.0%
+     - 20 Sep 25
    * - `Australia <https://github.com/akanudia/vervestacks_models/tree/AUS>`__
      - 102.0
      - 273.0
@@ -69,13 +75,13 @@ Available Countries
      - 677.0
      - 36.5
      - 52.0%
-     - 13 Sep 25
+     - 17 Sep 25
    * - `Brazil (Grids) <https://github.com/akanudia/vervestacks_models/tree/BRA_grids>`__
-     - TBD
-     - TBD
-     - TBD
-     - TBD%
-     - 11 Sep 25
+     - 205.0
+     - 677.0
+     - 36.6
+     - 52.0%
+     - 20 Sep 25
    * - `Bulgaria <https://github.com/akanudia/vervestacks_models/tree/BGR>`__
      - TBD
      - TBD
@@ -89,17 +95,23 @@ Available Countries
      - TBD%
      - 03 Sep 25
    * - `Canada <https://github.com/akanudia/vervestacks_models/tree/CAN>`__
-     - TBD
-     - TBD
-     - TBD
-     - TBD%
-     - 11 Sep 25
+     - 151.0
+     - 659.0
+     - 74.0
+     - 71.0%
+     - 17 Sep 25
+   * - `Canada (Grids) <https://github.com/akanudia/vervestacks_models/tree/CAN_grids>`__
+     - 151.0
+     - 659.0
+     - 74.0
+     - 71.0%
+     - 19 Sep 25
    * - `China <https://github.com/akanudia/vervestacks_models/tree/CHN>`__
      - 2469.0
      - 8777.0
-     - 4853.0
-     - 93.0%
-     - 13 Sep 25
+     - 5219.0
+     - 101.0%
+     - 20 Sep 25
    * - `Czech Republic <https://github.com/akanudia/vervestacks_models/tree/CZE>`__
      - TBD
      - TBD
@@ -137,17 +149,17 @@ Available Countries
      - TBD%
      - 09 Sep 25
    * - `Germany <https://github.com/akanudia/vervestacks_models/tree/DEU>`__
-     - 132.5
-     - 580
-     - 245.2
-     - 89%
-     - 13 Sep 25
+     - 223.0
+     - 532.0
+     - 237.0
+     - 99.0%
+     - 17 Sep 25
    * - `Germany (Grids) <https://github.com/akanudia/vervestacks_models/tree/DEU_grids>`__
      - 223.0
      - 532.0
      - 238.0
      - 100.0%
-     - 13 Sep 25
+     - 17 Sep 25
    * - `Greece <https://github.com/akanudia/vervestacks_models/tree/GRC>`__
      - 23.3
      - 52.0
@@ -177,7 +189,7 @@ Available Countries
      - 1829.0
      - 1289.0
      - 100.0%
-     - 13 Sep 25
+     - 14 Sep 25
    * - `Indonesia <https://github.com/akanudia/vervestacks_models/tree/IDN>`__
      - TBD
      - TBD
@@ -189,19 +201,19 @@ Available Countries
      - 280.0
      - 106.0
      - 100.0%
-     - 13 Sep 25
+     - 17 Sep 25
    * - `Italy (Grids) <https://github.com/akanudia/vervestacks_models/tree/ITA_grids>`__
      - 130.0
      - 280.0
      - 107.0
      - 101.0%
-     - 13 Sep 25
+     - 20 Sep 25
    * - `Japan <https://github.com/akanudia/vervestacks_models/tree/JPN>`__
      - 325.0
      - 1041.0
      - 536.0
      - 99.0%
-     - 13 Sep 25
+     - 20 Sep 25
    * - `Japan (Grids) <https://github.com/akanudia/vervestacks_models/tree/JPN_grids>`__
      - 325
      - 1041
@@ -213,13 +225,25 @@ Available Countries
      - 1041.0
      - 536.0
      - 99.0%
-     - 13 Sep 25
+     - 20 Sep 25
+   * - `Kazakhstan <https://github.com/akanudia/vervestacks_models/tree/KAZ>`__
+     - 22.8
+     - 111.0
+     - 93.0
+     - 98.0%
+     - 19 Sep 25
    * - `New Zealand (Grids) <https://github.com/akanudia/vervestacks_models/tree/NZL_grids>`__
      - 12.1
      - 43.6
      - 3.54
      - 72.0%
-     - 13 Sep 25
+     - 19 Sep 25
+   * - `South Africa <https://github.com/akanudia/vervestacks_models/tree/ZAF>`__
+     - 65.0
+     - 239.0
+     - 218.0
+     - 125.0%
+     - 20 Sep 25
    * - `Spain <https://github.com/akanudia/vervestacks_models/tree/ESP>`__
      - 119.0
      - 286.0
@@ -233,11 +257,11 @@ Available Countries
      - 103.0%
      - 13 Sep 25
    * - `Switzerland <https://github.com/akanudia/vervestacks_models/tree/CHE>`__
-     - 45.2
-     - 67.8
-     - 12.3
-     - 94.0%
-     - 12 Sep 25
+     - 24.7
+     - 61.0
+     - 0.198
+     - 8.8%
+     - 14 Sep 25
    * - `Switzerland (Grids) <https://github.com/akanudia/vervestacks_models/tree/CHE_grids>`__
      - TBD
      - TBD
@@ -249,4 +273,10 @@ Available Countries
      - 4287.0
      - 1656.0
      - 100.0%
-     - 13 Sep 25
+     - 14 Sep 25
+   * - `Zimbabwe <https://github.com/akanudia/vervestacks_models/tree/ZWE>`__
+     - 2.3
+     - 8.9
+     - 2.77
+     - 104.0%
+     - 16 Sep 25

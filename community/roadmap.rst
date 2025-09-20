@@ -31,7 +31,7 @@ Current State (2025): Power Sector Foundation
 **✅ Achieved Capabilities:**
 
 **Comprehensive Power Sector Modeling**
-- **190+ Countries**: Automated model generation for all major economies
+- **100+ countries**: Automated model generation for all major economies
 - **Existing Stock Characterization**: 40,000+ power plants from GEM with vintage-based parameters
 - **Renewable Resource Assessment**: 50×50km REZoning data with conservative land-use adjustments
 - **Stress-Based Timeslices**: Revolutionary temporal modeling capturing operational reality

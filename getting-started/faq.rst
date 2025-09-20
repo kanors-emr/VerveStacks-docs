@@ -15,7 +15,7 @@ General Questions
   The proprietary VerveStacks model-generation pipeline is not publicly available to ensure the project’s sustainability and to create a new class of model users, rather than just model builders. The pipeline represents years of unfunded, expert development, and releasing it would risk returning modeling practice to its old cycle—where most effort is spent rebuilding models from scratch, rather than using and learning from them. By keeping the pipeline closed but releasing curated sets of high-quality model variants for open use, VerveStacks shifts focus to wide, impactful usage and transparency while protecting the resources needed to grow and maintain the project. This approach aims to establish “model usage” as the new norm for energy system analysis—similar to how operating systems made computers widely accessible and useful.
 
 **Which countries are supported?**
-  Models can be generated for 190+ countries with sufficient data coverage.
+  Models can be generated for 100+ countries with sufficient data coverage.
 
 **What data sources are used?**
   IRENA, EMBER, GEM, REZoning, Atlite, AR6 scenarios, and other global energy datasets.

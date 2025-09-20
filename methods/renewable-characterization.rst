@@ -2,12 +2,6 @@
 Renewable Energy Characterization
 ===========================
 
-.. epigraph::
-
-   "VerveStacks transforms global renewable resource data into spatially-resolved, economically-rational energy system models through conservative land-use adjustments, resource binning, and intelligent shape assignment."
-
-   -- VerveStacks Methodology
-
 Overview
 ========
 
@@ -16,7 +10,7 @@ VerveStacks implements a comprehensive three-stage renewable energy characteriza
 **Three-Stage Renewable Characterization Process:**
 
 1. **Land-Use Conflict Resolution**: Conservative LCOE-based overlap adjustment between solar and onshore wind
-2. **Resource Binning & Potential Assignment**: Economic ranking and capacity allocation across grid cells  
+2. **Resource clustering**: Dynamic spatial aggregation of the 50X50km grid cell renewable potential into clusters.
 3. **Shape Assignment**: Temporal profile generation with grid vs. nogrid model differentiation
 
 Stage 1: Land-Use Conflict Resolution
@@ -40,7 +34,7 @@ VerveStacks implements a sophisticated **LCOE Share Allocation** approach that r
    -- 1. Calculate overlap area
    overlap_area = MIN(solar_suitable_area, wind_suitable_area)
    
-   -- 2. Determine competing capacities in overlap zone
+   -- 2. Determine competing capacities in overlap grid cell
    IF solar_area <= wind_area THEN
        solar_competing = solar_capacity  -- All solar competes
        wind_competing = (overlap_area / wind_area) * wind_capacity  -- Partial wind
@@ -66,7 +60,7 @@ VerveStacks implements a sophisticated **LCOE Share Allocation** approach that r
 
 **Global Implementation:**
 
-The methodology processes **190+ countries** simultaneously, applying identical logic to each (ISO, grid_cell) pair:
+The methodology processes **100+ countries** simultaneously, applying identical logic to each (ISO, grid_cell) pair:
 
 .. csv-table:: **Land-Use Adjustment Impact (Global)**
    :file: ../_static/data/landuse_adjustment_summary.csv
@@ -77,145 +71,259 @@ The methodology processes **190+ countries** simultaneously, applying identical 
 
 *Note: Typical reductions of 5-15% in total renewable potential ensure conservative, realistic resource assessments.*
 
-Stage 2: Resource Binning & GW Potential Assignment  
-==================================================
+Stage 2: Renewable Resource Clustering
+=======================================
 
-**Economic Resource Ranking**
+**Intelligent Spatial Aggregation**
 
-After land-use adjustment, VerveStacks creates **economically-ranked resource bins** for each technology:
+After land-use adjustment, VerveStacks transforms high-resolution renewable energy grid cells into optimized clusters that balance model complexity with geographic realism. This process converts hundreds of individual renewable energy grid cells into manageable clusters while preserving essential resource characteristics and grid connectivity patterns.
 
-Resource Selection Methodology
-------------------------------
+The VerveStacks Philosophy: Flexible Structures from Common Data
+----------------------------------------------------------------
 
-**1. LCOE-Based Ranking**
+A core principle of VerveStacks is creating **different structures from the same underlying data**. Just as the platform generates multiple timeslice configurations from identical hourly profiles, renewable resource clustering produces varied spatial aggregations tailored to specific analytical needs while maintaining data consistency and methodological rigor.
+
+Clustering Methodology
+----------------------
+
+**Multi-Stage Pipeline**
+
+Renewable resource clustering follows a sophisticated multi-stage process:
+
+1. **Grid Cell Identification**: Extract renewable energy grid cells from REZoning database
+2. **Resource Quality Filtering**: Apply capacity factor thresholds to exclude low-quality resources
+   - **Solar PV**: Grid cells with <5% capacity factor excluded
+   - **Onshore Wind**: Grid cells with <8% capacity factor excluded
+3. **Resource Characterization**: Generate hourly capacity factor profiles using Atlite weather data
+4. **Grid Connectivity**: Calculate distance to nearest transmission infrastructure for each grid cell (cities used as proxies for transmission buses in CIT grid definition)
+5. **Feature Engineering**: Combine resource profiles with spatial and infrastructure data
+6. **Intelligent Clustering**: Apply hierarchical clustering with optimized feature weighting
+7. **Quality Validation**: Assess cluster coherence and grid connectivity
+
+**Algorithm Details**
+
+The clustering algorithm uses **hierarchical clustering with Ward linkage**, optimized for renewable energy applications. Only economically viable grid cells are included in the clustering process based on capacity factor thresholds that ensure realistic renewable energy deployment potential.
+
+**Feature Weighting:**
+- **Wind profiles**: 35% - Temporal generation patterns
+- **Solar profiles**: 35% - Temporal generation patterns  
+- **Grid distance**: 20% - Infrastructure connectivity
+- **Spatial coordinates**: 10% - Geographic proximity
+
+**Dimensionality Reduction:**
+- **PCA preprocessing**: 50 components each for wind and solar profiles
+- **Standardization**: All features normalized before clustering
+- **Distance metric**: Euclidean distance in transformed feature space
+
+**Dynamic Cluster Number Determination:**
+The number of clusters is determined dynamically based on the number of renewable energy grid cells using the formula:
 
 .. code-block:: python
 
-   # Sort grid cells by economic attractiveness (LCOE ascending)
-   solar_resources = solar_data.sort_values('LCOE (USD/MWh)')
-   wind_resources = wind_data.sort_values('LCOE (USD/MWh)')
+   n_clusters = int(np.clip(n_cells ** 0.6, 10, 300))
 
-**2. Demand-Constrained Selection**
+This scaling approach ensures:
+- **Small countries** (few grid cells): Minimum 10 clusters for adequate resolution
+- **Large countries** (many grid cells): Reasonable computational complexity with maximum 300 clusters
+- **Balanced scaling**: Sublinear growth prevents excessive clustering in large countries
 
-Rather than modeling the entire supply curve, VerveStacks uses **realistic demand constraints**:
+**Capacity-Weighted Profile Aggregation**
 
-.. code-block:: python
-
-   # Select resources up to target generation level
-   target_generation_gwh = get_annual_demand_from_ember(iso_code)
-   
-   cumulative_generation = resources['generation_potential_gwh'].cumsum()
-   selected_resources = resources[cumulative_generation <= target_generation_gwh]
-
-**3. Capacity Factor Weighting**
-
-For spatial distribution within selected resources:
+For each cluster, hourly generation profiles are computed using capacity-weighted averaging:
 
 .. code-block:: python
 
-   # Combined weight: 70% capacity factor, 30% resource potential  
-   cf_normalized = df['Capacity Factor'] / df['Capacity Factor'].max()
-   potential_normalized = df['Installed Capacity Potential (MW)'] / df['Installed Capacity Potential (MW)'].max()
-   
-   weight = 0.7 * cf_normalized + 0.3 * potential_normalized
+   def calculate_weighted_cluster_profiles(clusters, profiles, technology):
+       """
+       Calculate capacity-weighted cluster profiles for renewable technologies
+       """
+       cluster_profiles = {}
+       for cluster_id in clusters:
+           grid_cells_in_cluster = clusters[cluster_id]
+           
+           # Get capacity weights (MW potential)
+           weights = profiles[grid_cells_in_cluster]['capacity_mw']
+           
+           # Calculate weighted average hourly profile
+           weighted_profile = np.average(
+               profiles[grid_cells_in_cluster]['hourly_cf'], 
+               weights=weights, 
+               axis=0
+           )
+           
+           cluster_profiles[cluster_id] = weighted_profile
+       
+       return cluster_profiles
 
-**Resource Binning Strategy:**
+This approach ensures that grid cells with higher renewable energy potential have proportionally greater influence on the cluster's temporal generation pattern.
 
-- **15-30 LCOE-capacity factor categories** per technology
-- **Cost-performance classes** enable realistic technology competition
-- **Balanced relevant resource approach** prevents technology monopolization
-- **Conservative potentials** with 40% (solar) and 30% (wind) reductions for land-use constraints
+Country Examples and Validation
+--------------------------------
 
-Stage 3: Shape Assignment - Grid vs. NoGrid Models
-==================================================
+**Brazil Solar Clustering (KAN Grid)**
 
-VerveStacks implements **fundamentally different approaches** for temporal profile generation based on model architecture:
+.. figure:: /_static/images/clustering/clustering_results_BRA_solar_kan.png
+   :alt: Brazil Solar Clustering Results
+   :width: 100%
+   :align: center
 
-NoGrid Models: ISO-Level Aggregation
-------------------------------------
+   Brazil Solar Resource Clustering - KAN Grid Definition
 
-**Single National Commodity Approach:**
+- **3,095 renewable grid cells processed**
+- **124 clusters created** (using dynamic scaling: 3,095^0.6 ≈ 124)
+- **Average cluster size**: 25.0 grid cells per cluster
+- **Solar capacity factor**: 15.6% to 23.2% range (average 19.1%)
+- **Grid connectivity**: Distance to cities (CIT grid)
+- **Cluster size range**: 6 to 69 grid cells per cluster
 
-For single-region models, VerveStacks creates unified national renewable profiles:
+**Brazil Offshore Wind Clustering (KAN Grid)**
 
-**Methodology:**
+.. figure:: /_static/images/clustering/clustering_results_BRA_wind_offshore_kan.png
+   :alt: Brazil Offshore Wind Clustering Results
+   :width: 100%
+   :align: center
 
-1. **Demand-Constrained Cell Selection**:
+   Brazil Offshore Wind Resource Clustering - KAN Grid Definition
+
+- **1,120 renewable grid cells processed**
+- **67 clusters created** (using dynamic scaling: 1,120^0.6 ≈ 67)
+- **Average cluster size**: 16.7 grid cells per cluster
+- **Offshore wind capacity factor**: 36.8% to 55.8% range (average 46.8%)
+- **Grid connectivity**: Coastal transmission access
+- **Cluster size range**: 4 to 42 grid cells per cluster
+
+**USA Onshore Wind Clustering (CIT Grid)**
+
+.. figure:: /_static/images/clustering/clustering_results_USA_wind_onshore_cit.png
+   :alt: USA Onshore Wind Clustering Results
+   :width: 100%
+   :align: center
+
+   USA Onshore Wind Resource Clustering - CIT Grid Definition
+
+- **3,109 renewable grid cells processed**
+- **139 clusters created** (using dynamic scaling: 3,109^0.6 ≈ 139)
+- **Average cluster size**: 22.4 grid cells per cluster
+- **Onshore wind capacity factor**: 17.1% to 29.3% range (average 22.8%)
+- **Grid connectivity**: Distance to cities (CIT grid)
+- **Cluster size range**: 4 to 68 grid cells per cluster
+
+**China Solar Clustering (CIT Grid)**
+
+.. figure:: /_static/images/clustering/clustering_results_CHN_solar_cit.png
+   :alt: China Solar Clustering Results
+   :width: 100%
+   :align: center
+
+   China Solar Resource Clustering - CIT Grid Definition
+
+- **4,047 renewable grid cells processed**
+- **165 clusters created** (using dynamic scaling: 4,047^0.6 ≈ 165)
+- **Average cluster size**: 24.5 grid cells per cluster
+- **Solar capacity factor**: 11.2% to 21.8% range (average 16.2%)
+- **Grid connectivity**: Distance to cities (CIT grid)
+- **Cluster size range**: 3 to 89 grid cells per cluster
+
+**China Onshore Wind Clustering (CIT Grid)**
+
+.. figure:: /_static/images/clustering/clustering_results_CHN_wind_onshore_cit.png
+   :alt: China Onshore Wind Clustering Results
+   :width: 100%
+   :align: center
+
+   China Onshore Wind Resource Clustering - CIT Grid Definition
+
+- **4,047 renewable grid cells processed**
+- **165 clusters created** (using dynamic scaling: 4,047^0.6 ≈ 165)
+- **Average cluster size**: 24.5 grid cells per cluster
+- **Onshore wind capacity factor**: 15.1% to 35.2% range (average 23.8%)
+- **Grid connectivity**: Distance to cities (CIT grid)
+- **Cluster size range**: 2 to 97 grid cells per cluster
+
+These examples demonstrate how the clustering methodology adapts to different:
+- **Geographic scales**: From Brazil's focused coastal grid cells to China's continental expanse
+- **Resource characteristics**: Solar vs. wind temporal patterns and capacity factors
+- **Grid definitions**: KAN (infrastructure-based) vs. CIT (city-based) transmission proxies
+- **Technology types**: Onshore wind, offshore wind, and solar PV clustering
+
+Stage 3: Cluster-Based Renewable Energy Integration
+====================================================
+
+**Universal Clustering Approach**
+
+VerveStacks applies **renewable energy clustering to all model architectures**, recognizing that geographic hedging of wind resources and spatial diversity are too important to ignore, regardless of transmission network detail. Both grid and non-grid models use the same clustering methodology from Stage 2, differing only in their approach to synthetic grid definition.
+
+Synthetic Grid Definition
+--------------------------
+
+**Grid Models: Infrastructure-Based Buses**
+- **Data Source**: Actual transmission infrastructure from OpenStreetMap
+- **Bus Definition**: Physical substations and transmission nodes
+- **Clustering Target**: Real transmission buses with known coordinates
+- **Grid Distance**: Actual distance to nearest transmission infrastructure
+
+**Non-Grid Models: Population and Generation-Based Synthetic Buses**
+- **Data Source**: Population centers and generation clusters as bus proxies
+- **Bus Definition**: Major cities and industrial centers representing demand/supply nodes
+- **Clustering Target**: Synthetic buses based on economic activity and generation patterns
+- **Grid Distance**: Distance to nearest synthetic bus (population/generation center)
+
+**Key Insight**: Both approaches result in similar cluster counts (10-300 clusters) and preserve essential geographic diversity for renewable resource hedging.
+
+Cluster-Based Renewable Integration
+-----------------------------------
+
+**Universal Methodology:**
+
+1. **Cluster-Specific Commodities**:
    
    .. code-block:: python
    
-      # Select grid cells to meet base year generation (2022 EMBER data)
-      total_generation_2022 = get_ember_generation(iso_code, year=2022)
-      
-      # Assume entire generation from solar OR wind (for shape calculation)
-      selected_cells = select_cells_for_generation(
-          target_generation=total_generation_2022,
-          technology='solar'  # or 'wind'
-      )
+      # Each renewable cluster becomes individual commodity (both model types)
+      for cluster_id in renewable_clusters:
+          commodity = f"elc_spv-{iso_code}_{cluster_id:04d}"
+          process = f"solar_resource_cluster_{cluster_id}"
 
-2. **Weighted Average Shape Calculation**:
+2. **Capacity-Weighted Temporal Profiles**:
    
    .. code-block:: python
    
-      # Weight by generation potential in selected cells
-      weights = capacity_gw * cf_atlite * 8760  # Annual generation as weight
-      
-      iso_shape = weighted_average(
-          hourly_profiles=atlite_data[selected_cells],
-          weights=weights
-      )
-
-3. **Normalization**:
-   
-   .. code-block:: python
-   
-      # Ensure hourly fractions sum to 1.0 annually
-      com_fr_solar = hourly_cf / hourly_cf.sum()
-      com_fr_wind = hourly_cf / hourly_cf.sum()
-
-**Output**: Single commodity per technology (e.g., `elc_spv-USA`, `elc_win-USA`)
-
-Grid Models: Spatial Resolution Preservation
---------------------------------------------
-
-**Multi-Zone Spatial Modeling:**
-
-Grid models maintain **50×50km spatial resolution** with individual profiles per renewable energy zone:
-
-**Methodology:**
-
-1. **Grid Cell Preservation**:
-   
-   .. code-block:: python
-   
-      # Each grid cell becomes individual commodity
-      for grid_cell in selected_rez_zones:
-          commodity = f"elc_spv-{iso_code}_{grid_cell:04d}"
-          process = f"solar_resource_cell_{grid_cell}"
-
-2. **Bus-Level Aggregation**:
-   
-   .. code-block:: python
-   
-      # Map grid cells to transmission buses via Voronoi clustering
-      df_rez_grid_to_bus = load_zone_bus_mapping(iso_code)
-      
-      # Aggregate renewable potential to bus level
-      bus_solar_potential = aggregate_by_bus(
-          grid_cell_data=solar_rez_data,
-          mapping=df_rez_grid_to_bus
-      )
-
-3. **Individual Temporal Profiles**:
-   
-   .. code-block:: python
-   
-      # Preserve individual grid cell weather patterns
-      for grid_cell in rez_zones:
-          hourly_profile = atlite_data[grid_cell]['hourly_cf']
+      # Use capacity-weighted cluster profiles from Stage 2
+      for cluster_id in renewable_clusters:
+          hourly_profile = cluster_profiles[cluster_id]['weighted_cf']
           normalized_profile = hourly_profile / hourly_profile.sum()
 
-**Output**: Multiple commodities per technology (e.g., `elc_spv-USA_0001`, `elc_spv-USA_0002`, ...)
+3. **Grid Connection Costs**:
+   
+   .. code-block:: python
+   
+      # Distance-based connection costs for all clusters
+      for cluster in renewable_clusters:
+          connection_cost = 1.1 * cluster.avg_grid_dist_km  # M$/GW-km
+          transmission_losses = 1 - 0.00006 * cluster.avg_grid_dist_km
+
+**Grid Connection Architecture**
+
+**Grid Models: Direct Bus Connection**
+- **Connection**: Clusters connect directly to specific transmission buses
+- **Transmission**: Explicit network constraints and power flow modeling
+- **Optimization**: Location-specific renewable deployment with transmission limits
+
+**Non-Grid Models: National Copper Plate Connection**
+- **Connection**: Clusters connect to national copper plate after paying connection costs
+- **Transmission**: No internal transmission constraints (infinite capacity)
+- **Optimization**: Technology-level competition with geographic diversity preserved
+
+**Economic Integration**
+
+Both model architectures incorporate identical economic signals:
+
+- **Connection Costs**: $1.1 million per MW-km based on distance to nearest bus
+- **Transmission Losses**: 0.6% per 100 km following industry standards
+- **Geographic Hedging**: Wind resource diversity captured through cluster-specific profiles
+- **Capacity Factors**: Individual cluster profiles preserve spatial and temporal variations
+
+**Output**: Multiple commodities per technology with cluster-specific profiles (e.g., `elc_spv-USA_0001`, `elc_spv-USA_0002`, ...)
 
 **Grid vs. NoGrid Comparison:**
 
@@ -229,29 +337,35 @@ Grid models maintain **50×50km spatial resolution** with individual profiles pe
      - **NoGrid Models**
      - **Grid Models**
    * - **Spatial Resolution**
-     - Single national zone
-     - 50×50km grid cells (4-400+ zones)
+     - Renewable energy clusters (10-300 clusters)
+     - Renewable energy clusters (10-300 clusters)
    * - **Renewable Commodities**
-     - One per technology (`elc_spv-ISO`)
+     - Multiple per technology (`elc_spv-ISO_####`)
      - Multiple per technology (`elc_spv-ISO_####`)
    * - **Temporal Profiles**
-     - Weighted national average
-     - Individual grid cell profiles
+     - Capacity-weighted cluster profiles
+     - Capacity-weighted cluster profiles
+   * - **Synthetic Grid Basis**
+     - Population and generation centers
+     - Actual transmission infrastructure
    * - **Transmission Modeling**
-     - Not applicable
-     - Explicit network constraints
+     - National copper plate (infinite capacity)
+     - Explicit network constraints and power flows
+   * - **Connection Costs**
+     - Distance to synthetic buses
+     - Distance to transmission buses
    * - **Use Cases**
      - Policy analysis, scenario studies
      - Grid integration, network planning
    * - **Computational Complexity**
-     - Low (single zone)
-     - High (multi-zone with transmission)
-   * - **Profile Calculation**
-     - Demand-constrained cell selection
-     - All viable cells preserved
+     - Medium (clusters + copper plate)
+     - High (clusters + transmission network)
+   * - **Geographic Hedging**
+     - Preserved through clustering
+     - Preserved through clustering
    * - **Economic Dispatch**
-     - Technology-level competition
-     - Location-specific optimization
+     - Technology-level competition with spatial diversity
+     - Location-specific optimization with transmission limits
 
 Data Sources and Integration
 ===========================
@@ -267,7 +381,7 @@ Data Sources and Integration
    * - **Data Source**
      - **Content & Application**
    * - **REZoning Database**
-     - 50×50km grid cell renewable potential (LCOE, capacity factor, suitable area) for 190+ countries
+     - 50×50km grid cell renewable potential (LCOE, capacity factor, suitable area) for 100+ countries. Quality filtering applied: solar PV >5% CF, onshore wind >8% CF
    * - **Atlite Weather Data**
      - Hourly capacity factors (8760 hours) for solar PV and wind technologies by grid cell
    * - **EMBER Statistics**
@@ -275,7 +389,7 @@ Data Sources and Integration
    * - **Global Energy Monitor (GEM)**
      - Existing renewable plant locations for spatial validation and gap-filling
    * - **OpenStreetMap (OSM)**
-     - Transmission network data for grid model bus-zone mapping
+     - Transmission network data for grid model bus-grid cell mapping
 
 **Data Processing Pipeline:**
 
@@ -336,3 +450,6 @@ Innovation Highlights
 - **Technology Neutrality**: Data-driven approach eliminates modeling bias
 
 This comprehensive renewable characterization methodology ensures that VerveStacks energy system models accurately represent the spatial, temporal, and economic dimensions of renewable energy resources while maintaining computational tractability for policy analysis and energy system planning.
+
+.. seealso::
+   :doc:`grid-representation` for transmission network modeling and technology connection methodology

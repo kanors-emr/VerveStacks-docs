@@ -124,8 +124,8 @@ Next Steps
 
 **Want to understand the science?**
 - :doc:`/methods/stress-timeslices` - How time is represented
-- :doc:`/methods/spatial-clustering` - How space is modeled
-- :doc:`/data-assumptions/index` - Where the data comes from
+- :doc:`/methods/renewable-characterization` - How renewable resources are characterized
+- :doc:`/methods/demands-and-prices` - Economic assumptions and fuel prices
 
 .. tip::
    The best way to learn energy modeling is by doing. Don't worry about 

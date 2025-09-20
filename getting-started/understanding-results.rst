@@ -217,8 +217,8 @@ Next Steps
 
 **Understand the methodology:**
 - :doc:`/methods/stress-timeslices` - How time representation affects results
-- :doc:`/data-assumptions/validation-metrics` - How results are validated
-- :doc:`/architecture/quality-assurance` - Quality control processes
+- :doc:`/methods/renewable-characterization` - How renewable resources are characterized
+- :doc:`/methods/grid-representation` - How transmission networks are modeled
 
 .. note::
    Energy system models are tools for insight, not crystal balls. Focus on 

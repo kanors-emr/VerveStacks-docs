@@ -15,8 +15,6 @@ Data sources include power plant databases, renewable resource assessments, hist
    :maxdepth: 1
 
    sources
-   data-lineage
-   validation-metrics
    costs
    fuel-prices-policies
    calibration
