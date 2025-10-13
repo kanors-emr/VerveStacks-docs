@@ -83,16 +83,13 @@ Experience the Revolution
    model-library/iso-template
    model-library/model-validation
    model-library/version-history
-   case-studies/japan-fossil-transition
-   case-studies/developing-country-access
-   case-studies/academic-research
-   case-studies/policy-analysis
 
 .. toctree::
    :maxdepth: 2
    :caption: Under the Hood
 
    methods/existing-stock-characterization
+   methods/new-technologies
    methods/renewable-characterization
    methods/grid-representation
    methods/hydro-availability-scenarios
@@ -104,12 +101,8 @@ Experience the Revolution
    :caption: Platform & Integration
 
    platform/veda-online
-   platform/queue-management
    platform/github-integration
    platform/customization
-   integration/times
-   integration/osemosys
-   integration/formats
 
 .. toctree::
    :maxdepth: 2

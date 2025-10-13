@@ -26,5 +26,13 @@ Integration
 
 VerveStacks generates VEDA-compatible Excel templates that can be directly uploaded to Veda Online for analysis.
 
-.. note::
-   Detailed integration procedures and platform features to be documented.
+Getting Started
+===============
+
+1. **Export your VerveStacks model** - Models are generated as VEDA-compatible Excel files
+2. **Upload to Veda Online** - Use the platform's model upload feature
+3. **Configure scenarios** - Set up policy scenarios and sensitivity analyses
+4. **Run analysis** - Execute optimization and view results
+5. **Export results** - Download results for reporting and further analysis
+
+The integration ensures seamless workflow from VerveStacks model generation to cloud-based analysis and results.

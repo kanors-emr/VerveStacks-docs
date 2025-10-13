@@ -139,7 +139,7 @@ Plants are intelligently aggregated based on capacity thresholds and spatial pro
 
 - **Large Plants (Above Fuel-Specific Threshold)**: Tracked individually with full spatial and technical detail
 - **Small Plants (Below Fuel-Specific Threshold)**: Aggregated by technology and region to reduce model complexity
-- **Mothballed Plants**: Tracked separately with '__m' suffix for potential reactivation scenarios
+- **Mothballed Plants**: Tracked separately with 'ep_m_' prefix for potential reactivation scenarios
 - **Dynamic Thresholds**: Automatically calculated per country and fuel type to optimize model performance
 
 **Threshold Generation Methodology**
