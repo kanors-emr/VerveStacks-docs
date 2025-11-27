@@ -30,6 +30,8 @@ Research Support
 - Methodology validation research
 - Policy scenario analysis
 - Technology assessment studies
+ - Domain-deep studies (e.g. nuclear, hydrogen, EV charging, industrial heat) built on a shared, validated national
+   baseline so that specialised teams can focus on their sector while relying on VerveStacks for credible system context.
 
 .. note::
    Academic partnership opportunities and collaboration frameworks to be developed.

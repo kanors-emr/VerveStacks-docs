@@ -2,11 +2,11 @@
   "AUS": {
     "country_name": "Australia",
     "iso_code": "AUS",
-    "total_gw": "102.0",
+    "total_gw": "103.0",
     "total_twh": "273.0",
-    "co2_mt": "149.0",
-    "calibration_pct": "94.0",
-    "last_updated": "13 Sep 25"
+    "co2_mt": "159.0",
+    "calibration_pct": "101.0",
+    "last_updated": "26 Nov 25"
   },
   "AUT": {
     "country_name": "Austria",
@@ -155,11 +155,11 @@
   "EST": {
     "country_name": "Estonia",
     "iso_code": "EST",
-    "last_updated": "31 Jul 25",
-    "total_gw": "TBD",
-    "total_twh": "TBD",
-    "co2_mt": "TBD",
-    "calibration_pct": "TBD"
+    "total_gw": "1.8",
+    "total_twh": "8.9",
+    "co2_mt": "0.796",
+    "calibration_pct": "18.2",
+    "last_updated": "05 Nov 25"
   },
   "FIN_GRIDS": {
     "country_name": "Finland (Grids)",
@@ -238,9 +238,9 @@
     "iso_code": "IND",
     "total_gw": "440.0",
     "total_twh": "1829.0",
-    "co2_mt": "1289.0",
+    "co2_mt": "1291.0",
     "calibration_pct": "100.0",
-    "last_updated": "14 Sep 25"
+    "last_updated": "07 Nov 25"
   },
   "ISL": {
     "country_name": "Iceland",
@@ -258,7 +258,7 @@
     "total_twh": "280.0",
     "co2_mt": "91.0",
     "calibration_pct": "86.0",
-    "last_updated": "20 Oct 25"
+    "last_updated": "19 Nov 25"
   },
   "ITA": {
     "country_name": "Italy",
@@ -292,9 +292,9 @@
     "iso_code": "USA",
     "total_gw": "1245.0",
     "total_twh": "4287.0",
-    "co2_mt": "1656.0",
-    "calibration_pct": "100.0",
-    "last_updated": "14 Sep 25"
+    "co2_mt": "1667.0",
+    "calibration_pct": "101.0",
+    "last_updated": "07 Nov 25"
   },
   "JPN_GRIDS": {
     "country_name": "Japan (Grids)",
@@ -326,11 +326,11 @@
   "CAN_GRIDS": {
     "country_name": "Canada (Grids)",
     "iso_code": "CAN_grids",
-    "total_gw": "151.0",
+    "total_gw": "152.0",
     "total_twh": "659.0",
-    "co2_mt": "74.0",
-    "calibration_pct": "71.0",
-    "last_updated": "19 Sep 25"
+    "co2_mt": "101.0",
+    "calibration_pct": "97.0",
+    "last_updated": "11 Nov 25"
   },
   "KAZ": {
     "country_name": "Kazakhstan",
@@ -371,29 +371,29 @@
   "POL_GRIDS": {
     "country_name": "Poland (Grids)",
     "iso_code": "POL_grids",
-    "total_gw": "55.0",
+    "total_gw": "56.0",
     "total_twh": "174.0",
-    "co2_mt": "130.0",
-    "calibration_pct": "99.0",
-    "last_updated": "24 Oct 25"
+    "co2_mt": "131.0",
+    "calibration_pct": "100.0",
+    "last_updated": "20 Nov 25"
   },
   "CHN_GRIDS": {
     "country_name": "China (Grids)",
     "iso_code": "CHN_grids",
-    "total_gw": "2469.0",
+    "total_gw": "2477.0",
     "total_twh": "8777.0",
-    "co2_mt": "5217.0",
-    "calibration_pct": "100.0",
-    "last_updated": "31 Oct 25"
+    "co2_mt": "5261.0",
+    "calibration_pct": "101.0",
+    "last_updated": "25 Nov 25"
   },
   "GBR": {
     "country_name": "United Kingdom",
     "iso_code": "GBR",
-    "total_gw": "104.0",
+    "total_gw": "107.0",
     "total_twh": "322.0",
-    "co2_mt": "57.0",
-    "calibration_pct": "71.0",
-    "last_updated": "04 Nov 25"
+    "co2_mt": "72.0",
+    "calibration_pct": "89.0",
+    "last_updated": "10 Nov 25"
   },
   "PHL": {
     "country_name": "Philippines",
@@ -403,5 +403,122 @@
     "co2_mt": "74.0",
     "calibration_pct": "108.0",
     "last_updated": "03 Nov 25"
+  },
+  "LVA": {
+    "country_name": "Latvia",
+    "iso_code": "LVA",
+    "total_gw": "3.0",
+    "total_twh": "5.0",
+    "co2_mt": "0.594",
+    "calibration_pct": "87.0",
+    "last_updated": "06 Nov 25"
+  },
+  "GBR_GRIDS": {
+    "country_name": "United Kingdom (Grids)",
+    "iso_code": "GBR_grids",
+    "total_gw": "104.0",
+    "total_twh": "322.0",
+    "co2_mt": "71.0",
+    "calibration_pct": "87.0",
+    "last_updated": "06 Nov 25"
+  },
+  "USA_GRIDS": {
+    "country_name": "United States (Grids)",
+    "iso_code": "USA_grids",
+    "total_gw": "1248.0",
+    "total_twh": "4287.0",
+    "co2_mt": "1667.0",
+    "calibration_pct": "101.0",
+    "last_updated": "07 Nov 25"
+  },
+  "IND_GRIDS": {
+    "country_name": "India (Grids)",
+    "iso_code": "IND_grids",
+    "total_gw": "440.0",
+    "total_twh": "1829.0",
+    "co2_mt": "1291.0",
+    "calibration_pct": "100.0",
+    "last_updated": "07 Nov 25"
+  },
+  "EST_GRIDS": {
+    "country_name": "Estonia (Grids)",
+    "iso_code": "EST_grids",
+    "total_gw": "1.8",
+    "total_twh": "8.9",
+    "co2_mt": "1.57",
+    "calibration_pct": "36.0",
+    "last_updated": "19 Nov 25"
+  },
+  "ETH_GRIDS": {
+    "country_name": "Ethiopia (Grids)",
+    "iso_code": "ETH_grids",
+    "total_gw": "5.7",
+    "total_twh": "15.4",
+    "co2_mt": "0.0",
+    "calibration_pct": "0.0",
+    "last_updated": "22 Nov 25"
+  },
+  "DNK_GRIDS": {
+    "country_name": "Denmark (Grids)",
+    "iso_code": "DNK_grids",
+    "total_gw": "15.6",
+    "total_twh": "34.8",
+    "co2_mt": "4.65",
+    "calibration_pct": "66.0",
+    "last_updated": "24 Nov 25"
+  },
+  "IRL_GRIDS": {
+    "country_name": "Ireland (Grids)",
+    "iso_code": "IRL_grids",
+    "total_gw": "12.0",
+    "total_twh": "33.6",
+    "co2_mt": "11.4",
+    "calibration_pct": "102.0",
+    "last_updated": "24 Nov 25"
+  },
+  "MEX": {
+    "country_name": "Mexico",
+    "iso_code": "MEX",
+    "total_gw": "93.0",
+    "total_twh": "340.0",
+    "co2_mt": "143.0",
+    "calibration_pct": "89.0",
+    "last_updated": "25 Nov 25"
+  },
+  "JOR": {
+    "country_name": "Jordan",
+    "iso_code": "JOR",
+    "total_gw": "7.1",
+    "total_twh": "21.9",
+    "co2_mt": "11.8",
+    "calibration_pct": "99.0",
+    "last_updated": "25 Nov 25"
+  },
+  "COL": {
+    "country_name": "Colombia",
+    "iso_code": "COL",
+    "total_gw": "20.1",
+    "total_twh": "82.0",
+    "co2_mt": "18.1",
+    "calibration_pct": "99.0",
+    "last_updated": "25 Nov 25"
+  },
+  "BEL_GRIDS": {
+    "country_name": "Belgium (Grids)",
+    "iso_code": "BEL_grids",
+    "total_gw": "27.9",
+    "total_twh": "94.0",
+    "co2_mt": "13.1",
+    "calibration_pct": "100.0",
+    "last_updated": "25 Nov 25"
+  },
+  "SWE_GRIDS": {
+    "country_name": "Sweden (Grids)",
+    "iso_code": "SWE_grids",
+    "total_gw": "47.9",
+    "total_twh": "173.0",
+    "co2_mt": "1.45",
+    "calibration_pct": "20.3",
+    "last_updated": "26 Nov 25"
   }
 }

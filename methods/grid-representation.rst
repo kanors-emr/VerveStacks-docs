@@ -9,7 +9,7 @@ VerveStacks creates realistic transmission network representations by extracting
 Grid Modeling Philosophy
 ========================
 
-VerveStacks transforms raw transmission infrastructure data into optimized network representations suitable for energy system optimization. Rather than using simplified radial networks or generic templates, the platform processes actual transmission line and substation data to create country-specific grid models that reflect real-world topology and constraints.
+VerveStacks transforms raw transmission infrastructure data into aggregated/filtered network representations suitable for energy system optimization. Rather than using simplified radial networks or generic templates, the platform processes actual transmission line and substation data to create country-specific grid models that reflect real-world topology and constraints.
 
 **Core Principles:**
 

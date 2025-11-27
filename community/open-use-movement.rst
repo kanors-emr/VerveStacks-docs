@@ -16,6 +16,9 @@ knock-on effects on seasonal and diurnal peaks.
 
 These are the questions practitioners bring to energy system models. To answer them credibly, a model must
 see both the **WHEN** and the **WHERE** of system stress while remaining solvable fast enough to support active exploration.
+Yet, even after four decades of development, most country models are still assembled as one-off craft projects:
+each team starts again from raw data, spends months on cleanup and mapping, and produces an artefact that is hard
+for others to reuse or maintain.
 
 What a useful model needs (to be useful)
 =========================================
@@ -35,6 +38,9 @@ What's broken in the current "open" story
   Rebuilding consumes months; **building on** should take minutes.
 * **Blank slates everywhere.** New users inherit bare frameworks rather than usable environments.
 * **Complexity unmanaged.** Rich detail overwhelms unless the environment is designed to **manage** it.
+* **Everyone redoes the same data work.** Each group processes the same global plant lists, weather data and statistics,
+  inventing its own mappings and fixes. The result is dozens of slightly different foundations instead of one
+  shared, well-documented base layer that many models can build on.
 
 .. epigraph::
 
@@ -66,6 +72,14 @@ With **VerveStacks (VS)** this looks like:
 * **“Microscope mode”**: import a capacity mix from any model and diagnose operational gaps (non-VRE flexibility needs)
   by slice and season.
 
+* **A maintained “middle layer” between framework and study**: VS acts like an operating system for ESOMs, turning
+  raw global datasets into a consistent, documented starting point so that TIMES, OSeMOSYS, PyPSA and other frameworks
+  can focus on questions rather than rebuilding inputs.
+
+* **Cumulative improvement at the data layer**: enhancements contributed by domain specialists—whether in nuclear,
+  hydrogen, industry, buildings, or transport—can be evaluated and, when robust, folded back into the shared
+  baseline so that future users benefit without having to re‑implement the same ideas in isolation.
+
 **Open Use** doesn’t replace open source. It **precedes** it with a credible starting point, so openness is measured in
 **time-to-insight**, not just code availability.
 
@@ -93,6 +107,11 @@ Positioning vs frameworks
 * **TIMES + Veda**: full multi-period structure, rich operations via stress-aware slices, and **managed complexity** for scenario families.
 * **OSeMOSYS / PyPSA**: VS provides model-agnostic data artifacts and can interoperate; use VS as the **starting point**
   or the **microscope** for external plans.
+
+Crucially, VS is designed not only for expert model builders but also for analysts in ministries, regulators,
+utilities, and research organisations who currently have no practical way to use advanced models without first
+becoming builders themselves. Open Use aims to give this broader community a credible, pre-solved environment they
+can run, inspect, and adapt within a single working session.
 
 FAQ
 ===

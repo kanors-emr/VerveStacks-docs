@@ -5,6 +5,10 @@ Data Lineage
 **Complete traceability from source data to model parameters**
 
 VerveStacks maintains complete data lineage documentation for all model parameters.
+Instead of every modelling team independently cleaning the same global datasets and inventing its own
+mapping rules, the platform turns that once-off “ground-clearing” into a shared asset that can be
+reused across countries, studies, and frameworks. This reduces duplication while making it easier
+for analysts to see exactly how any number in a country model was derived.
 
 Lineage Documentation
 =====================

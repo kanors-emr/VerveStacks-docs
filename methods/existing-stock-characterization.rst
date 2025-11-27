@@ -4,6 +4,10 @@ Existing Stock Characterization
 **Comprehensive power plant inventory through multi-source data integration**
 
 VerveStacks transforms fragmented global energy data into complete, spatially-resolved power plant inventories for each ISO. **Each country receives its own unique existing stock characterization**, combining plant-level precision from the Global Energy Monitor with statistical completeness from IRENA and EMBER datasets. Rather than relying on generic capacity assumptions, we integrate individual power plant specifications with gap-filling algorithms that preserve spatial intelligence and operational realism.
+This centralised process replaces what has traditionally been repeated in parallel by many research teams:
+each group cleaning the same source data, defining its own thresholds and mappings, and building bespoke
+stock representations that are difficult for others to reuse. By doing this once and documenting it fully,
+VerveStacks provides a common, auditable foundation that many studies and frameworks can share.
 
 .. epigraph::
 
