@@ -118,6 +118,7 @@ Experience the Revolution
    :caption: Community & Support
 
    community/open-use-movement
+   community/why-vervestacks-and-sustainability
    community/academic-network
    community/developer-ecosystem
    community/roadmap

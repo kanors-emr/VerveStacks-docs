@@ -570,14 +570,18 @@ IRENA-EMBER Type Mapping (irena_ember_typemap)
      - EMBER
      - gas
      - All natural gas generation
-   * - Oil
-     - EMBER
-     - oil
-     - Oil-fired generation
-   * - Bioenergy
-     - EMBER
-     - bioenergy
-     - Biomass and biogas generation
+  * - Oil
+    - EMBER
+    - oil
+    - Oil-fired generation
+  * - Bioenergy
+    - IRENA
+    - bioenergy
+    - Biomass and biogas generation
+  * - Geothermal
+    - IRENA
+    - geothermal
+    - Geothermal energy generation
 
 
 Technology Classification Tables

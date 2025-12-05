@@ -58,9 +58,9 @@
     "iso_code": "BRA_grids",
     "total_gw": "205.0",
     "total_twh": "677.0",
-    "co2_mt": "36.6",
-    "calibration_pct": "52.0",
-    "last_updated": "20 Sep 25"
+    "co2_mt": "38.1",
+    "calibration_pct": "54.0",
+    "last_updated": "29 Nov 25"
   },
   "BRA": {
     "country_name": "Brazil",
@@ -119,11 +119,11 @@
   "DEU_GRIDS": {
     "country_name": "Germany (Grids)",
     "iso_code": "DEU_grids",
-    "total_gw": "223.0",
-    "total_twh": "532.0",
+    "total_gw": "227.0",
+    "total_twh": "566.0",
     "co2_mt": "238.0",
     "calibration_pct": "100.0",
-    "last_updated": "17 Sep 25"
+    "last_updated": "29 Nov 25"
   },
   "DEU": {
     "country_name": "Germany",
@@ -258,7 +258,7 @@
     "total_twh": "280.0",
     "co2_mt": "91.0",
     "calibration_pct": "86.0",
-    "last_updated": "19 Nov 25"
+    "last_updated": "29 Nov 25"
   },
   "ITA": {
     "country_name": "Italy",
@@ -299,11 +299,11 @@
   "JPN_GRIDS": {
     "country_name": "Japan (Grids)",
     "iso_code": "JPN_grids",
-    "total_gw": "325.0",
+    "total_gw": "337.0",
     "total_twh": "1041.0",
-    "co2_mt": "536.0",
-    "calibration_pct": "99.0",
-    "last_updated": "20 Sep 25"
+    "co2_mt": "555.0",
+    "calibration_pct": "103.0",
+    "last_updated": "29 Nov 25"
   },
   "NZL_GRIDS": {
     "country_name": "New Zealand (Grids)",
@@ -362,11 +362,11 @@
   "POL": {
     "country_name": "Poland",
     "iso_code": "POL",
-    "total_gw": "55.0",
+    "total_gw": "56.0",
     "total_twh": "174.0",
-    "co2_mt": "124.0",
-    "calibration_pct": "95.0",
-    "last_updated": "21 Oct 25"
+    "co2_mt": "131.0",
+    "calibration_pct": "100.0",
+    "last_updated": "30 Nov 25"
   },
   "POL_GRIDS": {
     "country_name": "Poland (Grids)",
@@ -375,7 +375,7 @@
     "total_twh": "174.0",
     "co2_mt": "131.0",
     "calibration_pct": "100.0",
-    "last_updated": "20 Nov 25"
+    "last_updated": "01 Dec 25"
   },
   "CHN_GRIDS": {
     "country_name": "China (Grids)",
@@ -520,5 +520,32 @@
     "co2_mt": "1.45",
     "calibration_pct": "20.3",
     "last_updated": "26 Nov 25"
+  },
+  "KEN_GRIDS": {
+    "country_name": "Kenya (Grids)",
+    "iso_code": "KEN_grids",
+    "total_gw": "3.3",
+    "total_twh": "12.3",
+    "co2_mt": "1.01",
+    "calibration_pct": "98.0",
+    "last_updated": "30 Nov 25"
+  },
+  "VNM_GRIDS": {
+    "country_name": "Vietnam (Grids)",
+    "iso_code": "VNM_grids",
+    "total_gw": "79.0",
+    "total_twh": "264.0",
+    "co2_mt": "110.0",
+    "calibration_pct": "100.0",
+    "last_updated": "29 Nov 25"
+  },
+  "NGA_GRIDS": {
+    "country_name": "Nigeria (Grids)",
+    "iso_code": "NGA_grids",
+    "total_gw": "14.4",
+    "total_twh": "37.0",
+    "co2_mt": "19.7",
+    "calibration_pct": "103.0",
+    "last_updated": "01 Dec 25"
   }
 }

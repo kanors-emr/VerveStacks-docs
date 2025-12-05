@@ -85,9 +85,9 @@ Available Countries
    * - `Brazil (Grids) <https://github.com/akanudia/vervestacks_models/tree/BRA_grids>`__
      - 205.0
      - 677.0
-     - 36.6
-     - 52.0%
-     - 20 Sep 25
+     - 38.1
+     - 54.0%
+     - 29 Nov 25
    * - `Bulgaria <https://github.com/akanudia/vervestacks_models/tree/BGR>`__
      - TBD
      - TBD
@@ -191,11 +191,11 @@ Available Countries
      - 101.0%
      - 19 Oct 25
    * - `Germany (Grids) <https://github.com/akanudia/vervestacks_models/tree/DEU_grids>`__
-     - 223.0
-     - 532.0
+     - 227.0
+     - 566.0
      - 238.0
      - 100.0%
-     - 17 Sep 25
+     - 29 Nov 25
    * - `Greece <https://github.com/akanudia/vervestacks_models/tree/GRC>`__
      - 23.3
      - 52.0
@@ -255,7 +255,7 @@ Available Countries
      - 280.0
      - 91.0
      - 86.0%
-     - 19 Nov 25
+     - 29 Nov 25
    * - `Japan <https://github.com/akanudia/vervestacks_models/tree/JPN>`__
      - 325.0
      - 1041.0
@@ -269,11 +269,11 @@ Available Countries
      - 99%%
      - 13 Sep 25
    * - `Japan (Grids) <https://github.com/akanudia/vervestacks_models/tree/JPN_grids>`__
-     - 325.0
+     - 337.0
      - 1041.0
-     - 536.0
-     - 99.0%
-     - 20 Sep 25
+     - 555.0
+     - 103.0%
+     - 29 Nov 25
    * - `Jordan <https://github.com/akanudia/vervestacks_models/tree/JOR>`__
      - 7.1
      - 21.9
@@ -286,6 +286,12 @@ Available Countries
      - 93.0
      - 98.0%
      - 19 Sep 25
+   * - `Kenya (Grids) <https://github.com/akanudia/vervestacks_models/tree/KEN_grids>`__
+     - 3.3
+     - 12.3
+     - 1.01
+     - 98.0%
+     - 30 Nov 25
    * - `Latvia <https://github.com/akanudia/vervestacks_models/tree/LVA>`__
      - 3.0
      - 5.0
@@ -304,6 +310,12 @@ Available Countries
      - 3.54
      - 72.0%
      - 19 Sep 25
+   * - `Nigeria (Grids) <https://github.com/akanudia/vervestacks_models/tree/NGA_grids>`__
+     - 14.4
+     - 37.0
+     - 19.7
+     - 103.0%
+     - 01 Dec 25
    * - `Philippines <https://github.com/akanudia/vervestacks_models/tree/PHL>`__
      - 29.6
      - 113.0
@@ -311,17 +323,17 @@ Available Countries
      - 108.0%
      - 03 Nov 25
    * - `Poland <https://github.com/akanudia/vervestacks_models/tree/POL>`__
-     - 55.0
+     - 56.0
      - 174.0
-     - 124.0
-     - 95.0%
-     - 21 Oct 25
+     - 131.0
+     - 100.0%
+     - 30 Nov 25
    * - `Poland (Grids) <https://github.com/akanudia/vervestacks_models/tree/POL_grids>`__
      - 56.0
      - 174.0
      - 131.0
      - 100.0%
-     - 20 Nov 25
+     - 01 Dec 25
    * - `South Africa <https://github.com/akanudia/vervestacks_models/tree/ZAF>`__
      - 65.0
      - 239.0
@@ -382,6 +394,12 @@ Available Countries
      - 1667.0
      - 101.0%
      - 07 Nov 25
+   * - `Vietnam (Grids) <https://github.com/akanudia/vervestacks_models/tree/VNM_grids>`__
+     - 79.0
+     - 264.0
+     - 110.0
+     - 100.0%
+     - 29 Nov 25
    * - `Zimbabwe <https://github.com/akanudia/vervestacks_models/tree/ZWE>`__
      - 2.3
      - 8.9
