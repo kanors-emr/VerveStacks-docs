@@ -123,22 +123,62 @@ Renewable Energy Integration
 RE Zone Connectivity
 --------------------
 
+**Technology-Specific Cluster Integration:**
+
+VerveStacks implements **separate clustering for each renewable technology**, creating distinct cluster sets that connect independently to the transmission network:
+
+- **Solar PV Clusters**: Independent clustering of solar grid cells with aggregated capacity potential
+- **Wind Onshore Clusters**: Separate clustering of onshore wind grid cells with capacity-weighted profiles
+- **Wind Offshore Clusters**: Dedicated offshore wind clustering (where applicable) with marine grid connectivity
+- **Cluster Composition**: Each cluster represents 10-300 individual 50x50km grid cells with combined MW potential
+- **Capacity Aggregation**: Total renewable potential calculated from REZoning data across constituent grid cells
+
 **Transmission Access Analysis:**
-- **Distance Calculation**: Shortest path from renewable zones to transmission buses
-- **Connection Costs**: Distance-based transmission line construction costs
-- **Capacity Constraints**: Transmission capacity limits for renewable integration
+- **Distance Calculation**: Shortest path from renewable clusters to transmission buses (≥150kV)
+- **Connection Costs**: Distance-based transmission line construction costs per technology cluster
+- **Capacity Constraints**: Transmission capacity limits for renewable integration by technology type
 - **Grid Code Compliance**: Technical requirements for renewable energy connections
 
-**Clustering Integration:**
-- **Zone Assignment**: Renewable energy clusters mapped to nearest transmission buses
-- **Capacity Aggregation**: Total renewable potential accessible from each bus
-- **Profile Integration**: Hourly generation profiles linked to transmission nodes
-- **Curtailment Modeling**: Transmission-constrained renewable energy dispatch
+**Cluster-to-Bus Assignment Process:**
+1. **Technology Separation**: Solar, wind onshore, and wind offshore processed independently
+2. **Spatial Assignment**: Each cluster assigned to nearest transmission bus using great circle distance
+3. **Capacity Weighted Profiles**: Hourly capacity factors aggregated using grid cell capacity as weights
+4. **Economic Integration**: Distance-based connection costs (M$/GW-km) calculated per cluster
+5. **Profile Integration**: Technology-specific hourly generation profiles linked to transmission nodes
+6. **Curtailment Modeling**: Transmission-constrained renewable energy dispatch by technology
 
 Technology Connection Methodology
 ==================================
 
 VerveStacks implements sophisticated algorithms for connecting both existing and new generation technologies to transmission buses, ensuring realistic grid access while maintaining computational efficiency.
+
+Renewable Energy Cluster Integration
+------------------------------------
+
+**Technology-Specific Clustering Approach:**
+
+VerveStacks processes renewable energy resources through **independent clustering for each technology**, creating optimized spatial aggregations that preserve resource characteristics while enabling efficient grid integration:
+
+**Cluster Formation Process:**
+1. **Grid Cell Processing**: Extract 50x50km renewable energy grid cells from REZoning database
+2. **Technology Filtering**: Apply capacity factor thresholds (>5% solar, >8% wind) to exclude low-quality resources
+3. **Independent Clustering**: Perform hierarchical clustering separately for solar, wind onshore, and wind offshore
+4. **Capacity Aggregation**: Sum installed capacity potential (MW) across grid cells within each cluster
+5. **Profile Weighting**: Calculate hourly capacity factors using grid cell capacity as weights
+6. **Bus Assignment**: Connect each cluster to nearest transmission bus (≥150kV) using great circle distance
+
+**Cluster Characteristics:**
+- **Dynamic Sizing**: 10-300 clusters per technology based on country size (n_clusters = n_cells^0.6)
+- **Capacity Basis**: Each cluster capacity derived from REZoning grid cell potential aggregation
+- **Profile Generation**: Hourly capacity factors weighted by constituent grid cell capacity (MW)
+- **Geographic Representation**: Clusters maintain spatial coherence while optimizing grid connectivity
+- **Technology Independence**: Solar and wind clusters formed separately to avoid cross-technology interference
+
+**Grid Integration Outputs:**
+- **Technology-Specific Commodities**: Separate VEDA commodities for solar (elc_spv), wind onshore (elc_won), wind offshore (elc_wof)
+- **Cluster-Specific Profiles**: Individual hourly capacity factor profiles for each renewable cluster
+- **Connection Economics**: Distance-based transmission costs and losses calculated per cluster
+- **Transmission Mapping**: Each cluster assigned to specific transmission bus with capacity and profile data
 
 Existing Power Plant Assignment
 -------------------------------
@@ -164,23 +204,29 @@ Existing Power Plant Assignment
 New Technology Integration
 --------------------------
 
-**Renewable Energy Zone Connections:**
-- **Zone-to-Bus Mapping**: Renewable clusters assigned to transmission buses within or nearest to zones
-- **Spatial Join Priority**: Buses within zone boundaries get direct assignment
-- **Nearest Bus Fallback**: Zones without internal buses connected to closest transmission node
-- **Capacity Aggregation**: Total renewable potential accessible from each bus calculated
+**Technology-Specific Renewable Energy Connections:**
+- **Cluster-to-Bus Mapping**: Technology-specific renewable clusters assigned to transmission buses
+- **Solar Cluster Assignment**: Solar clusters connected to nearest transmission buses with solar-specific profiles
+- **Wind Cluster Assignment**: Wind onshore and offshore clusters connected independently with wind-specific profiles
+- **Spatial Join Priority**: Clusters within transmission zone boundaries get direct bus assignment
+- **Nearest Bus Fallback**: Clusters outside zones connected to closest transmission node (≥150kV)
+- **Capacity Aggregation**: Technology-specific renewable potential calculated per bus from assigned clusters
+- **Profile Aggregation**: Capacity-weighted hourly profiles generated for each technology at each bus
 
-**Connection Cost Modeling:**
-- **Distance-Based Costs**: Transmission line construction costs based on zone-to-bus distance
-- **Grid Code Compliance**: Technical requirements for renewable energy connections
-- **Capacity Constraints**: Transmission capacity limits for renewable integration
-- **Curtailment Assessment**: Transmission-constrained renewable energy dispatch potential
+**Technology-Specific Connection Cost Modeling:**
+- **Cluster-Based Costs**: Transmission line construction costs calculated per renewable technology cluster
+- **Distance Calculation**: Great circle distance from cluster centroid to assigned transmission bus
+- **Technology Independence**: Solar, wind onshore, and wind offshore clusters costed separately
+- **Grid Code Compliance**: Technical requirements applied per technology type
+- **Capacity Constraints**: Transmission capacity limits assessed for each technology cluster
+- **Curtailment Assessment**: Technology-specific transmission-constrained dispatch potential
 
-**Economic Assumptions:**
-- **Connection Cost**: **$1.1 million per MW-km** for high-voltage transmission infrastructure
+**Economic Assumptions (Per Technology Cluster):**
+- **Connection Cost**: **$1.1 million per MW-km** for high-voltage transmission infrastructure per cluster
 - **Transmission Losses**: **0.6% per 100 km** (6% per 1,000 km) following industry standards for AC transmission
-- **Cost Formula**: ``ncap_cost = 1.1 × distance_km`` (M$/GW-km)
-- **Efficiency Formula**: ``efficiency = 1 - 0.00006 × distance_km`` (0.006% loss per km)
+- **Cost Formula**: ``ncap_cost = 1.1 × cluster_distance_km`` (M$/GW-km per technology cluster)
+- **Efficiency Formula**: ``efficiency = 1 - 0.00006 × cluster_distance_km`` (0.006% loss per km per cluster)
+- **Capacity Basis**: Cluster capacity derived from aggregated REZoning grid cell potential (MW)
 
 **Conventional Technology Siting:**
 - **New Plant Placement**: Future conventional plants assigned using same nearest-bus algorithm
@@ -206,8 +252,9 @@ After bus clustering, all technology assignments are updated to maintain connect
 
 1. **Cluster Mapping**: Original plant-bus assignments mapped to cluster representatives
 2. **Capacity Aggregation**: Multiple plants at clustered buses have combined capacity
-3. **Profile Integration**: Hourly generation profiles linked to transmission nodes
-4. **Load Balance**: Ensure generation-demand balance at each clustered bus
+3. **RE Cluster Integration**: Technology-specific renewable clusters assigned to transmission buses
+4. **Profile Integration**: Capacity-weighted hourly generation profiles linked to transmission nodes per technology
+5. **Load Balance**: Ensure generation-demand balance at each clustered bus including renewable clusters
 
 **Assignment Validation:**
 - **Connectivity Verification**: All technologies reachable through transmission paths
@@ -334,11 +381,14 @@ VEDA Model Integration
 - **Operational Constraints**: Power flow limits and stability requirements
 - **Regional Definitions**: Transmission zones for energy system optimization
 
-**Renewable Energy Supply:**
-- **RE Zone Mapping**: Renewable clusters connected to transmission buses
-- **Access Costs**: Grid connection expenses for renewable energy development
-- **Curtailment Potential**: Transmission-limited renewable energy dispatch
-- **Storage Integration**: Battery and pumped hydro storage siting optimization
+**Technology-Specific Renewable Energy Supply:**
+- **Solar Cluster Mapping**: Solar PV clusters connected to transmission buses with solar-specific profiles
+- **Wind Cluster Mapping**: Wind onshore and offshore clusters connected independently with wind-specific profiles
+- **Cluster Capacity**: Each cluster represents aggregated MW potential from 10-300 grid cells (50x50km each)
+- **Weighted Profiles**: Hourly capacity factors calculated using grid cell capacity as weights
+- **Access Costs**: Grid connection expenses calculated per technology cluster based on distance to transmission
+- **Technology Separation**: Independent curtailment analysis for solar, wind onshore, and wind offshore
+- **Storage Integration**: Battery and pumped hydro storage siting optimization per renewable technology
 
 Real-World Applications
 =======================
