@@ -60,16 +60,16 @@
     "total_twh": "677.0",
     "co2_mt": "38.1",
     "calibration_pct": "54.0",
-    "last_updated": "29 Nov 25"
+    "last_updated": "05 Dec 25"
   },
   "BRA": {
     "country_name": "Brazil",
     "iso_code": "BRA",
     "total_gw": "205.0",
     "total_twh": "677.0",
-    "co2_mt": "36.5",
-    "calibration_pct": "52.0",
-    "last_updated": "17 Sep 25"
+    "co2_mt": "38.1",
+    "calibration_pct": "54.0",
+    "last_updated": "05 Dec 25"
   },
   "CAN": {
     "country_name": "Canada",
@@ -123,16 +123,16 @@
     "total_twh": "566.0",
     "co2_mt": "238.0",
     "calibration_pct": "100.0",
-    "last_updated": "29 Nov 25"
+    "last_updated": "05 Dec 25"
   },
   "DEU": {
     "country_name": "Germany",
     "iso_code": "DEU",
-    "total_gw": "223.0",
-    "total_twh": "532.0",
-    "co2_mt": "240.0",
-    "calibration_pct": "101.0",
-    "last_updated": "19 Oct 25"
+    "total_gw": "227.0",
+    "total_twh": "566.0",
+    "co2_mt": "238.0",
+    "calibration_pct": "100.0",
+    "last_updated": "05 Dec 25"
   },
   "ESP_GRIDS": {
     "country_name": "Spain (Grids)",
@@ -254,20 +254,20 @@
   "ITA_GRIDS": {
     "country_name": "Italy (Grids)",
     "iso_code": "ITA_grids",
-    "total_gw": "130.0",
+    "total_gw": "129.0",
     "total_twh": "280.0",
     "co2_mt": "91.0",
     "calibration_pct": "86.0",
-    "last_updated": "29 Nov 25"
+    "last_updated": "08 Dec 25"
   },
   "ITA": {
     "country_name": "Italy",
     "iso_code": "ITA",
-    "total_gw": "130.0",
+    "total_gw": "129.0",
     "total_twh": "280.0",
-    "co2_mt": "106.0",
-    "calibration_pct": "100.0",
-    "last_updated": "17 Sep 25"
+    "co2_mt": "91.0",
+    "calibration_pct": "86.0",
+    "last_updated": "05 Dec 25"
   },
   "JPN_grids": {
     "country_name": "Japan (Grids)",
@@ -375,7 +375,7 @@
     "total_twh": "174.0",
     "co2_mt": "131.0",
     "calibration_pct": "100.0",
-    "last_updated": "01 Dec 25"
+    "last_updated": "05 Dec 25"
   },
   "CHN_GRIDS": {
     "country_name": "China (Grids)",
@@ -528,16 +528,16 @@
     "total_twh": "12.3",
     "co2_mt": "1.01",
     "calibration_pct": "98.0",
-    "last_updated": "30 Nov 25"
+    "last_updated": "06 Dec 25"
   },
   "VNM_GRIDS": {
     "country_name": "Vietnam (Grids)",
     "iso_code": "VNM_grids",
-    "total_gw": "79.0",
+    "total_gw": "78.0",
     "total_twh": "264.0",
-    "co2_mt": "110.0",
-    "calibration_pct": "100.0",
-    "last_updated": "29 Nov 25"
+    "co2_mt": "109.0",
+    "calibration_pct": "99.0",
+    "last_updated": "06 Dec 25"
   },
   "NGA_GRIDS": {
     "country_name": "Nigeria (Grids)",
@@ -546,6 +546,60 @@
     "total_twh": "37.0",
     "co2_mt": "19.7",
     "calibration_pct": "103.0",
-    "last_updated": "01 Dec 25"
+    "last_updated": "06 Dec 25"
+  },
+  "VEN_GRIDS": {
+    "country_name": "Venezuela (Grids)",
+    "iso_code": "VEN_grids",
+    "total_gw": "31.4",
+    "total_twh": "85.0",
+    "co2_mt": "30.3",
+    "calibration_pct": "193.0",
+    "last_updated": "05 Dec 25"
+  },
+  "KEN": {
+    "country_name": "Kenya",
+    "iso_code": "KEN",
+    "total_gw": "3.3",
+    "total_twh": "12.3",
+    "co2_mt": "1.01",
+    "calibration_pct": "98.0",
+    "last_updated": "05 Dec 25"
+  },
+  "NGA": {
+    "country_name": "Nigeria",
+    "iso_code": "NGA",
+    "total_gw": "14.4",
+    "total_twh": "37.0",
+    "co2_mt": "19.7",
+    "calibration_pct": "103.0",
+    "last_updated": "05 Dec 25"
+  },
+  "VEN": {
+    "country_name": "Venezuela",
+    "iso_code": "VEN",
+    "total_gw": "31.4",
+    "total_twh": "85.0",
+    "co2_mt": "30.3",
+    "calibration_pct": "193.0",
+    "last_updated": "05 Dec 25"
+  },
+  "VNM": {
+    "country_name": "Vietnam",
+    "iso_code": "VNM",
+    "total_gw": "79.0",
+    "total_twh": "264.0",
+    "co2_mt": "109.0",
+    "calibration_pct": "99.0",
+    "last_updated": "05 Dec 25"
+  },
+  "ZAF_GRIDS": {
+    "country_name": "South Africa (Grids)",
+    "iso_code": "ZAF_grids",
+    "total_gw": "66.0",
+    "total_twh": "239.0",
+    "co2_mt": "225.0",
+    "calibration_pct": "129.0",
+    "last_updated": "08 Dec 25"
   }
 }

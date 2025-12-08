@@ -86,33 +86,42 @@ A core principle of VerveStacks is creating **different structures from the same
 Clustering Methodology
 ----------------------
 
-**Multi-Stage Pipeline**
+**Technology-Specific Multi-Stage Pipeline**
 
-Renewable resource clustering follows a sophisticated multi-stage process:
+Renewable resource clustering follows a sophisticated multi-stage process **performed separately for each technology**:
 
-1. **Grid Cell Identification**: Extract renewable energy grid cells from REZoning database
-2. **Resource Quality Filtering**: Apply capacity factor thresholds to exclude low-quality resources
+1. **Grid Cell Identification**: Extract renewable energy grid cells from REZoning database for each technology
+2. **Resource Quality Filtering**: Apply technology-specific capacity factor thresholds to exclude low-quality resources
    - **Solar PV**: Grid cells with <5% capacity factor excluded
    - **Onshore Wind**: Grid cells with <8% capacity factor excluded
-3. **Resource Characterization**: Generate hourly capacity factor profiles using Atlite weather data
-4. **Grid Connectivity**: Calculate distance to nearest transmission infrastructure for each grid cell (cities used as proxies for transmission buses in CIT grid definition)
-5. **Feature Engineering**: Combine resource profiles with spatial and infrastructure data
-6. **Intelligent Clustering**: Apply hierarchical clustering with optimized feature weighting
-7. **Quality Validation**: Assess cluster coherence and grid connectivity
+   - **Offshore Wind**: Grid cells with <8% capacity factor excluded
+3. **Resource Characterization**: Generate hourly capacity factor profiles using Atlite weather data for each technology independently
+4. **Grid Connectivity**: Calculate distance to nearest transmission infrastructure for each grid cell (transmission buses ≥150kV)
+5. **Technology-Specific Feature Engineering**: Combine technology-specific resource profiles with spatial and infrastructure data
+6. **Independent Clustering**: Apply hierarchical clustering with technology-optimized feature weighting for each renewable type
+7. **Quality Validation**: Assess cluster coherence and grid connectivity per technology
+8. **Separate Output Generation**: Create independent timeseries files for each technology cluster set
 
 **Algorithm Details**
 
 The clustering algorithm uses **hierarchical clustering with Ward linkage**, optimized for renewable energy applications. Only economically viable grid cells are included in the clustering process based on capacity factor thresholds that ensure realistic renewable energy deployment potential.
 
-**Feature Weighting:**
-- **Wind profiles**: 35% - Temporal generation patterns
-- **Solar profiles**: 35% - Temporal generation patterns  
-- **Grid distance**: 20% - Infrastructure connectivity
-- **Spatial coordinates**: 10% - Geographic proximity
+**Technology-Specific Clustering Approach:**
+
+VerveStacks performs **separate clustering for each renewable technology** to optimize resource representation and avoid cross-technology interference in cluster formation:
+
+- **Solar PV clustering**: Independent clustering using only solar capacity factor profiles
+- **Wind onshore clustering**: Independent clustering using only wind onshore capacity factor profiles  
+- **Wind offshore clustering**: Independent clustering using only wind offshore capacity factor profiles (when applicable)
+
+**Feature Weighting (Per Technology):**
+- **Technology profiles**: 50% - Temporal generation patterns for the specific technology
+- **Grid distance**: 40% - Infrastructure connectivity to transmission buses
+- **Spatial coordinates**: 10% - Geographic proximity for contiguous clusters
 
 **Dimensionality Reduction:**
-- **PCA preprocessing**: 50 components each for wind and solar profiles
-- **Standardization**: All features normalized before clustering
+- **PCA preprocessing**: Up to 50 components for each technology's hourly profiles
+- **Standardization**: All features normalized before clustering within each technology
 - **Distance metric**: Euclidean distance in transformed feature space
 
 **Dynamic Cluster Number Determination:**
@@ -123,17 +132,26 @@ The number of clusters is determined dynamically based on the number of renewabl
    n_clusters = int(np.clip(n_cells ** 0.6, 10, 300))
 
 This scaling approach ensures:
-- **Small countries** (few grid cells): Minimum 10 clusters for adequate resolution
-- **Large countries** (many grid cells): Reasonable computational complexity with maximum 300 clusters
+- **Small countries** (few grid cells): Minimum 10 clusters per technology for adequate resolution
+- **Large countries** (many grid cells): Reasonable computational complexity with maximum 300 clusters per technology
 - **Balanced scaling**: Sublinear growth prevents excessive clustering in large countries
+- **Technology independence**: Each renewable type gets optimally sized cluster sets
 
-**Capacity-Weighted Profile Aggregation**
+**Benefits of Technology-Specific Clustering:**
 
-For each cluster, hourly generation profiles are computed using capacity-weighted averaging:
+- **Resource Optimization**: Solar and wind resources have fundamentally different temporal patterns and geographic distributions
+- **Cluster Purity**: Avoids mixing high-solar/low-wind cells with low-solar/high-wind cells in the same cluster
+- **Grid Connection Accuracy**: Each technology can connect to the most appropriate transmission infrastructure
+- **Model Flexibility**: Enables technology-specific capacity expansion and dispatch optimization
+- **Temporal Fidelity**: Preserves distinct diurnal (solar) and weather-driven (wind) generation patterns
+
+**Technology-Specific Capacity-Weighted Profile Aggregation**
+
+For each technology cluster, hourly generation profiles are computed using capacity-weighted averaging with technology-specific data:
 
 .. code-block:: python
 
-   def calculate_weighted_cluster_profiles(clusters, profiles, technology):
+   def calculate_weighted_cluster_profiles_2(clusters, profiles, technology):
        """
        Calculate capacity-weighted cluster profiles for renewable technologies
        """
@@ -244,7 +262,7 @@ These examples demonstrate how the clustering methodology adapts to different:
 - **Geographic scales**: From Brazil's focused coastal grid cells to China's continental expanse
 - **Resource characteristics**: Solar vs. wind temporal patterns and capacity factors
 - **Grid definitions**: KAN (infrastructure-based) vs. CIT (city-based) transmission proxies
-- **Technology types**: Onshore wind, offshore wind, and solar PV clustering
+- **Technology types**: Independent clustering for onshore wind, offshore wind, and solar PV
 
 Stage 3: Cluster-Based Renewable Energy Integration
 ====================================================
@@ -275,32 +293,48 @@ Cluster-Based Renewable Integration
 
 **Universal Methodology:**
 
-1. **Cluster-Specific Commodities**:
+1. **Technology-Specific Cluster Commodities**:
    
    .. code-block:: python
    
-      # Each renewable cluster becomes individual commodity (both model types)
-      for cluster_id in renewable_clusters:
+      # Each technology gets separate cluster sets
+      for cluster_id in solar_clusters:
           commodity = f"elc_spv-{iso_code}_{cluster_id:04d}"
           process = f"solar_resource_cluster_{cluster_id}"
+          
+      for cluster_id in wind_onshore_clusters:
+          commodity = f"elc_won-{iso_code}_{cluster_id:04d}"
+          process = f"wind_onshore_resource_cluster_{cluster_id}"
+          
+      for cluster_id in wind_offshore_clusters:
+          commodity = f"elc_wof-{iso_code}_{cluster_id:04d}"
+          process = f"wind_offshore_resource_cluster_{cluster_id}"
 
-2. **Capacity-Weighted Temporal Profiles**:
+2. **Technology-Specific Capacity-Weighted Temporal Profiles**:
    
    .. code-block:: python
    
-      # Use capacity-weighted cluster profiles from Stage 2
-      for cluster_id in renewable_clusters:
-          hourly_profile = cluster_profiles[cluster_id]['weighted_cf']
-          normalized_profile = hourly_profile / hourly_profile.sum()
+      # Use technology-specific capacity-weighted cluster profiles
+      for cluster_id in solar_clusters:
+          solar_profile = solar_cluster_profiles[cluster_id]['weighted_cf']
+          normalized_solar_profile = solar_profile / solar_profile.sum()
+          
+      for cluster_id in wind_onshore_clusters:
+          wind_profile = wind_cluster_profiles[cluster_id]['weighted_cf']
+          normalized_wind_profile = wind_profile / wind_profile.sum()
 
-3. **Grid Connection Costs**:
+3. **Technology-Specific Grid Connection Costs**:
    
    .. code-block:: python
    
-      # Distance-based connection costs for all clusters
-      for cluster in renewable_clusters:
-          connection_cost = 1.1 * cluster.avg_grid_dist_km  # M$/GW-km
-          transmission_losses = 1 - 0.00006 * cluster.avg_grid_dist_km
+      # Distance-based connection costs calculated separately per technology
+      for cluster in solar_clusters:
+          solar_connection_cost = 1.1 * cluster.avg_grid_dist_km  # M$/GW-km
+          solar_transmission_losses = 1 - 0.00006 * cluster.avg_grid_dist_km
+          
+      for cluster in wind_clusters:
+          wind_connection_cost = 1.1 * cluster.avg_grid_dist_km  # M$/GW-km
+          wind_transmission_losses = 1 - 0.00006 * cluster.avg_grid_dist_km
 
 **Grid Connection Architecture**
 
@@ -315,6 +349,20 @@ Cluster-Based Renewable Integration
 - **Optimization**: Technology-level competition with geographic diversity preserved
 
 **Economic Integration**
+
+**Technology-Specific Output Files**
+
+The separate clustering approach generates independent output files for each renewable technology:
+
+- **Solar timeseries**: `solar_timeseries_<iso_code>.csv` and `solar_timeseries_<iso_code>.parquet`
+- **Wind onshore timeseries**: `wind_onshore_timeseries_<iso_code>.csv` and `wind_onshore_timeseries_<iso_code>.parquet`
+- **Wind offshore timeseries**: `wind_offshore_timeseries_<iso_code>.csv` and `wind_offshore_timeseries_<iso_code>.parquet`
+
+Each file contains hourly capacity factor profiles for all clusters of that technology, enabling:
+- **Independent model validation** for each renewable type
+- **Technology-specific capacity expansion analysis**
+- **Separate temporal pattern analysis** (diurnal vs. weather-driven)
+- **Flexible model architecture** supporting different renewable integration strategies
 
 Both model architectures incorporate identical economic signals:
 
