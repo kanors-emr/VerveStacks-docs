@@ -135,16 +135,26 @@ From the ranked stress lists, we select varying numbers of days and weeks for ex
    - Select sustained stress weeks for extended storage and ramping analysis
    - Capture multi-day operational challenges that daily analysis might miss
 
-**Formal Clustering for Remainder**
-   All non-selected hours are aggregated using traditional clustering methods (seasonal and diurnal patterns), ensuring comprehensive temporal coverage while focusing computational resources on critical periods.
+**Day-Based Seasonal Clustering**
+   Unlike traditional month-based aggregation, VerveStacks clusters all 365 days directly into seasons based on their net load patterns. This approach captures multi-day events (such as wind droughts or sustained low-solar periods) that may span across month boundaries. 
+   
+   The clustering algorithm:
+   
+   - Analyzes each day's net load profile (mean, peak, minimum, variability, daytime/evening patterns)
+   - Groups days with similar characteristics into contiguous seasons
+   - Enforces a minimum days-per-season threshold (default: 5 days) to prevent fragmented single-day seasons
+   - Preserves temporal continuity so adjacent days remain in the same cluster when patterns are similar
+   
+   This day-level granularity is essential for capturing the operational reality of battery storage systems that operate on daily charge/discharge cycles, and for identifying sustained renewable droughts that stress system flexibility over multiple consecutive days.
 
 **Adaptive Timeslice Assembly (ISO-Specific)**
    The final timeslice structure combines:
    - High-resolution critical periods (hourly detail where it matters most)
-   - Clustered representative periods (efficient aggregation for routine operations)  
+   - Day-clustered seasons (365 days grouped into 4-12 seasons based on net load similarity)
+   - Hour-clustered periods (24 hours grouped into 3-8 diurnal periods)
    - Proper weighting to preserve annual energy balance
    
-   **Each ISO receives its own complete timeslice definition**—including both the stress periods and the aggregated clusters. Germany's winter scarcity periods will differ completely from Brazil's dry season challenges or Japan's summer peak stress.
+   **Each ISO receives its own complete timeslice definition**—including both the stress periods and the day-based aggregated clusters. Germany's winter scarcity periods will differ completely from Brazil's dry season challenges or Japan's summer peak stress.
 
 Validation and Visualization
 =============================
@@ -190,14 +200,14 @@ The following visualizations demonstrate the stress-based methodology applied to
 
    **Prolonged Shortage Periods**: Extended stress weeks capture sustained operational challenges that daily analysis might miss. These multi-day periods test storage capacity and sustained generation capability over longer timeframes.
 
-**Aggregated Timeslice Structure**
+**Day-Based Seasonal Clustering**
 
-.. figure:: ../_static/images/case-studies/aggregation_justification_USA_s5p5v5_d.svg
-   :alt: USA aggregated timeslice justification
+.. figure:: ../_static/images/case-studies/aggregation_justification_USA_ts_096.svg
+   :alt: USA day-based seasonal clustering
    :align: center
    :width: 100%
 
-   **Complete Timeslice Assembly**: This chart shows how the remaining 8,640+ hours (after stress period selection) are intelligently clustered into seasonal and diurnal patterns. The final structure combines high-resolution critical periods with efficient aggregated clusters, creating a complete temporal representation optimized for the USA's unique operational challenges.
+   **365 Days Clustered into Seasons**: This visualization shows how the USA's 365 days are grouped into seasons based on net load similarity, with a calendar heatmap revealing the temporal distribution. The day-based clustering captures multi-day wind droughts and sustained low-solar periods that month-based approaches would miss. Rolling averages show how net load patterns evolve through the year, with distinct seasonal bands emerging from the clustering algorithm.
 
 Contrasting Energy Landscapes: China Case Study
 ===============================================
@@ -231,14 +241,14 @@ China presents a dramatically different energy landscape, demonstrating how the 
 
    **Sustained Stress at Scale**: China's weekly stress periods reveal the magnitude of sustained operational challenges in the world's largest energy system. These extended periods test not just storage and ramping capability, but the coordination of resources across vast geographic distances.
 
-**China's Aggregated Structure**
+**China's Day-Based Seasonal Clustering**
 
-.. figure:: ../_static/images/case-studies/aggregation_justification_CHN_s5p5v5_d.svg
-   :alt: China aggregated timeslice justification
+.. figure:: ../_static/images/case-studies/aggregation_justification_CHN_ts_096.svg
+   :alt: China day-based seasonal clustering
    :align: center
    :width: 100%
 
-   **Complexity at Continental Scale**: China's timeslice aggregation demonstrates how the methodology scales to handle enormous energy systems while preserving critical operational insights. The aggregated clusters capture China's unique seasonal patterns, industrial demand cycles, and renewable resource characteristics.
+   **Continental-Scale Day Clustering**: China's 365 days are grouped into seasons reflecting the country's vast geographic and climatic diversity. The calendar heatmap reveals how seasonal boundaries emerge from actual net load patterns rather than arbitrary calendar months. By clustering days directly, the system captures China's unique multi-day weather events, industrial demand cycles, and the interplay between northern heating demand and southern cooling loads.
 
 Key Contrasts: USA vs China
 ============================
@@ -258,3 +268,5 @@ The comparison between USA and China stress periods illustrates the methodology'
    - **China**: Continental-scale coordination, massive storage and transmission needs
 
 This demonstrates why **every ISO requires its own unique timeslice definition**—no universal template could capture both the USA's moderate seasonal patterns and China's extreme continental-scale energy dynamics.
+
+The day-based clustering approach is particularly valuable here: a wind drought spanning late January through early February would be split across two months in traditional aggregation, but is captured as a single coherent stress event when clustering 365 days directly. This granularity matters most for countries with pronounced multi-day weather patterns that don't align with calendar boundaries.
