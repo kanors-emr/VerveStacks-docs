@@ -65,24 +65,186 @@ Bus Clustering Methodology
 4. **Capacity Aggregation**: Sum transmission capacities within clusters
 5. **Connectivity Preservation**: Maintain essential network topology
 
-Load Distribution Algorithms
------------------------------
+Load Distribution Overview
+---------------------------
 
-VerveStacks implements two complementary approaches for distributing electricity demand across transmission buses:
+Once clustered buses exist, national electricity demand is attributed to them via a dedicated allocation pipeline. Because that pipeline is substantial, it is described in its own section below — see :ref:`demand-allocation-to-grid-nodes`.
 
-**Voronoi Tessellation Method:**
-- **Principle**: Each bus serves the geographically closest demand centers
-- **Implementation**: Voronoi cells define exclusive service territories
-- **Population Weighting**: Cities influence load distribution based on population
-- **Threshold**: Minimum population of 1,000,000 for major demand centers
-- **Advantage**: Guarantees non-overlapping service areas
+.. _demand-allocation-to-grid-nodes:
 
-**Distance-Weighted Assignment:**
-- **Principle**: Cities influence multiple buses based on inverse distance weighting
-- **Decay Function**: Influence decreases with distance² (configurable exponent)
-- **Maximum Range**: 100 km influence radius (configurable)
-- **Population Threshold**: Minimum 10,000 population for demand centers
-- **Advantage**: More realistic load sharing across nearby transmission nodes
+Demand Allocation to Grid Nodes
+================================
+
+**Spatially distributing national electricity demand across transmission-network buses**
+
+Once the transmission network has been clustered into a tractable set of buses, national electricity demand has to be attributed to those buses so that the optimisation model dispatches generation to where load actually sits. VerveStacks performs this attribution at the **physical transmission-network** level — loads land on high-voltage substation clusters, not on administrative units.
+
+.. _demand-allocation-design-intent:
+
+Design Intent
+-------------
+
+The spatial allocation deliberately ignores administrative boundaries (states, prefectures, oblasts, provinces). The unit of aggregation is the **high-voltage substation cluster**, because that is the physical injection point where transmission-level demand appears on the grid.
+
+Consequences of this choice, stated explicitly:
+
+- **Not every administrative subdivision will have its own demand node.** A sub-national region whose load is physically served by a substation across its border will be represented at that substation. This mirrors how the real grid works and is a feature, not an omission.
+- **Regions with no transmission-level infrastructure have no demand node at all.** If a sub-national region contains no substation at or above the voltage threshold, its load is absorbed by the nearest eligible bus in a neighbouring region.
+- **A long tail of small-share buses is intentionally discarded.** The allocation keeps the major load centres per country rather than spreading demand uniformly, because uniform spreading (a) inflates the model without changing results and (b) obscures where congestion actually binds.
+
+Users who need administrative-level demand reporting should treat it as a post-processing layer on top of bus-level results, not as a constraint on the allocation itself.
+
+.. _demand-allocation-pipeline:
+
+Allocation Pipeline
+-------------------
+
+The production pipeline (``--grids kan | eur | cit``) proceeds in three steps, implemented in ``1_grids/extract_country_pypsa_network_clustered.py``.
+
+**Step 1 — Electrical filtering**
+
+Buses from the clustered network are filtered to those capable of serving transmission-level load:
+
+- Minimum voltage: ``min_voltage_kv = 110`` kV
+- Operational status: buses flagged as under construction are excluded
+- Bus type: substation / load / generic bus types are preferred; generator-only and converter buses are avoided
+
+Surviving buses receive a **voltage capacity weight** reflecting their role in the grid hierarchy:
+
+.. list-table:: Voltage Capacity Weights
+   :widths: 20 20 60
+   :header-rows: 1
+
+   * - Voltage (kV)
+     - Weight
+     - Role
+   * - ≥ 750
+     - 20.0
+     - Extra-high voltage, major interconnection
+   * - ≥ 500
+     - 15.0
+     - Extra-high voltage, bulk transmission
+   * - ≥ 380
+     - 10.0
+     - High voltage, regional transmission
+   * - ≥ 220
+     - 5.0
+     - High voltage, sub-regional
+   * - ≥ 150
+     - 2.0
+     - Sub-transmission
+   * - ≥ 110
+     - 1.0
+     - Lower transmission (baseline)
+   * - < 110
+     - excluded
+     - —
+
+**Step 2 — Voronoi tessellation with population weighting**
+
+Voronoi cells are constructed around the filtered (strong) buses and clipped to the country polygon (Natural Earth ``ne_10m_admin_0_countries``). Each city in ``worldcities.csv`` with ``population ≥ pop_min = 10 000`` is assigned to whichever bus's Voronoi cell contains it.
+
+For each bus ``b``, a *voltage-weighted assigned population* is computed as:
+
+.. code-block:: none
+
+   assigned_pop[b] = Σ over cities c in cell(b) of  population(c) × voltage_weight(b)
+
+so the same city contributes more to a 380 kV bus than to a 110 kV bus. An initial load share is then:
+
+.. code-block:: none
+
+   load_share[b] = assigned_pop[b] / Σ_b assigned_pop[b]
+
+which sums to 1 across all strong buses.
+
+.. _demand-allocation-sparsification:
+
+**Step 3 — Sparsification**
+
+The initial share is dense — every strong bus receives some load. Most of those buses are electrical transit nodes rather than real load centres, and carrying all of them into the TIMES model inflates it without improving fidelity. ``sparsify_voltage_connectivity_aware`` compresses the distribution onto the buses that matter most, electrically *and* in terms of demand coverage.
+
+Each bus is ranked by a **composite importance score**:
+
+.. code-block:: none
+
+   composite_score[b] = load_share[b]
+                        × voltage_weight[b]      ^ voltage_priority_factor
+                        × connectivity_weight[b] ^ connectivity_priority_factor
+
+where ``connectivity_weight`` is a logarithmic measure of how many transmission lines touch the bus (from ``{ISO}_clustered_lines.csv``). Default exponents are ``voltage_priority_factor = 2.0`` and ``connectivity_priority_factor = 1.5``, so a meshed 380 kV substation in a large city outranks a radial 110 kV bus serving a similar population.
+
+Buses are accepted in order of composite score until the cumulative raw ``load_share`` of accepted buses exceeds a **coverage target** (default ``coverage_target = 0.80``), subject to the guardrails ``min_nodes = 10`` and ``max_nodes = 300``. Unselected buses are zeroed; the kept buses are renormalised so their shares sum to 1.
+
+.. note::
+
+   The ranking metric (composite score) and the stopping metric (raw ``load_share``) are intentionally different. The composite score picks electrically plausible load-serving buses; the raw-share coverage check guarantees that enough of the actual demand is retained. Using one metric for both would either over-represent electrically weak population clusters or stop early on high-voltage but low-demand transit substations.
+
+Output file: ``1_grids/output_{data_source}/{ISO}/{ISO}_bus_load_share_voronoi.csv`` with columns ``bus_id, load_share, voltage_kv, voltage_weight``.
+
+.. _demand-allocation-variants:
+
+Grid Variant Summary
+--------------------
+
+The specific allocation file consumed downstream depends on the ``--grids`` option passed to ``main.py``:
+
+.. list-table::
+   :widths: 20 30 50
+   :header-rows: 1
+
+   * - ``--grids`` value
+     - File read by the pipeline
+     - Allocation method
+   * - ``kan``, ``eur``, ``cit``
+     - ``{ISO}_bus_load_share_voronoi.csv``
+     - Voltage-aware Voronoi + sparsification (above)
+   * - ``kanN`` (e.g. ``kan10``)
+     - ``{ISO}_bus_load_share_wtddist.csv``
+     - Distance-weighted assignment: cities influence multiple buses with distance² decay and a 100 km cap
+   * - ``syn_N`` (e.g. ``syn_5``)
+     - ``{ISO}_bus_load_share.csv``
+     - Direct cluster weights from the synthetic-grid demand clusterer
+
+The distance-weighted variant uses a looser voltage filter and does not apply voltage/connectivity-aware sparsification; it is better suited to simplified ``kanN`` models. Synthetic grids carry their own demand clusters and need no spatial allocation step.
+
+.. _demand-allocation-times-translation:
+
+Translation into the TIMES Model
+--------------------------------
+
+``grid_modeling.py::process_grid_data()`` turns the bus-level ``load_share`` values into three VEDA/TIMES artefacts, which ``excel_manager`` writes into the generated workbook:
+
+1. **Grid-node commodities** (``~FI_COMM`` on the ``grids`` sheet): one ``e_<bus>`` commodity of type ``ELC`` per kept bus, at ``daynite`` timeslice level.
+2. **Demand-technology topology** (``~tfm_topins``): a cross-join of kept buses × demand technologies from ``VS_mappings.dem_techs``. Every ``<tech>_<bus>`` process gets ``e_<bus>`` added as an input commodity, so the bus feeds that demand tech.
+3. **Demand flow bound** (``~tfm_ins-at``): for every ``<tech>_<bus>`` process, a ``FLO_MARK~lo`` bound of ``load_share × 0.98`` on the end-use commodities ``elc_buildings``, ``elc_transport``, ``elc_industry``, ``elc_roadtransport``. The 0.98 factor leaves ~2 % headroom so that minor rounding and Voronoi edge effects do not make the LP infeasible.
+
+Existing-stock attachments follow the same file: ``existing_stock_processor.py`` uses ``load_share > 0`` to decide which buses receive replicated demand technologies via the subRES ``regions/incode`` mechanism.
+
+.. _demand-allocation-tuning:
+
+Tuning Knobs and Known Limitations
+----------------------------------
+
+The defaults target a reasonable balance of model size and demand coverage for OECD-style transmission networks. The main knobs, exposed in ``compute_and_save_bus_load_share_voronoi`` and ``sparsify_voltage_connectivity_aware``:
+
+- ``pop_min`` (default 10 000) — raise for very dense urban systems, lower for countries whose largest towns are small.
+- ``min_voltage_kv`` (default 110) — lower for networks that are predominantly sub-transmission.
+- ``coverage_target`` (default 0.80) — raise toward 0.95 to retain more of the long tail; expect the model to grow.
+- ``min_nodes`` / ``max_nodes`` (default 10 / 300) — hard bounds regardless of coverage.
+- ``voltage_priority_factor`` (default 2.0), ``connectivity_priority_factor`` (default 1.5) — raise to bias selection further toward high-voltage meshed buses; lower (toward 0) to let raw population share dominate.
+
+Known limitations users should be aware of:
+
+- **Coverage is intentionally incomplete.** By default, ~20 % of national demand — the long tail of small buses — is zeroed at step 3 and redistributed onto kept buses via renormalisation. Administrative regions whose only electrical presence is in that long tail will not receive a demand node.
+- **Sub-110 kV countries need parameter changes.** Countries or islands whose transmission is predominantly below 110 kV will have very few eligible buses under defaults and may fall back to equal shares.
+- **Voronoi cells do not respect sub-national boundaries.** A strong bus near a sub-national border absorbs cities from both sides. This is deliberate — the allocation is physical, not administrative — but it means population maps and demand maps will differ at sub-national scale.
+- **Population is the sole proxy.** Industrial load concentrations (steel, refining, data centres) are not located explicitly; they are captured only to the extent they correlate with urban population. Sector-specific proxies are an experimental feature (see the New Zealand study under ``Miscellaneous/output_sectoral_bus_demand/``) and are not part of the main pipeline.
+
+.. seealso::
+
+   :doc:`demands-and-prices`
+      National-level demand and price trajectories that are subsequently spread across buses using the shares described here.
 
 Transmission Line Modeling
 ===========================

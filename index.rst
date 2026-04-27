@@ -126,12 +126,6 @@ Experience the Revolution
    community/support
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Technical Reference
-
-   technical-reference/index
-
-.. toctree::
    :maxdepth: 1
    :caption: Reference
 

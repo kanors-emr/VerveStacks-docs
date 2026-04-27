@@ -27,7 +27,16 @@ Technical Questions
   Models are generated in VEDA-TIMES format with Excel-based templates.
 
 **How are regions defined?**
-  Using Voronoi clustering of population centers, power plants, and renewable zones.
+  VerveStacks represents each country as a set of **high-voltage substation clusters** derived from OpenStreetMap transmission infrastructure, not as administrative divisions. Power plants, renewable-energy zones, and demand are all attached to these clusters. See :ref:`demand-allocation-to-grid-nodes` for the full allocation methodology.
+
+**Why does my state / prefecture / province have no electricity demand?**
+  This is usually by design, not a bug. VerveStacks allocates demand to the physical transmission network — specifically, to high-voltage (≥ 110 kV by default) substation clusters — and then sparsifies the result so that only the buses which collectively cover ~80 % of national demand are retained. Consequences:
+
+  - An administrative region whose load is physically served by a substation just across its border will appear at that neighbouring substation.
+  - An administrative region with no transmission-level infrastructure at all will have its load absorbed by the nearest eligible bus, which may lie outside the region.
+  - A long tail of small-share buses is intentionally discarded to keep the TIMES model tractable.
+
+  This is a deliberate trade-off toward physical realism over administrative completeness. See :ref:`demand-allocation-design-intent` for the rationale, :ref:`the sparsification step <demand-allocation-sparsification>` for how the long tail is dropped, and :ref:`demand-allocation-tuning` for the knobs (``coverage_target``, ``min_voltage_kv``, ``pop_min``) if you need to retain more regions.
 
 **What time resolution is available?**
   From 1 to 600+ timeslices based on stress-period analysis of hourly data.
