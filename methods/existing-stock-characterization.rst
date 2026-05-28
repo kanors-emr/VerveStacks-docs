@@ -809,6 +809,75 @@ The following tables provide the complete parameter values used in VerveStacks e
    :header-rows: 1
    :align: left
 
+**How Plant Lifetimes Are Assigned**
+
+Each existing plant is assigned a lifetime using a two-priority rule:
+
+1. **Known retirement date (highest priority).** When the source data records
+   a specific retirement year for an individually-tracked plant, the lifetime
+   is set to exactly that span — commissioning year to retirement year.
+   This reflects scheduled closures, regulatory mandates, or operator
+   decisions already captured in the underlying plant database.
+
+2. **No known retirement date (default).** The lifetime is set to whichever
+   is longer: the technology design life from the table above, or the number
+   of years remaining between the plant's commissioning year and 2055.
+   The 2055 floor is a deliberate modeling convention — it ensures that no
+   existing plant drops out of the model before the end of the planning
+   horizon, avoiding artificial capacity cliffs in mid-period years.
+
+The practical effect of the 2055 floor is most visible for legacy plants
+commissioned in the 1960s and 1970s: a coal unit from 1971 would have
+exhausted its 50-year design life well before 2055, so it receives a
+lifetime of 84 years (2055 − 1971) instead. Modern plants commissioned
+after 2005 are typically governed by the design life rather than the floor.
+
+.. list-table:: **Illustrative Lifetime Outcomes**
+   :widths: 35 12 14 14 25
+   :header-rows: 1
+   :align: left
+
+   * - **Plant**
+     - **COD**
+     - **Design life**
+     - **2055 − COD**
+     - **Assigned lifetime**
+   * - Medupi U6 (supercritical coal)
+     - 2015
+     - 50 yrs
+     - 40 yrs
+     - 50 yrs *(design life)*
+   * - Kusile U3 (supercritical coal)
+     - 2021
+     - 50 yrs
+     - 34 yrs
+     - 50 yrs *(design life)*
+   * - Legacy subcritical unit
+     - 1971
+     - 50 yrs
+     - 84 yrs
+     - 84 yrs *(2055 floor)*
+   * - Plant with known closure in 2035
+     - 2000
+     - —
+     - —
+     - 35 yrs *(explicit retirement)*
+
+.. note::
+   If a coal phase-out policy or early retirement scenario is being modeled,
+   the correct mechanism is to record a retirement year against the affected
+   plants in the source database. This takes priority over both the design
+   life and the 2055 floor, and is the only way to force retirement before
+   the horizon ends.
+
+**CCS Retrofit Lifetime**
+
+Carbon capture retrofit options are treated as discrete 20-year investments,
+regardless of the age or technology type of the host plant. This follows the
+approach used in the EPA Integrated Planning Model (IPM v6), which frames
+post-combustion capture additions as a bounded capital commitment rather than
+a permanent life extension of the underlying asset.
+
 **Unit Commitment Parameters**
 
 .. csv-table:: **Operational Constraints by Technology and Size Class**
