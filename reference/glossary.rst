@@ -45,6 +45,9 @@ Technical Terms
 **Timeslice**
   Representative time periods used to aggregate 8760 hourly data into manageable segments for optimization.
 
+**VerveStacks**
+  *Verve* (vigor, energy, passion) + *Stacks* (the layered scenario-assumption sets that an analysis explores — data, technology, policy, demand, grid, and temporal layers). The name came first; the backronym below was fitted afterward. The intent: a stack-based environment that preserves the energy and momentum of modeling while hiding unnecessary complexity — closer in spirit to creative tools than to a solver. See also the FAQ: :ref:`faq-name-origin`.
+
 **Voltage weight**
   A capacity-based multiplier assigned to each transmission bus from its voltage level (e.g. 380 kV → 10.0, 220 kV → 5.0, 110 kV → 1.0). Used both to weight population during Voronoi allocation and as a factor in the **composite score**. See the table in :ref:`demand-allocation-pipeline`.
 
@@ -71,6 +74,9 @@ Acronyms
 
 **VEDA**
   Versatile Energy Data Analyst - interface for TIMES models
+
+**VerveStacks (backronym)**
+  Versatile Engine for Regional and Varied Energy scenarios - a post-hoc expansion of "Verve." The acronym explains the letters; the name conveys the philosophy.
 
 .. note::
    Additional terms and definitions to be added as needed.

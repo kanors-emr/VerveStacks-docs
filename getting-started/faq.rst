@@ -14,6 +14,11 @@ General Questions
 **Why is the development pipeline closed?**
   The proprietary VerveStacks model-generation pipeline is not publicly available to ensure the project’s sustainability and to create a new class of model users, rather than just model builders. The pipeline represents years of unfunded, expert development, and releasing it would risk returning modeling practice to its old cycle—where most effort is spent rebuilding models from scratch, rather than using and learning from them. By keeping the pipeline closed but releasing curated sets of high-quality model variants for open use, VerveStacks shifts focus to wide, impactful usage and transparency while protecting the resources needed to grow and maintain the project. This approach aims to establish “model usage” as the new norm for energy system analysis—similar to how operating systems made computers widely accessible and useful.
 
+.. _faq-name-origin:
+
+**Where does the name "VerveStacks" come from?**
+  *Verve* captures the vigor, energy, and passion of modeling done well — a deliberate pun for an energy platform, and the human, exploratory side of the work rather than equations and solver logs. *Stacks* refers to the layered scenario-assumption sets (data, technology, policy, demand, grid, and temporal layers) that get assembled into a model fit for the question. The word came first; the backronym *Versatile Engine for Regional and Varied Energy scenarios* was fitted later. See the :doc:`glossary </reference/glossary>` for the canonical definition.
+
 **Which countries are supported?**
   Models can be generated for 100+ countries with sufficient data coverage.
 
