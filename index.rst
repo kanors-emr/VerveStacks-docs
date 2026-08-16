@@ -90,12 +90,19 @@ Experience the Revolution
 
    methods/existing-stock-characterization
    methods/new-technologies
+   methods/weather-to-capacity-factors
    methods/renewable-characterization
    methods/grid-representation
    methods/hydro-availability-scenarios
    methods/stress-timeslices
    methods/demands-and-prices
-   
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Data & Assumptions
+
+   data-assumptions/index
+
 .. toctree::
    :maxdepth: 2
    :caption: Platform & Integration

@@ -7,6 +7,12 @@ Overview
 
 VerveStacks implements a comprehensive three-stage renewable energy characterization process that addresses the critical challenges of spatial resource assessment, land-use conflicts, and temporal profile generation. This methodology ensures realistic renewable energy representation in energy system optimization models while maintaining computational efficiency.
 
+.. note::
+   This page begins with per-grid-cell hourly capacity factors already in hand. How ERA5
+   reanalysis weather is converted into those capacity factors - panel orientation, hub
+   height, air density, power curve treatment and local-time alignment - is documented
+   separately in :doc:`weather-to-capacity-factors`.
+
 **Three-Stage Renewable Characterization Process:**
 
 1. **Land-Use Conflict Resolution**: Conservative LCOE-based overlap adjustment between solar and onshore wind
@@ -136,6 +142,27 @@ This scaling approach ensures:
 - **Large countries** (many grid cells): Reasonable computational complexity with maximum 300 clusters per technology
 - **Balanced scaling**: Sublinear growth prevents excessive clustering in large countries
 - **Technology independence**: Each renewable type gets optimally sized cluster sets
+
+**The exponent and cap vary by model family.** The values above apply to single-country
+models. Multi-region models trade spatial detail for tractability across many regions and
+use a coarser setting, with the exponent recorded in the delivered artifact name so a
+model's granularity is always identifiable:
+
+.. list-table:: **Clustering granularity by model family**
+   :widths: 40 30 30
+   :header-rows: 1
+   :class: longtable
+   :align: left
+
+   * - **Model family**
+     - **Exponent**
+     - **Cap**
+   * - Single-country
+     - 0.6
+     - 300
+   * - Multi-region
+     - 0.4
+     - 100
 
 **Benefits of Technology-Specific Clustering:**
 
@@ -336,6 +363,22 @@ Cluster-Based Renewable Integration
           wind_connection_cost = 1.1 * cluster.avg_grid_dist_km  # M$/GW-km
           wind_transmission_losses = 1 - 0.00006 * cluster.avg_grid_dist_km
 
+   .. note::
+      **Offshore wind uses a dedicated export-connection function.** A flat per-km rate has
+      no fixed term and so cannot represent the offshore platform. Offshore connection cost
+      takes the cheaper of an HVAC and an HVDC regime, then rebases regionally:
+
+      .. code-block:: text
+
+         cost = s * min(298 + 4.48 * d,      HVAC 220 kV with AC substation, 1 GW link
+                        876 + 0.86 * d)      HVDC 525 kV bipole with converters, 2 GW link
+
+      Cost is in USD21/kW, numerically M$/GW, and ``d`` is the distance in km to the
+      connecting node. The fixed terms carry the platform, and the crossover between regimes
+      falls at roughly 160 km. The regional scalar ``s`` is 1.00 for Europe, 0.55 for China,
+      1.30 for the United States and 0.85 elsewhere. Solar and onshore wind use the flat
+      per-km rate above.
+
 **Grid Connection Architecture**
 
 **Grid Models: Direct Bus Connection**
@@ -366,7 +409,7 @@ Each file contains hourly capacity factor profiles for all clusters of that tech
 
 Both model architectures incorporate identical economic signals:
 
-- **Connection Costs**: $1.1 million per MW-km based on distance to nearest bus
+- **Connection Costs**: 1.1 M$/GW-km, equivalently $1.1 per kW per km, based on distance to nearest bus
 - **Transmission Losses**: 0.6% per 100 km following industry standards
 - **Geographic Hedging**: Wind resource diversity captured through cluster-specific profiles
 - **Capacity Factors**: Individual cluster profiles preserve spatial and temporal variations
@@ -431,7 +474,9 @@ Data Sources and Integration
    * - **REZoning Database**
      - 50×50km grid cell renewable potential (LCOE, capacity factor, suitable area) for 100+ countries. Quality filtering applied: solar PV >5% CF, onshore wind >8% CF
    * - **Atlite Weather Data**
-     - Hourly capacity factors (8760 hours) for solar PV and wind technologies by grid cell
+     - Hourly capacity factors (8760 hours) for solar PV and wind technologies by grid cell,
+       converted from ERA5 reanalysis. Conversion physics and settings:
+       :doc:`weather-to-capacity-factors`
    * - **EMBER Statistics**
      - Base year (2022) renewable generation for demand-constrained resource selection
    * - **Global Energy Monitor (GEM)**
@@ -441,11 +486,11 @@ Data Sources and Integration
 
 **Data Processing Pipeline:**
 
-1. **Global Land-Use Adjustment**: `rezoning_landuse_processor.py`
-2. **ISO-Level Shape Generation**: `atlite_data_integration.py`  
-3. **Resource Binning**: `spatial_utils.py` - `calculate_rez_weights()`
-4. **Grid Model Integration**: `grid_modeling.py` - `compile_solar_wind_data_grid()`
-5. **Temporal Profile Processing**: `time_slice_processor.py`
+1. **Global Land-Use Adjustment**: LCOE-based resolution of solar and wind overlap
+2. **Country-Level Shape Generation**: Demand-constrained selection and capacity weighting
+3. **Resource Binning**: Supply curve construction from adjusted potentials
+4. **Grid Model Integration**: Cluster-to-bus assignment and connection costing
+5. **Temporal Profile Processing**: Aggregation of hourly profiles to timeslices
 
 Quality Assurance and Validation
 ================================
@@ -500,4 +545,7 @@ Innovation Highlights
 This comprehensive renewable characterization methodology ensures that VerveStacks energy system models accurately represent the spatial, temporal, and economic dimensions of renewable energy resources while maintaining computational tractability for policy analysis and energy system planning.
 
 .. seealso::
+   :doc:`weather-to-capacity-factors` for how the hourly grid-cell capacity factors used
+   here are derived from ERA5 reanalysis.
+
    :doc:`grid-representation` for transmission network modeling and technology connection methodology

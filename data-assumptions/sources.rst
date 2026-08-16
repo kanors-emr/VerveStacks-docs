@@ -35,12 +35,23 @@ REZoning Dataset
 - **Usage**: Renewable supply curves and capacity factors
 - **Update frequency**: Static dataset with periodic updates
 
-Atlite
-------
-- **Content**: Weather-dependent renewable energy time series
-- **Coverage**: Hourly renewable generation profiles
-- **Usage**: Technology-specific capacity factors and profiles
+Atlite (ERA5 reanalysis)
+------------------------
+- **Content**: Weather-dependent renewable energy time series, converted from ERA5
+  reanalysis using the ``atlite`` library
+- **Coverage**: Hourly capacity factors (8760 values) per 50x50km grid cell, for solar PV,
+  onshore wind and offshore wind
+- **Weather years**: 2010, 2013, 2016 and 2019, spaced to sample distinct circulation
+  conditions. 2013 is the default where a single year is required
+- **Usage**: Technology-specific capacity factors and profiles, aggregated to clusters and
+  timeslices
 - **Update frequency**: Historical weather data
+- **Conversion method**: :doc:`/methods/weather-to-capacity-factors`
+
+.. note::
+   Profiles for other weather years exist to support research and sensitivity work. They are
+   not part of standard model builds and should not be assumed interchangeable with the four
+   years above.
 
 AR6 Scenarios
 -------------
