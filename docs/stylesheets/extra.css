@@ -1,0 +1,365 @@
+/* KanORS brand styles (shared with Veda 2.0 and Veda Online documentation) */
+
+/* KanORS brand colours — primary #2A3E68, accent #FC8462 */
+[data-md-color-primary="custom"] {
+  --md-primary-fg-color: #2a3e68;
+  --md-primary-fg-color--light: #6976aa;
+  --md-primary-fg-color--dark: #1f2f4f;
+  /* fg = brand surfaces (header, primary buttons); bg = text/icons on those surfaces */
+  --md-primary-bg-color: #fff;
+  --md-primary-bg-color--light: #ffffffb3;
+  --md-primary-bg-color--dark: #ffffffde;
+}
+
+[data-md-color-accent="custom"] {
+  --md-accent-fg-color: #fc8462;
+  --md-accent-fg-color--transparent: rgba(252, 132, 98, 0.12);
+  /* fg = accent surfaces (hover); bg = text/icons on those surfaces */
+  --md-accent-bg-color: #fff;
+  --md-accent-bg-color--light: #ffffffb3;
+  --md-accent-bg-color--dark: #ffffffde;
+}
+
+/* Dark mode — brand navy is too dark for body links and outline buttons */
+[data-md-color-scheme="slate"][data-md-color-primary="custom"] {
+  --md-typeset-a-color: #9caedb;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .md-button:not(.md-button--primary) {
+  color: #9caedb;
+  border-color: #9caedb;
+}
+
+/* Header tabs — active tab stays white on navy bar (not orange) */
+.md-tabs__item--active .md-tabs__link {
+  color: inherit !important;
+  opacity: 1 !important;
+}
+
+/* Sidebar — section headings stay default when active */
+.md-nav--primary .md-nav__item--section.md-nav__item--active > .md-nav__link[for] {
+  color: var(--md-default-fg-color--light) !important;
+}
+
+/* Sidebar — orange only on the clicked page link, not the parent section heading */
+.md-nav--primary .md-nav__item--active:not(.md-nav__item--section) > .md-nav__link--active,
+.md-nav--primary .md-nav__item--active:not(.md-nav__item--section) a.md-nav__link--active {
+  color: var(--md-accent-fg-color) !important;
+}
+
+/* Sidebar sections — indent child pages under section headers */
+[dir=ltr] .md-nav--primary .md-nav__item--section > .md-nav {
+  margin-left: 0.5rem;
+}
+
+[dir=rtl] .md-nav--primary .md-nav__item--section > .md-nav {
+  margin-right: 0.5rem;
+}
+
+[dir=ltr] .md-nav--primary .md-nav__item--section > .md-nav > .md-nav__list > .md-nav__item > .md-nav__link {
+  padding-left: 1.35rem;
+}
+
+[dir=rtl] .md-nav--primary .md-nav__item--section > .md-nav > .md-nav__list > .md-nav__item > .md-nav__link {
+  padding-right: 1.35rem;
+}
+
+/* Wider content area for tables */
+.md-grid {
+  max-width: 1400px;
+}
+
+/* Tables — two strategies depending on column count.
+ *
+ * Default (≤5 columns): wrap text inside cells so the table fits the page
+ * width without forcing horizontal scroll.
+ *
+ * Wide tables (6+ columns): keep the native auto layout and let the parent
+ * wrapper scroll horizontally, so wide data tables (fuel prices, regional
+ * multipliers, efficiencies by vintage) stay readable.
+ */
+
+.md-typeset table:not([class]) {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.md-typeset table:not([class]) td,
+.md-typeset table:not([class]) th {
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  vertical-align: top;
+  padding-top: 0.4em;
+  padding-bottom: 0.4em;
+  line-height: 1.4;
+}
+
+.md-typeset table:not([class]):has(thead tr th:nth-child(6)) {
+  display: table;
+  width: auto;
+  table-layout: auto;
+}
+
+.md-typeset table:not([class]):has(thead tr th:nth-child(6)) td,
+.md-typeset table:not([class]):has(thead tr th:nth-child(6)) th {
+  white-space: nowrap;
+}
+
+.md-typeset h1 {
+  color: var(--md-default-fg-color);
+  font-size: 2em;
+  font-weight: 800;
+}
+
+.md-typeset h2 {
+  font-size: 1.5em;
+  font-weight: 800;
+}
+
+.md-typeset h3 {
+  font-size: 1.2em;
+  font-weight: 700;
+}
+
+.md-typeset h1 strong,
+.md-typeset h2 strong,
+.md-typeset h3 strong {
+  font-weight: inherit;
+}
+
+/* Nested ordered lists under bullets: force decimal (1, 2) for procedure steps. */
+.md-typeset ul ol,
+.md-typeset li > ol {
+  list-style-type: decimal !important;
+}
+
+.md-typeset ul ol ol,
+.md-typeset li > ol ol {
+  list-style-type: decimal !important;
+}
+
+/* Keep screenshots block-level inside list items (avoids inline float/overlap). */
+.md-typeset li > img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-top: 0.75em;
+  clear: both;
+}
+
+/* Homepage hero banner (transmission network, hourly load, wind, global coverage) */
+.vs-hero-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 168px;
+  margin: 0 0 1.5rem;
+  padding: 1.5rem 2rem;
+  box-sizing: border-box;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(90deg, #1f2f4f 0%, #2a3e68 38%, #4a5a8c 62%, #fc8462 100%);
+}
+
+.md-typeset .vs-hero-banner__layer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  pointer-events: none;
+}
+
+.vs-hero-banner__layer--map { z-index: 0; }
+.vs-hero-banner__layer--grid { z-index: 1; }
+.vs-hero-banner__layer--solar { z-index: 2; }
+.vs-hero-banner__layer--chart { z-index: 2; }
+
+.vs-hero-banner__layer--map .vs-hero-banner__base {
+  opacity: 1;
+}
+
+.vs-hero-banner__base {
+  opacity: 0.3;
+}
+
+.vs-hero-banner__spot {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.vs-hero-banner:hover .vs-hero-banner__spot {
+  opacity: 0.4;
+}
+
+/* Shine across the top edge, plus one light sweep after the art draws in */
+.vs-hero-banner::before,
+.vs-hero-banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.vs-hero-banner::before {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 45%);
+}
+
+.vs-hero-banner::after {
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.16) 50%, transparent 65%);
+  transform: translateX(-100%);
+  animation: vs-hero-sweep 1.4s ease-in-out 1.6s both;
+}
+
+/* Draw-in on load */
+.vs-hero-banner__pop,
+.vs-hero-banner__rise {
+  transform-box: fill-box;
+}
+
+.vs-hero-banner__draw {
+  stroke-dasharray: 1;
+  animation: vs-hero-draw 1.6s ease-out 0.2s both;
+}
+
+.vs-hero-banner__grid line {
+  stroke-dasharray: 1;
+  animation: vs-hero-draw 0.5s ease-out both;
+  animation-delay: calc(0.2s + var(--i) * 0.06s);
+}
+
+.vs-hero-banner__pop {
+  transform-origin: 50% 50%;
+  animation: vs-hero-pop 0.4s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+  animation-delay: calc(0.5s + var(--i) * 0.06s);
+}
+
+.vs-hero-banner__rise {
+  transform-origin: 50% 100%;
+  animation: vs-hero-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) 0.5s both;
+}
+
+/* Rotors rotate around their hub (view-box coordinates, not the blade bounding box) */
+.vs-hero-banner__rotor {
+  transform-box: view-box;
+  animation: vs-hero-rotor 9s linear infinite;
+}
+
+.vs-hero-banner__rotor--large {
+  transform-origin: 744px 70px;
+}
+
+.vs-hero-banner__rotor--small {
+  transform-origin: 801.5px 96px;
+  animation-duration: 7s;
+  animation-direction: reverse;
+}
+
+@keyframes vs-hero-rise {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes vs-hero-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes vs-hero-pop {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes vs-hero-rotor {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes vs-hero-sweep {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vs-hero-banner *,
+  .vs-hero-banner::after {
+    animation: none !important;
+  }
+
+  .vs-hero-banner::after {
+    display: none;
+  }
+}
+
+.vs-hero-banner__text {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+}
+
+.md-typeset h1.vs-hero-banner__title {
+  margin: 0;
+  color: #fff;
+  font-size: 2em;
+  font-weight: 800;
+  line-height: 1.2;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55), 0 0 16px rgba(15, 28, 52, 0.45);
+}
+
+.md-typeset p.vs-hero-banner__subtitle {
+  margin: 0.35rem 0 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95em;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 12px rgba(15, 28, 52, 0.4);
+}
+
+.md-content__inner.md-typeset:has(.vs-hero-banner) > h1:not(.vs-hero-banner__title) {
+  display: none;
+}
+
+@media screen and (max-width: 76.1875em) {
+  .vs-hero-banner {
+    min-height: 148px;
+  }
+
+  .md-typeset h1.vs-hero-banner__title {
+    font-size: 1.75em;
+  }
+}
+
+@media screen and (max-width: 37.5em) {
+  .vs-hero-banner {
+    min-height: 128px;
+    padding: 1rem;
+  }
+
+  .md-typeset h1.vs-hero-banner__title {
+    font-size: 1.4em;
+  }
+
+  .md-typeset p.vs-hero-banner__subtitle {
+    font-size: 0.8em;
+  }
+}
+
+/* KanORS header logo — top header bar uses brand navy; theme.logo supplies the white PNG */
+.md-header__button.md-logo img,
+.md-nav__button.md-logo img {
+  height: 1.85rem;
+  width: auto;
+}
+
+/* Mobile drawer on light pages: dark logo on light background */
+:not([data-md-color-scheme="slate"]) .md-nav__button.md-logo img {
+  content: url("../images/brand/kanors-logo-black.png");
+}

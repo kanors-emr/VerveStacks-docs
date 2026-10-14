@@ -1,0 +1,160 @@
+site_name: VerveStacks Documentation
+site_description: Documentation for VerveStacks — open-use, ready-to-run power-sector energy system models for 100+ countries
+site_url: https://kanors-emr.github.io/VerveStacks-docs/
+use_directory_urls: false
+docs_dir: docs
+site_author: KanORS
+
+repo_url: https://github.com/kanors-emr/VerveStacks-docs/issues
+repo_name: Report a documentation issue
+edit_uri: ""
+
+theme:
+  name: material
+  custom_dir: overrides
+  logo: images/brand/kanors-logo-white.png
+  favicon: images/brand/kanors-favicon.png
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.tooltips
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+plugins:
+  - search:
+      lang: en
+  - table-reader:
+      data_path: docs
+
+extra_css:
+  - _static/custom.css
+  - stylesheets/extra.css
+
+extra_javascript:
+  - _static/image-lightbox.js
+  - _static/smooth-anchor.js
+  - javascripts/hero-spotlight.js
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/kanors-emr
+      name: KanORS on GitHub
+    - icon: fontawesome/solid/globe
+      link: https://www.kanors-emr.org/
+      name: KanORS website
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - def_list
+  - tables
+  - footnotes
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - toc:
+      permalink: true
+      toc_depth: 3
+
+copyright: "&copy; KanORS-EMR, 2026"
+
+not_in_nav: |
+  /case-studies/
+  /integration/
+  /platform/queue-management.md
+  /tutorials/multi-iso-analysis.md
+
+nav:
+  - Home: index.md
+
+  - Get Started:
+    - Quickstart: getting-started/quickstart.md
+    - Your First Scenario: getting-started/first-scenario.md
+    - Understanding the Results: getting-started/understanding-results.md
+    - Customization Basics: getting-started/customization-basics.md
+    - FAQ: getting-started/faq.md
+
+  - Explore Models:
+    - Coverage Map: model-library/coverage-map.md
+    - Model Documentation: model-library/iso-template.md
+    - Model Validation: model-library/model-validation.md
+    - Version History: model-library/version-history.md
+
+  - Under the Hood:
+    - Existing Stock Characterization: methods/existing-stock-characterization.md
+    - New Technologies: methods/new-technologies.md
+    - Weather to Capacity Factors: methods/weather-to-capacity-factors.md
+    - Renewable Characterization: methods/renewable-characterization.md
+    - Grid Representation: methods/grid-representation.md
+    - Hydro Availability Scenarios: methods/hydro-availability-scenarios.md
+    - Stress-Based Timeslices: methods/stress-timeslices.md
+    - Demands and Prices: methods/demands-and-prices.md
+
+  - Data & Assumptions:
+    - Overview: data-assumptions/index.md
+    - Source Datasets: data-assumptions/sources.md
+    - Data Lineage: data-assumptions/data-lineage.md
+    - Technology Costs & Settings: data-assumptions/costs.md
+    - Fuel Prices & Key Policies: data-assumptions/fuel-prices-policies.md
+    - Calibration & Checks: data-assumptions/calibration.md
+    - Validation Metrics: data-assumptions/validation-metrics.md
+    - Limitations & Known Gaps: data-assumptions/limitations.md
+
+  - Platform & Integration:
+    - Veda Online: platform/veda-online.md
+    - GitHub Integration: platform/github-integration.md
+    - Customization: platform/customization.md
+
+  - Advanced Usage:
+    - Beginner: tutorials/beginner.md
+    - Intermediate: tutorials/intermediate.md
+    - Advanced: tutorials/advanced.md
+    - Policy Bundles: tutorials/policy-bundles.md
+
+  - Community & Support:
+    - Open-Use Movement: community/open-use-movement.md
+    - Why VerveStacks: community/why-vervestacks-and-sustainability.md
+    - Academic Network: community/academic-network.md
+    - Developer Ecosystem: community/developer-ecosystem.md
+    - Roadmap: community/roadmap.md
+    - Partners: community/partners.md
+    - Support: community/support.md
+
+  - Reference:
+    - Glossary: reference/glossary.md
+    - Parameters: reference/parameters.md
+    - Changelog: reference/changelog.md
+    - License: reference/license.md
+    - Citation: reference/citation.md

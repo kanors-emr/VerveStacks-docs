@@ -1,6 +1,5 @@
-# Sphinx build outputs
-_build/
-*.doctree
+# MkDocs build output
+site/
 
 # Python
 __pycache__/
@@ -10,6 +9,7 @@ __pycache__/
 .Python
 env/
 venv/
+.venv/
 .env
 
 # IDE

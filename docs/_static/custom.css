@@ -1,0 +1,165 @@
+html {
+  scroll-behavior: smooth;
+}
+
+/* Anchor target: slide from down → up */
+@keyframes vs-anchor-up {
+  from {
+    opacity: 0.35;
+    transform: translateY(1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.vs-anchor-motion,
+:target {
+  animation: vs-anchor-up 0.65s ease-out;
+}
+
+/* Hide always-visible Windows scrollbars on sidebars (wheel scroll still works). */
+.md-sidebar__scrollwrap {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.md-sidebar__scrollwrap::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* Image lightbox (used by image-lightbox.js) */
+.md-typeset img {
+  cursor: zoom-in;
+}
+
+.md-content .md-typeset a:hover:not(.md-button) {
+  text-decoration: underline;
+}
+
+/* Left nav + right TOC: selected page/section only (not section headers) */
+.md-sidebar--primary .md-nav__link--active,
+.md-sidebar--secondary .md-nav__link--active {
+  color: var(--md-accent-fg-color);
+  font-weight: 600;
+}
+
+.md-sidebar--primary .md-nav__link--active code,
+.md-sidebar--secondary .md-nav__link--active code {
+  color: var(--md-accent-fg-color);
+}
+
+/* Nest pages under section headers so they read as children */
+.md-sidebar--primary .md-nav__item--nested > .md-nav > .md-nav__list,
+.md-sidebar--primary .md-nav__item--section > .md-nav > .md-nav__list {
+  margin-left: 0.6rem;
+  padding-left: 0.55rem;
+}
+
+.md-typeset th {
+  background-color: var(--md-default-fg-color--lightest);
+}
+
+/* Admonitions: accent on the left only (not full box border) */
+.md-typeset .admonition,
+.md-typeset details {
+  border-width: 0 0 0 0.15rem;
+}
+
+.vs-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(28, 32, 38, 0.92);
+  padding: 2rem;
+  overscroll-behavior: contain;
+}
+
+html.vs-lightbox-scroll-lock {
+  overflow: hidden !important;
+  height: 100%;
+}
+
+.vs-lightbox.is-open {
+  display: flex;
+}
+
+.vs-lightbox__img {
+  max-width: 95vw;
+  max-height: 90vh;
+  object-fit: contain;
+  transform-origin: center center;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  z-index: 1;
+  cursor: zoom-in;
+  /* SVG charts are transparent; give them a light backdrop on the dark overlay */
+  background: #fff;
+}
+
+.vs-lightbox__close {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  padding: 0.15rem 0.65rem;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.vs-lightbox__controls {
+  position: absolute;
+  top: 0.9rem;
+  left: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 3;
+}
+
+.vs-lightbox__control {
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 8px;
+  min-width: 3rem;
+  padding: 0.2rem 0.55rem;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.vs-lightbox__hint {
+  position: absolute;
+  left: 1rem;
+  bottom: 0.75rem;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.85rem;
+  z-index: 3;
+}
+
+/* Header: documentation issue CTA instead of repo stars/forks badge */
+.md-header .md-source__facts {
+  display: none;
+}
+
+.md-header__source {
+  width: auto;
+  max-width: none;
+}
+
+.md-header .md-source__repository {
+  max-width: none;
+  overflow: visible;
+  text-overflow: unset;
+  white-space: nowrap;
+}
