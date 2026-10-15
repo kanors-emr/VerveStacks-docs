@@ -11,15 +11,15 @@ VerveStacks transforms the 8760-hour modeling challenge into intelligent timesli
 </colgroup>
 <tbody>
 <tr>
-<td><p><img src="../_static/images/case-studies/re_analysis_summary_ESP.svg" style="width:90.0%" alt="Spain coverage analysis" /></p>
+<td><p><img src="../../_static/images/case-studies/re_analysis_summary_ESP.svg" style="width:90.0%" alt="Spain coverage analysis" /></p>
 <p><em>Spain: Mediterranean solar patterns</em></p></td>
-<td><p><img src="../_static/images/case-studies/re_analysis_summary_BRA.svg" style="width:90.0%" alt="Brazil coverage analysis" /></p>
+<td><p><img src="../../_static/images/case-studies/re_analysis_summary_BRA.svg" style="width:90.0%" alt="Brazil coverage analysis" /></p>
 <p><em>Brazil: Tropical hydro-wind diversity</em></p></td>
 </tr>
 <tr>
-<td><p><img src="../_static/images/case-studies/stress_periods_s5p5v5_d_ESP.svg" style="width:90.0%" alt="Spain stress periods" /></p>
+<td><p><img src="../../_static/images/case-studies/stress_periods_s5p5v5_d_ESP.svg" style="width:90.0%" alt="Spain stress periods" /></p>
 <p><em>Spain: Solar-driven daily peaks</em></p></td>
-<td><p><img src="../_static/images/case-studies/stress_periods_s5p5v5_d_BRA.svg" style="width:90.0%" alt="Brazil stress periods" /></p>
+<td><p><img src="../../_static/images/case-studies/stress_periods_s5p5v5_d_BRA.svg" style="width:90.0%" alt="Brazil stress periods" /></p>
 <p><em>Brazil: Seasonal hydro variations</em></p></td>
 </tr>
 </tbody>

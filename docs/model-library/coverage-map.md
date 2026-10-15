@@ -65,7 +65,6 @@ All available models are hosted in the public repository: [VerveStacks Models](h
 | [Italy](https://github.com/akanudia/vervestacks_models/tree/ITA) | 129.0 | 280.0 | 91.0 | 86.0% | 05 Dec 25 |
 | [Italy (Grids)](https://github.com/akanudia/vervestacks_models/tree/ITA_grids) | 129.0 | 280.0 | 91.0 | 86.0% | 11 Dec 25 |
 | [Japan](https://github.com/akanudia/vervestacks_models/tree/JPN) | 325.0 | 1041.0 | 536.0 | 99.0% | 20 Sep 25 |
-| [Japan (Grids)](https://github.com/akanudia/vervestacks_models/tree/JPN_grids) | 325 | 1041 | 536 | 99%% | 13 Sep 25 |
 | [Japan (Grids)](https://github.com/akanudia/vervestacks_models/tree/JPN_grids) | 337.0 | 1041.0 | 555.0 | 103.0% | 29 Nov 25 |
 | [Jordan](https://github.com/akanudia/vervestacks_models/tree/JOR) | 7.1 | 21.9 | 11.8 | 99.0% | 25 Nov 25 |
 | [Kazakhstan](https://github.com/akanudia/vervestacks_models/tree/KAZ) | 22.8 | 111.0 | 93.0 | 98.0% | 19 Sep 25 |

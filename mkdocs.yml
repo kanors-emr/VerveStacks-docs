@@ -1,7 +1,6 @@
 site_name: VerveStacks Documentation
 site_description: Documentation for VerveStacks — open-use, ready-to-run power-sector energy system models for 100+ countries
 site_url: https://kanors-emr.github.io/VerveStacks-docs/
-use_directory_urls: false
 docs_dir: docs
 site_author: KanORS
 

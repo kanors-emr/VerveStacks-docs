@@ -1,7 +1,6 @@
 (function () {
   var pendingHash = location.hash;
 
-  // Stop the browser's instant jump; we'll animate from the top.
   if (pendingHash && "scrollRestoration" in history) {
     history.scrollRestoration = "manual";
   }
@@ -18,6 +17,14 @@
     }
   }
 
+  function headerOffset() {
+    var header = document.querySelector(".md-header");
+    if (!header) return 0;
+    var position = getComputedStyle(header).position;
+    if (position !== "sticky" && position !== "fixed") return 0;
+    return header.getBoundingClientRect().height;
+  }
+
   function scrollToHash(hash, fromTop) {
     var el = targetFromHash(hash);
     if (!el) return false;
@@ -28,10 +35,11 @@
 
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-        el.classList.remove("vs-anchor-motion");
+        var top = el.getBoundingClientRect().top + window.pageYOffset - headerOffset() - 8;
+        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+        el.classList.remove("anchor-motion");
         void el.offsetWidth;
-        el.classList.add("vs-anchor-motion");
+        el.classList.add("anchor-motion");
       });
     });
 
@@ -40,7 +48,6 @@
 
   function onReady() {
     if (!pendingHash) return;
-    // Keep position at top until layout is ready, then animate down → section
     window.scrollTo(0, 0);
     setTimeout(function () {
       scrollToHash(pendingHash, true);
