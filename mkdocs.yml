@@ -1,5 +1,5 @@
 site_name: VerveStacks Documentation
-site_description: Documentation for VerveStacks — open-use, ready-to-run power-sector energy system models for 100+ countries
+site_description: Documentation for VerveStacks — open-use, ready-to-run power-sector energy system models of real countries, built from open data
 site_url: https://kanors-emr.github.io/VerveStacks-docs/
 docs_dir: docs
 site_author: KanORS
@@ -112,14 +112,22 @@ nav:
     - Version History: model-library/version-history.md
 
   - Under the Hood:
+    - The Reference Model: methods/reference-model.md
     - Existing Stock Characterization: methods/existing-stock-characterization.md
-    - New Technologies: methods/new-technologies.md
+    - Electricity Demand: methods/electricity-demand.md
     - Weather to Capacity Factors: methods/weather-to-capacity-factors.md
     - Renewable Characterization: methods/renewable-characterization.md
     - Grid Representation: methods/grid-representation.md
+    - New Technologies: methods/new-technologies.md
     - Hydro Availability Scenarios: methods/hydro-availability-scenarios.md
     - Stress-Based Timeslices: methods/stress-timeslices.md
-    - Demands and Prices: methods/demands-and-prices.md
+    - Fuel and Carbon Prices: methods/demands-and-prices.md
+
+  - Assessments:
+    - Overview: assessments/index.md
+    - NDCs and National Targets: assessments/ndc.md
+    - Demand Disruption: assessments/demand-disruption.md
+    - Supply Disruption: assessments/supply-disruption.md
 
   - Data & Assumptions:
     - Overview: data-assumptions/index.md

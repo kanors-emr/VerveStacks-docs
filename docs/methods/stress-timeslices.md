@@ -25,6 +25,20 @@ VerveStacks transforms the 8760-hour modeling challenge into intelligent timesli
 </tbody>
 </table>
 
+!!! abstract "What the four charts show"
+
+    Spain and Brazil both have clean supply that covers about 100% of demand on average over the year. The method shows that the averages hide opposite problems.
+
+    - **Spain's stress is daily.** Hourly coverage is split in two: a peak near 50% (nights) and another near 140% (sunny middays). The surplus days (late winter, wind plus sun at 175–198% of demand) and the scarcity days (October and December, 57–61%) are a season apart, and in summer the volatile days swing from about 15 GW at night to 55 GW at noon against flat demand. A model of Spain needs hourly detail inside the day, where batteries and flexible plant earn their keep.
+    - **Brazil's stress is seasonal.** Hydro gives a steady base of 45–55 GW every day, so hourly coverage has a single peak and a narrow spread. The scarce days sit together in late November and December (70–75%), and the surplus days in the February–March wet season (136–160%). A model of Brazil needs to get the seasons right; daily swings matter less.
+    - **The same method, different time slices.** Neither result was set by hand. Each comes from running the same four stages on each country's own data, which is why every country gets its own time-slice definition.
+
+    The charts were made with an earlier pipeline version. The bottom-right panel's "Total RE capacity: 0.0 GW" label is a display fault in that version, not a property of the model.
+
+!!! warning "Status in the current model library"
+
+    The stress-day selection described in Stages 3 and 4 is implemented and can be switched on per country. The options shipped in today's library builds (`ts_012` to `ts_288`, and the dry- and wet-year `ts_072P10` and `ts_072P90`) use the day-based seasonal clustering of Stage 4 on its own: the 365 days are grouped into 4 to 24 seasons by net-load similarity, and the hours into 3 to 12 periods of the day. Stress-day options are added as rows in the configuration sheet described below.
+
 ## Methodology Overview
 
 The stress-based approach follows a systematic four-stage process **applied individually to each ISO**:
@@ -81,6 +95,17 @@ Individual renewable energy grid cells often exhibit unrealistic characteristics
 
 **Result**: Complete 8760-hour supply profile representing a realistic zero-emission electricity system for stress testing.
 
+The two stages that pick the time slices, as one picture:
+
+<div class="vs-stage" markdown="0">
+  <div><b class="t">From 8,760 hours</b>Hourly <em>coverage</em> = clean supply ÷ demand, for every hour of the year. Each day gets its average and its variance.</div>
+  <div><b class="t">Three ranked lists</b><strong>Scarcity:</strong> lowest daily average.<br><strong>Surplus:</strong> highest daily average.<br><strong>Volatile:</strong> highest variance, among days averaging 100% or less. No day is picked twice.</div>
+  <div><b class="t">Kept hour by hour</b>The top days of each list keep all 24 hours as their own time slices, e.g. 5 + 5 + 5 days in <code>s5p5v5_d</code>. Weekly selection currently takes the scarcest weeks only.</div>
+  <div><b class="t">Everything else, clustered</b>The remaining days are grouped into seasons by net-load similarity, and the hours of the day into a few periods. Weights preserve annual energy.</div>
+</div>
+
+Each time-slice option is a row in the `stress_periods_config` sheet of `VS_mappings.xlsx`. A row sets the number of seasons and of daily periods, the hydro year, and optionally how many scarcity, surplus and volatile days (or scarcity weeks) to keep hour by hour. Stress options are named by the selection: `s` scarcity, `p` surplus, `v` volatile, then `_d` for days or `_w` for weeks, so `s5p5v5_d` keeps the top five days of each list and `s2_w` the two scarcest weeks. Clustering-only options are named by their slice count, as in `ts_048`.
+
 ## Stage 3: Stress Period Identification
 
 **Coverage Analysis Framework**
@@ -105,11 +130,11 @@ The heart of the methodology lies in **coverage analysis**—comparing clean sup
 
 **Operational Stress Ranking**
 
-Days and weeks are ranked independently within each category:
+Days and weeks are ranked within each category, in this order, and a day picked for one list is not offered to the next:
 
-:   - **Scarcity ranking**: Days with lowest average coverage (most severe shortfalls)
-    - **Surplus ranking**: Days with highest average coverage (most severe oversupply)
-    - **Volatility ranking**: Days with highest coverage variability (most operational challenges)
+:   - **Scarcity ranking**: Days with the lowest average coverage (most severe shortfalls)
+    - **Surplus ranking**: Days with the highest average coverage (most severe oversupply)
+    - **Volatility ranking**: Days with the highest variance of hourly coverage, among days whose average coverage is 100% or less (large swings on days that are already short)
 
 **Result**: Three ranked lists identifying the most operationally challenging periods in each stress category.
 
@@ -194,6 +219,18 @@ The following visualizations demonstrate the stress-based methodology applied to
 ![USA day-based seasonal clustering](../_static/images/case-studies/aggregation_justification_USA_ts_096.svg) { width="100%" }
 
 ***365 Days Clustered into Seasons**: This visualization shows how the USA's 365 days are grouped into seasons based on net load similarity, with a calendar heatmap revealing the temporal distribution. The day-based clustering captures multi-day wind droughts and sustained low-solar periods that month-based approaches would miss. Rolling averages show how net load patterns evolve through the year, with distinct seasonal bands emerging from the clustering algorithm.*
+
+!!! tip "What a country model gets out of the box"
+
+    The time-slice design is done for every country in the library before anyone opens the model. For each time-slice option the build writes, ready to use:
+
+    - **The time-slice definition** itself: which days and hours fall in which slice, with weights.
+    - **A profile for every wind and solar cluster**, each from its own weather cells, averaged into the same slices.
+    - **Demand shapes by sector** (industry, buildings, road transport) and peak factors.
+    - **Hydro availability** for the slices, including dry-year and wet-year variants (P10 and P90).
+    - **Firmness coefficients** for every wind and solar cluster, in grid models: the deepest shortfall its own hourly profile shows inside any time slice, carried into the model so averaging does not overstate what the cluster can be relied on for.
+
+    Several options ship side by side, each in its own scenario file (`SuppXLS/Scen_TSParameters_<option>.xlsx`); Germany's run from 12 to 220 slices. A user can check whether a result depends on temporal resolution by switching option, without rebuilding anything.
 
 ## Contrasting Energy Landscapes: China Case Study
 

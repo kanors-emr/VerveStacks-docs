@@ -6,31 +6,29 @@
 
 **Bus (grid node)**
 
-:   A clustered high-voltage substation that serves as an injection point for generation and demand in the transmission representation. Naming convention in the TIMES model: `e_<bus_id>` for the electricity commodity at that node.
+:   A real high-voltage substation kept as a point in the model's network, where generation and demand are attached. Documentation uses *node*; code and file names use *bus*. In the TIMES model the electricity commodity at a node is `e_<node>`. See [Grid Representation](../methods/grid-representation.md).
 
-**Clustering**
+**Cluster**
 
-:   Spatial aggregation of geographic points into regions using algorithms like Voronoi tessellation or DBSCAN.
+:   A group of wind or solar cells around one grid node, treated as one investment option with its own hourly profile. See [Renewable Energy Characterization](../methods/renewable-characterization.md).
 
-**Composite score**
+**Corridor**
 
-:   The ranking metric used by [the sparsification step](../methods/grid-representation.md#demand-allocation-sparsification) to decide which buses to retain as demand nodes. Defined per bus as `load_share × voltage_weight ^ voltage_priority_factor × connectivity_weight ^ connectivity_priority_factor`. Biases selection toward electrically meshed, high-voltage substations rather than purely toward population weight.
-
-**Coverage target**
-
-:   The fraction of national electricity demand that the sparsification step is required to retain on kept buses (default `0.80`). Buses are accepted in descending composite-score order until the cumulative raw **load share** of kept buses crosses this threshold, subject to `min_nodes` and `max_nodes` guardrails. See [the sparsification step](../methods/grid-representation.md#demand-allocation-sparsification).
+:   All the transmission lines between two nodes, taken together.
 
 **FLO_MARK**
 
-:   A VEDA/TIMES parameter that bounds the share of a commodity's flow that a given process must supply. VerveStacks uses `FLO_MARK~lo = load_share × 0.98` on demand-technology processes to force each kept bus to serve its designated fraction of the end-use electricity demands; see [Translation into the TIMES Model](../methods/grid-representation.md#demand-allocation-times-translation).
+:   A VEDA/TIMES parameter that bounds the share of a commodity's flow that a given process must supply. VerveStacks uses `FLO_MARK~lo = load_share × 0.98` on demand-technology processes so that each node serves its share of demand; see [how demand enters the model](../methods/grid-representation.md#demand-allocation-times-translation).
 
 **LCOE**
 
 :   Levelized Cost of Electricity - the average cost per unit of electricity generated over the lifetime of a technology.
 
+<a id="glossary-load-share"></a>
+
 **Load share**
 
-:   The fraction of national electricity demand attributed to a single transmission bus. Produced by [Allocation Pipeline](../methods/grid-representation.md#demand-allocation-pipeline), stored in `{ISO}_bus_load_share_voronoi.csv` (or its distance-weighted / synthetic variants), and consumed by `grid_modeling.py` to generate TIMES demand artefacts. After sparsification, load shares across kept buses always sum to 1.
+:   The fraction of national electricity demand attributed to one node. There are two: a population share, used for buildings and transport, and an industry share. See [demand placement](../methods/grid-representation.md#demand-allocation-pipeline).
 
 **NTC**
 
@@ -39,10 +37,6 @@
 **REZ**
 
 :   Renewable Energy Zone - areas with high renewable resource potential.
-
-**Sparsification**
-
-:   The step that compresses the dense bus-level load-share distribution onto a small, electrically meaningful subset of transmission nodes. Combines a composite importance score (ranking) with a raw demand **coverage target** (stopping rule), then zeros the dropped buses and renormalises the survivors. See [the sparsification step](../methods/grid-representation.md#demand-allocation-sparsification).
 
 **Stress Period**
 
@@ -55,10 +49,6 @@
 **VerveStacks**
 
 :   *Verve* (vigor, energy, passion) + *Stacks* (the layered scenario-assumption sets that an analysis explores — data, technology, policy, demand, grid, and temporal layers). The name came first; the backronym below was fitted afterward. The intent: a stack-based environment that preserves the energy and momentum of modeling while hiding unnecessary complexity — closer in spirit to creative tools than to a solver. See also the FAQ: [Technical Questions](../getting-started/faq.md#faq-name-origin).
-
-**Voltage weight**
-
-:   A capacity-based multiplier assigned to each transmission bus from its voltage level (e.g. 380 kV → 10.0, 220 kV → 5.0, 110 kV → 1.0). Used both to weight population during Voronoi allocation and as a factor in the **composite score**. See the table in [Allocation Pipeline](../methods/grid-representation.md#demand-allocation-pipeline).
 
 ## Acronyms
 
@@ -95,4 +85,6 @@
 :   Versatile Engine for Regional and Varied Energy scenarios - a post-hoc expansion of "Verve." The acronym explains the letters; the name conveys the philosophy.
 
 !!! note
+
     Additional terms and definitions to be added as needed.
+

@@ -1,535 +1,252 @@
 # Grid Representation
 
-**PyPSA-inspired transmission network modeling with intelligent spatial clustering**
+**From the real transmission network to a set of nodes and corridors a model can solve**
 
-VerveStacks creates realistic transmission network representations by extracting and processing OpenStreetMap (OSM) infrastructure data, applying intelligent clustering algorithms, and integrating renewable energy zones with transmission connectivity. This approach generates PyPSA-compatible network models that balance geographic realism with computational tractability.
+<figure class="vs-film" markdown="0">
+  <video controls preload="none" playsinline poster="../../_static/films/deu_power_grid.jpg">
+    <source src="../../_static/films/deu_power_grid.mp4" type="video/mp4">
+  </video>
+  <figcaption><strong>Watch first: Germany's Power Grid</strong> (1:59, narrated). Generated from a real build of the German model; every number on screen traces to a file. The sections below follow the film in the same order, with the rules and file names behind each step. Also: <a href="../../films/v/grid_DEU.html">interactive version</a> · <a href="../../films/v/grid_IND.html">India</a> · <a href="../../films/">all films</a>.</figcaption>
+</figure>
 
-## Grid Modeling Philosophy
+A VerveStacks model does not treat a country as one point. It keeps a reduced copy of the country's high-voltage network: a set of **nodes**, each a real substation, joined by **corridors**. Plants, demand, wind and solar are all attached to nodes, so the model sees where power is made, where it is used, and what lies between.
 
-VerveStacks transforms raw transmission infrastructure data into aggregated/filtered network representations suitable for energy system optimization. Rather than using simplified radial networks or generic templates, the platform processes actual transmission line and substation data to create country-specific grid models that reflect real-world topology and constraints.
+The page uses three terms throughout:
 
-**Core Principles:**
+| Term     | Meaning                                                                                                                                       |
+|--------------|----------------------------------------------------------|
+| Node     | A substation that survives simplification. In the code and file names it is a *bus*; in the model it is the electricity commodity `e_<node>`. |
+| Corridor | All the lines between two nodes, taken together. In the model it is the process `g_<node>-<node>`.                                            |
+| Cluster  | A group of wind or solar cells attached to one node (see [Renewable Energy Characterization](renewable-characterization.md)).                               |
 
-- **Geographic Realism**: Networks based on actual transmission infrastructure locations
-- **Computational Efficiency**: Intelligent clustering reduces model complexity while preserving essential connectivity
-- **Technology Integration**: Seamless connection of renewable energy zones to transmission buses
-- **Scalable Complexity**: Adaptive clustering based on country size and infrastructure density
+## The method in five steps
 
-## Data Foundation
+1.  Start from the mapped network: every substation and line in OpenStreetMap.
+2.  Choose which substations stay as nodes, by rule.
+3.  Fold every other substation into its nearest node.
+4.  Merge the lines between each pair of nodes into one corridor.
+5.  Attach plants, demand, wind and solar to the nodes.
 
-### OSM Infrastructure Data
+How many nodes to keep is a choice, not a property of the data. The same method gives Germany 37, 45, 481 or 795 nodes, and India 18, 50 or 348.
 
-The grid modeling process begins with comprehensive OpenStreetMap data extraction:
+## 1. The starting network
 
-**Transmission Buses (Substations):**
+| Dataset | Coverage  | Source                                                       |
+|-----------|----------------------|----------------------------------------|
+| `eur`   | Europe    | OpenStreetMap, as prepared in the PyPSA-Eur prebuilt network |
+| `kan`   | Worldwide | OpenStreetMap, prepared the same way                         |
 
-- High-voltage substations and switching stations
-- Coordinate validation and country assignment
-- Voltage level classification and filtering
-- Capacity and operational status where available
+Each dataset holds substations (with voltage and coordinates), AC lines (with voltage, length and a thermal rating) and DC links.
 
-**Transmission Lines:**
+| Country | Dataset | Substations | Lines | Voltages       |
+|---------|---------|-------------|-------|----------------|
+| Germany | `eur`   | 795         | 1,029 | 220 and 380 kV |
+| India   | `kan`   | 348         | 459   | 400 and 765 kV |
 
-- High-voltage transmission corridors
-- Geographic routing and distance calculation
-- Voltage level and capacity specifications
-- Cross-border interconnection identification
+*Starting networks for the two example countries*
 
-**Data Quality Assurance:**
+Coverage outside Europe is thinner. India's mapped network is almost all 765 kV and has no cross-border lines.
 
-- Coordinate bounds validation by country
-- Missing data identification and logging
-- Cross-dataset capacity reconciliation
-- Geographic consistency verification
+## 2. Which substations stay
 
-## Multi-Resolution Clustering Framework
+The simplifier (`1_grids/kan_grid_simplifier/`) keeps substations for four reasons. Every node records the reason it was kept in `input_network/bus_mapping.csv`.
 
-VerveStacks employs a sophisticated multi-resolution approach to create transmission networks that balance detail with computational efficiency.
+| Reason            | Rule                                                                                                                                                                              | Tag in `bus_mapping.csv` |
+|----------------|-----------------------------------------|---------------|
+| Border            | Any substation at the end of a line or link to another country. These are always kept and do not count toward the target.                                                         | `cross_border`           |
+| DC link           | Any substation at the end of a DC link. Always kept.                                                                                                                              | `link_bus`               |
+| Coverage          | The country is divided into regions by k-means on substation coordinates. In each region the most important substation is kept, so no part of the country is left without a node. | `selected_spatial`       |
+| Importance        | The remaining places go to the substations with the highest blended score (below).                                                                                                | `selected_importance`    |
+| Industrial anchor | A kept substation that is the nearest one to a cluster of industrial sites. It is protected from being merged away in the clean-up step.                                          | `ccs_anchor`             |
+| By hand           | Substations the designer adds or removes after looking at the map.                                                                                                                | `manual_include`         |
 
-### Bus Clustering Methodology
+**Importance** of a substation is
 
-**DBSCAN Spatial Clustering:**
-
-- **Algorithm**: Density-Based Spatial Clustering of Applications with Noise
-- **Purpose**: Reduce bus count while preserving network topology
-- **Parameters**: Configurable clustering distance (typically 10-50 km)
-- **Advantage**: Handles irregular geographic distributions and identifies isolated nodes
-
-**Clustering Process:**
-
-1.  **Coordinate Projection**: Transform to appropriate distance-based coordinate system (EPSG:3035)
-2.  **Density Analysis**: Identify bus clusters based on spatial proximity
-3.  **Centroid Calculation**: Compute representative locations for each cluster
-4.  **Capacity Aggregation**: Sum transmission capacities within clusters
-5.  **Connectivity Preservation**: Maintain essential network topology
-
-### Load Distribution Overview
-
-Once clustered buses exist, national electricity demand is attributed to them via a dedicated allocation pipeline. Because that pipeline is substantial, it is described in its own section below — see [Demand Allocation to Grid Nodes](grid-representation.md#demand-allocation-to-grid-nodes).
-
-## Demand Allocation to Grid Nodes { #demand-allocation-to-grid-nodes }
-
-**Spatially distributing national electricity demand across transmission-network buses**
-
-Once the transmission network has been clustered into a tractable set of buses, national electricity demand has to be attributed to those buses so that the optimisation model dispatches generation to where load actually sits. VerveStacks performs this attribution at the **physical transmission-network** level — loads land on high-voltage substation clusters, not on administrative units.
-
-### Design Intent { #demand-allocation-design-intent }
-
-The spatial allocation deliberately ignores administrative boundaries (states, prefectures, oblasts, provinces). The unit of aggregation is the **high-voltage substation cluster**, because that is the physical injection point where transmission-level demand appears on the grid.
-
-Consequences of this choice, stated explicitly:
-
-- **Not every administrative subdivision will have its own demand node.** A sub-national region whose load is physically served by a substation across its border will be represented at that substation. This mirrors how the real grid works and is a feature, not an omission.
-- **Regions with no transmission-level infrastructure have no demand node at all.** If a sub-national region contains no substation at or above the voltage threshold, its load is absorbed by the nearest eligible bus in a neighbouring region.
-- **A long tail of small-share buses is intentionally discarded.** The allocation keeps the major load centres per country rather than spreading demand uniformly, because uniform spreading (a) inflates the model without changing results and (b) obscures where congestion actually binds.
-
-Users who need administrative-level demand reporting should treat it as a post-processing layer on top of bus-level results, not as a constraint on the allocation itself.
-
-### Allocation Pipeline { #demand-allocation-pipeline }
-
-The production pipeline (`--grids kan | eur | cit`) proceeds in three steps, implemented in `1_grids/extract_country_pypsa_network_clustered.py`.
-
-**Step 1 — Electrical filtering**
-
-Buses from the clustered network are filtered to those capable of serving transmission-level load:
-
-- Minimum voltage: `min_voltage_kv = 110` kV
-- Operational status: buses flagged as under construction are excluded
-- Bus type: substation / load / generic bus types are preferred; generator-only and converter buses are avoided
-
-Surviving buses receive a **voltage capacity weight** reflecting their role in the grid hierarchy:
-
-**Voltage Capacity Weights**
-
-| Voltage (kV) | Weight   | Role                                      |
-|--------------|----------|-------------------------------------------|
-| ≥ 750        | 20.0     | Extra-high voltage, major interconnection |
-| ≥ 500        | 15.0     | Extra-high voltage, bulk transmission     |
-| ≥ 380        | 10.0     | High voltage, regional transmission       |
-| ≥ 220        | 5.0      | High voltage, sub-regional                |
-| ≥ 150        | 2.0      | Sub-transmission                          |
-| ≥ 110        | 1.0      | Lower transmission (baseline)             |
-| < 110     | excluded | —                                         |
-
-**Step 2 — Voronoi tessellation with population weighting**
-
-Voronoi cells are constructed around the filtered (strong) buses and clipped to the country polygon (Natural Earth `ne_10m_admin_0_countries`). Each city in `worldcities.csv` with `population ≥ pop_min = 10 000` is assigned to whichever bus's Voronoi cell contains it.
-
-For each bus `b`, a *voltage-weighted assigned population* is computed as:
-
-``` none
-assigned_pop[b] = Σ over cities c in cell(b) of  population(c) × voltage_weight(b)
+```text
+importance = 1.0 × number of connected lines and links
+           + 0.3 × voltage / 400 kV
+           + 1.0 × number of cross-border connections
 ```
 
-so the same city contributes more to a 380 kV bus than to a 110 kV bus. An initial load share is then:
+**The blended score** adds industry. Steel plants, cement plants and ethylene crackers are grouped into hubs (sites within 30 km of each other), and each hub is assigned to its nearest substation. A substation's score is 65% its share of national importance and 35% its share of industrial emissions.
 
-``` none
-load_share[b] = assigned_pop[b] / Σ_b assigned_pop[b]
-```
+**The target.** The designer sets a target number of domestic nodes. Of the target, 70% is filled by coverage and the rest by the blended score; industry may push the count up to 20% above the target. Border nodes come on top.
 
-which sums to 1 across all strong buses.
+| Design                     | Border | Coverage | Industrial | By hand |
+|----------------------------|--------|----------|------------|---------|
+| Germany `kan20` (45 nodes) | 27     | 12       | 6          | 0       |
+| India `kan50` (50 nodes)   | 0      | 17       | 25         | 8       |
 
-<a id="demand-allocation-sparsification"></a>**Step 3 — Sparsification**
+*Who stays, in the two example designs*
 
-The initial share is dense — every strong bus receives some load. Most of those buses are electrical transit nodes rather than real load centres, and carrying all of them into the TIMES model inflates it without improving fidelity. `sparsify_voltage_connectivity_aware` compresses the distribution onto the buses that matter most, electrically *and* in terms of demand coverage.
+The name of a design (`kan20`, `kan50`) is a label. It is not the node count.
 
-Each bus is ranked by a **composite importance score**:
+## 3. The fold
 
-``` none
-composite_score[b] = load_share[b]
-                     × voltage_weight[b]      ^ voltage_priority_factor
-                     × connectivity_weight[b] ^ connectivity_priority_factor
-```
+Every substation that is not kept is mapped to its nearest kept substation in the same country. `bus_mapping.csv` has one row per original substation with the node it folded into and the distance. Two clean-up rules follow:
 
-where `connectivity_weight` is a logarithmic measure of how many transmission lines touch the bus (from `{ISO}_clustered_lines.csv`). Default exponents are `voltage_priority_factor = 2.0` and `connectivity_priority_factor = 1.5`, so a meshed 380 kV substation in a large city outranks a radial 110 kV bus serving a similar population.
+-   **Short lines collapse.** Nodes joined by a line shorter than 30 km are merged into one. Border nodes, DC-link nodes, industrial anchors and hand-picked nodes are protected.
+-   **No islands.** If the fold leaves a node unconnected, a line is added to the nearest node, for gaps up to 50 km.
 
-Buses are accepted in order of composite score until the cumulative raw `load_share` of accepted buses exceeds a **coverage target** (default `coverage_target = 0.80`), subject to the guardrails `min_nodes = 10` and `max_nodes = 300`. Unselected buses are zeroed; the kept buses are renormalised so their shares sum to 1.
+Because nodes are real substations, a node has a real location. Its description in the model carries the nearest large city and the distance to it.
 
-!!! note
-    The ranking metric (composite score) and the stopping metric (raw `load_share`) are intentionally different. The composite score picks electrically plausible load-serving buses; the raw-share coverage check guarantees that enough of the actual demand is retained. Using one metric for both would either over-represent electrically weak population clusters or stop early on high-voltage but low-demand transit substations.
+## 4. Corridors
 
-Output file: `1_grids/output_{data_source}/{ISO}/{ISO}_bus_load_share_voronoi.csv` with columns `bus_id, load_share, voltage_kv, voltage_weight`.
+After the fold, every original line runs between two nodes or inside one. Lines inside a node disappear. Lines between the same two nodes are merged into one corridor.
 
-### Grid Variant Summary { #demand-allocation-variants }
+| Corridor property    | How it is set                                                                                                                                                                                                             |
+|-------------------|-----------------------------------------------------|
+| Capacity             | The sum of the thermal ratings of the merged lines, times 0.7. The factor covers the security margin: a network is not run at its thermal limit. It is a generic default, not a calibration to published corridor limits. |
+| Length               | The longest of the merged lines                                                                                                                                                                                           |
+| Losses               | 0.006% per km                                                                                                                                                                                                             |
+| Cost of new capacity | 1.1 M\$ per GW per km (equal to \$1.1 per kW per km)                                                                                                                                                                      |
 
-The specific allocation file consumed downstream depends on the `--grids` option passed to `main.py`:
+| Design          | Substations → nodes | Lines → corridors | Files                       |
+|--------------------|------------------|------------------|------------------|
+| Germany `kan20` | 795 → 45            | 1,029 → 78        | `1_grids/output_kan20/DEU/` |
+| India `kan50`   | 348 → 50            | 459 → 83          | `1_grids/output_kan50/IND/` |
 
-| `--grids` value | File read by the pipeline | Allocation method |
-|---------------|----------------------|------------------------------------|
-| `kan`, `eur`, `cit` | `{ISO}_bus_load_share_voronoi.csv` | Voltage-aware Voronoi + sparsification (above) |
-| `kanN` (e.g. `kan10`) | `{ISO}_bus_load_share_wtddist.csv` | Distance-weighted assignment: cities influence multiple buses with distance² decay and a 100 km cap |
-| `syn_N` (e.g. `syn_5`) | `{ISO}_bus_load_share.csv` | Direct cluster weights from the synthetic-grid demand clusterer |
+*Result for the two example designs*
 
-The distance-weighted variant uses a looser voltage filter and does not apply voltage/connectivity-aware sparsification; it is better suited to simplified `kanN` models. Synthetic grids carry their own demand clusters and need no spatial allocation step.
+### Cross-border links
 
-### Translation into the TIMES Model { #demand-allocation-times-translation }
+Lines and links to other countries are set aside in `{ISO}_cross_border_edges.csv`. Germany has 34 of them, to 10 neighbours.
 
-`grid_modeling.py::process_grid_data()` turns the bus-level `load_share` values into three VEDA/TIMES artefacts, which `excel_manager` writes into the generated workbook:
+-   In a single-country model, imports and exports are attached at the border nodes.
+-   In a multi-country model, the two countries' grids are joined: each validated cross-border link becomes a trade link between a node on one side and a node on the other, with capacity, cost and losses set as for a domestic corridor.
 
-1.  **Grid-node commodities** (`~FI_COMM` on the `grids` sheet): one `e_<bus>` commodity of type `ELC` per kept bus, at `daynite` timeslice level.
-2.  **Demand-technology topology** (`~tfm_topins`): a cross-join of kept buses × demand technologies from `VS_mappings.dem_techs`. Every `<tech>_<bus>` process gets `e_<bus>` added as an input commodity, so the bus feeds that demand tech.
-3.  **Demand flow bound** (`~tfm_ins-at`): for every `<tech>_<bus>` process, a `FLO_MARK~lo` bound of `load_share × 0.98` on the end-use commodities `elc_buildings`, `elc_transport`, `elc_industry`, `elc_roadtransport`. The 0.98 factor leaves ~2 % headroom so that minor rounding and Voronoi edge effects do not make the LP infeasible.
+## 5. What is attached to the nodes
 
-Existing-stock attachments follow the same file: `existing_stock_processor.py` uses `load_share > 0` to decide which buses receive replicated demand technologies via the subRES `regions/incode` mechanism.
+### Existing plants
 
-### Tuning Knobs and Known Limitations { #demand-allocation-tuning }
+Each plant unit is assigned to its nearest node by great-circle distance (`{ISO}_power_plants_assigned_to_buses.csv`). See [Existing Stock Characterization](existing-stock-characterization.md).
 
-The defaults target a reasonable balance of model size and demand coverage for OECD-style transmission networks. The main knobs, exposed in `compute_and_save_bus_load_share_voronoi` and `sparsify_voltage_connectivity_aware`:
+### Wind and solar
 
-- `pop_min` (default 10 000) — raise for very dense urban systems, lower for countries whose largest towns are small.
-- `min_voltage_kv` (default 110) — lower for networks that are predominantly sub-transmission.
-- `coverage_target` (default 0.80) — raise toward 0.95 to retain more of the long tail; expect the model to grow.
-- `min_nodes` / `max_nodes` (default 10 / 300) — hard bounds regardless of coverage.
-- `voltage_priority_factor` (default 2.0), `connectivity_priority_factor` (default 1.5) — raise to bias selection further toward high-voltage meshed buses; lower (toward 0) to let raw population share dominate.
+Wind and solar cells are grouped into clusters inside each node's catchment, so a cluster always belongs to one node. Each cluster is connected to its node by a line whose cost and losses depend on the distance:
 
-Known limitations users should be aware of:
+| Connection          | Rule                                                                                                                                                                       |
+|----------------------|--------------------------------------------------|
+| Solar, onshore wind | Cost 1.1 M\$ per GW per km; losses 0.006% per km                                                                                                                           |
+| Offshore wind       | The cheaper of an AC link (298 + 4.48 per km, \$/kW) and a DC link (876 + 0.86 per km, \$/kW), scaled by region: 1.0 Europe, 0.55 China, 1.3 United States, 0.85 elsewhere |
 
-- **Coverage is intentionally incomplete.** By default, ~20 % of national demand — the long tail of small buses — is zeroed at step 3 and redistributed onto kept buses via renormalisation. Administrative regions whose only electrical presence is in that long tail will not receive a demand node.
-- **Sub-110 kV countries need parameter changes.** Countries or islands whose transmission is predominantly below 110 kV will have very few eligible buses under defaults and may fall back to equal shares.
-- **Voronoi cells do not respect sub-national boundaries.** A strong bus near a sub-national border absorbs cities from both sides. This is deliberate — the allocation is physical, not administrative — but it means population maps and demand maps will differ at sub-national scale.
-- **Population is the sole proxy.** Industrial load concentrations (steel, refining, data centres) are not located explicitly; they are captured only to the extent they correlate with urban population. Sector-specific proxies are an experimental feature (see the New Zealand study under `Miscellaneous/output_sectoral_bus_demand/`) and are not part of the main pipeline.
+See [Renewable Energy Characterization](renewable-characterization.md).
+
+### New thermal plants and storage
+
+New thermal plant options are offered at every node that already hosts a coal, gas or nuclear unit above the country's size threshold for that fuel. New storage is offered at every node that hosts a unit of any fuel above its threshold.
+
+| Design          | Nodes open to new thermal plants | Of  |
+|-----------------|----------------------------------|-----|
+| Germany `kan20` | 27                               | 45  |
+| India `kan50`   | 40                               | 50  |
+
+The rule is not fuel-specific: a node that qualifies gets every thermal option. See [New Technology Characterization](new-technologies.md).
+
+### Demand { #demand-allocation-to-grid-nodes }
+
+National demand is placed on nodes with two keys, one for people and one for industry. The national level, growth and hourly shape are described in [Electricity Demand](electricity-demand.md).
+
+<a id="demand-allocation-design-intent"></a>
+
+**Design intent.** Demand is placed on the physical network, not on administrative units. A state or province whose load is served by a substation across its border appears at that substation. Users who need results by administrative unit should treat that as a reporting layer on top of node-level results.
+
+<a id="demand-allocation-pipeline"></a>
+
+**The population key.** Cities of 10,000 people or more are taken from a world cities table. How their population reaches the nodes depends on the grid design:
+
+| Grid option                                   | File read                          | Method                                                                                                                                                          |
+|------------------|-------------------------|------------------------------|
+| `kanN` (simplified designs, as in the videos) | `{ISO}_bus_load_share_wtddist.csv` | Each city's population is shared among the nodes within 100 km, in proportion to 1 / distance². Every node can carry demand.                                    |
+| `kan`, `eur`, `cit` (full networks)           | `{ISO}_bus_load_share_dr.csv`      | Cities are grouped into demand regions by population-weighted k-means; each region's share goes to its nearest substation. Only those substations carry demand. |
+| `syn_N` (synthetic grids)                     | `{ISO}_bus_load_share.csv`         | Shares come directly from the synthetic grid's own demand clusters.                                                                                             |
+
+**The industry key** (`{ISO}_industry_load_share.csv`, built by `1_grids/industry_load_key.py`). Industrial electricity is split by sub-sector using the national energy balance. Sub-sectors with plant-level location data are placed at the nodes nearest their plants, weighted by capacity and electricity intensity:
+
+| Sub-sector                   | Located by                                                                                          |
+|-----------------------------|-------------------------------------------|
+| Iron and steel               | Global Energy Monitor steel plants (electric-arc furnaces weigh more per tonne than blast furnaces) |
+| Non-metallic minerals        | Global Energy Monitor cement plants                                                                 |
+| Chemicals and petrochemicals | Global Energy Monitor chemicals inventory                                                           |
+| Mining and quarrying         | Global Energy Monitor iron-ore and coal mines                                                       |
+| All other industry           | The population key                                                                                  |
+
+A facility more than 300 km from any node is not assigned; its weight goes to the population key. In India 68% of the industry key falls back to population, because most industrial electricity is in sub-sectors with no plant-level data.
+
+The two keys can differ sharply. In India's `kan50` design the node at Jharsuguda carries 4.2% of industrial demand and 0.6% of population.
+
+<a id="demand-allocation-times-translation"></a>
+
+**In the model.** `grid_modeling.py` writes three things:
+
+1.  One electricity commodity `e_<node>` per node, and one heat commodity `h_<node>`. Heat is local: there is no heat transport between nodes.
+2.  A copy of each demand technology at each node that carries demand, taking `e_<node>` as input.
+3.  A lower bound on each copy's share of national demand (`FLO_MARK`), set to 0.98 times the node's share. Buildings, transport and road transport use the population key; industry uses the industry key. The 2% slack keeps rounding from making the model infeasible.
+
+<a id="demand-allocation-tuning"></a>
+
+**Limits to know about.**
+
+-   The population key uses cities, not gridded population. Rural load is represented only through the cities near it.
+-   The industry key covers four sub-sectors by location. Aluminium and other non-ferrous metals, paper and food have no global plant tracker yet and follow population.
+-   Data centres are not placed by either key.
+
+## Outputs
+
+Each design is a folder `1_grids/output_<design>/<ISO>/`:
+
+| File                                                          | Content                                                                    |
+|--------------------------------|----------------------------------------|
+| `input_network/manifest.json`                                 | The design's parameters: target, weights, thresholds, counts               |
+| `input_network/bus_mapping.csv`                               | One row per original substation: the node it folded into, why, and how far |
+| `{ISO}_clustered_buses.csv`                                   | The nodes, with coordinates, voltage and name                              |
+| `{ISO}_clustered_lines.csv`                                   | The lines between nodes, before merging into corridors                     |
+| `{ISO}_cross_border_edges.csv`                                | Lines and links to other countries                                         |
+| `{ISO}_bus_load_share_*.csv`, `{ISO}_industry_load_share.csv` | The population and industry keys                                           |
+| `{ISO}_power_plants_assigned_to_buses.csv`                    | Plant units and their nodes                                                |
+| `cluster_summary_*.csv`, `cluster_*_atlite_timeseries.csv`    | Wind and solar clusters and their hourly profiles                          |
+| `{ISO}_network_visualization.html`                            | A map of the result                                                        |
+
+The model itself is written as Veda tables, not as a PyPSA network.
+
+## Resolution examples
+
+The two figures show Germany's full network in the two source datasets. Either can be used as it is, or simplified to a chosen number of nodes with the method above.
+
+![Germany, eur dataset, full network: 795 substations, 1,029 lines](../_static/images/grid/DEU_network_visualization_eur.svg) { width="100%" }
+
+*Germany, `eur` dataset, full network: 795 substations, 1,029 lines*
+
+![Germany, kan dataset, full network: 481 substations, 671 lines](../_static/images/grid/DEU_network_visualization_kan.svg) { width="100%" }
+
+*Germany, `kan` dataset, full network: 481 substations, 671 lines*
+
+![Italy, kan dataset, full network: 265 substations, 365 lines](../_static/images/grid/ITA_network_visualization_kan.svg) { width="100%" }
+
+*Italy, `kan` dataset, full network: 265 substations, 365 lines*
+
+![Japan, kan dataset, full network: 187 substations, 237 lines](../_static/images/grid/JPN_network_visualization_kan.svg) { width="100%" }
+
+*Japan, `kan` dataset, full network: 187 substations, 237 lines*
+
+## What the grid does not do
+
+-   **No power-flow physics.** Corridors carry energy up to their capacity, with losses. There are no voltage angles, reactive power or stability limits beyond the 0.7 factor.
+-   **Capacities are inferred.** Thermal ratings come from voltage and circuit count in OpenStreetMap, not from operator data. Where an operator publishes corridor limits, those should replace the default.
+-   **Coverage follows the map.** Where OpenStreetMap is thin, so is the network.
+-   **Lower voltages are absent.** Distribution and sub-transmission are not modelled.
 
 !!! info "See also"
-    [Demands and Prices](demands-and-prices.md)
 
-    :   National-level demand and price trajectories that are subsequently spread across buses using the shares described here.
+    [Electricity Demand](electricity-demand.md)
 
-## Transmission Line Modeling
+    :   National demand level, growth and hourly shape
 
-### Network Topology Construction
+    [Renewable Energy Characterization](renewable-characterization.md)
 
-**Line Geometry Processing:**
+    :   How wind and solar clusters are built and attached to nodes
 
-- **Source Data**: OSM transmission line geometries or bus endpoint connections
-- **Validation**: Coordinate bounds checking and topology verification
-- **Simplification**: Straight-line approximations between bus clusters
-- **Capacity Estimation**: Distance-based transmission capacity calculations
+    [New Technology Characterization](new-technologies.md)
 
-**Connectivity Matrix:**
+    :   What can be built, at what cost, and where
 
-- **Bus-to-Bus Connections**: Direct transmission links between clustered buses
-- **Cross-Border Lines**: International interconnection modeling
-- **Redundancy Analysis**: Multiple parallel line aggregation
-- **Islanding Prevention**: Connectivity validation and isolated node identification
-
-### Network Transfer Capacity (NTC)
-
-**Realistic Capacity Estimation:**
-
-- **Geographic Distance**: Line length calculation using great circle distance
-- **Voltage-Based Scaling**: Capacity estimation based on voltage levels
-- **Parallel Line Aggregation**: Multiple circuits between same bus pairs
-- **Thermal Limits**: Conservative capacity assumptions for reliability
-
-**NTC Calculation Methodology:**
-
-- **Base Capacity**: Standard MW/km transmission capacity by voltage level
-- **Distance Adjustment**: Linear scaling with transmission line length
-- **Reliability Margin**: Conservative derating for operational security
-- **Seasonal Variations**: Temperature-dependent capacity adjustments where applicable
-
-## Renewable Energy Integration
-
-### RE Zone Connectivity
-
-**Technology-Specific Cluster Integration:**
-
-VerveStacks implements **separate clustering for each renewable technology**, creating distinct cluster sets that connect independently to the transmission network:
-
-- **Solar PV Clusters**: Independent clustering of solar grid cells with aggregated capacity potential
-- **Wind Onshore Clusters**: Separate clustering of onshore wind grid cells with capacity-weighted profiles
-- **Wind Offshore Clusters**: Dedicated offshore wind clustering (where applicable) with marine grid connectivity
-- **Cluster Composition**: Each cluster represents 10-300 individual 50x50km grid cells with combined MW potential
-- **Capacity Aggregation**: Total renewable potential calculated from REZoning data across constituent grid cells
-
-**Transmission Access Analysis:**
-
-- **Distance Calculation**: Shortest path from renewable clusters to transmission buses (≥150kV)
-- **Connection Costs**: Distance-based transmission line construction costs per technology cluster
-- **Capacity Constraints**: Transmission capacity limits for renewable integration by technology type
-- **Grid Code Compliance**: Technical requirements for renewable energy connections
-
-**Cluster-to-Bus Assignment Process:**
-
-1.  **Technology Separation**: Solar, wind onshore, and wind offshore processed independently
-2.  **Spatial Assignment**: Each cluster assigned to nearest transmission bus using great circle distance
-3.  **Capacity Weighted Profiles**: Hourly capacity factors aggregated using grid cell capacity as weights
-4.  **Economic Integration**: Distance-based connection costs (M$/GW-km) calculated per cluster
-5.  **Profile Integration**: Technology-specific hourly generation profiles linked to transmission nodes
-6.  **Curtailment Modeling**: Transmission-constrained renewable energy dispatch by technology
-
-## Technology Connection Methodology
-
-VerveStacks implements sophisticated algorithms for connecting both existing and new generation technologies to transmission buses, ensuring realistic grid access while maintaining computational efficiency.
-
-### Renewable Energy Cluster Integration
-
-**Technology-Specific Clustering Approach:**
-
-VerveStacks processes renewable energy resources through **independent clustering for each technology**, creating optimized spatial aggregations that preserve resource characteristics while enabling efficient grid integration:
-
-**Cluster Formation Process:**
-
-1.  **Grid Cell Processing**: Extract 50x50km renewable energy grid cells from REZoning database
-2.  **Technology Filtering**: Apply capacity factor thresholds (>5% solar, >8% wind) to exclude low-quality resources
-3.  **Independent Clustering**: Perform hierarchical clustering separately for solar, wind onshore, and wind offshore
-4.  **Capacity Aggregation**: Sum installed capacity potential (MW) across grid cells within each cluster
-5.  **Profile Weighting**: Calculate hourly capacity factors using grid cell capacity as weights
-6.  **Bus Assignment**: Connect each cluster to nearest transmission bus (≥150kV) using great circle distance
-
-**Cluster Characteristics:**
-
-- **Dynamic Sizing**: 10-300 clusters per technology based on country size (n_clusters = n_cells^0.6)
-- **Capacity Basis**: Each cluster capacity derived from REZoning grid cell potential aggregation
-- **Profile Generation**: Hourly capacity factors weighted by constituent grid cell capacity (MW)
-- **Geographic Representation**: Clusters maintain spatial coherence while optimizing grid connectivity
-- **Technology Independence**: Solar and wind clusters formed separately to avoid cross-technology interference
-
-**Grid Integration Outputs:**
-
-- **Technology-Specific Commodities**: Separate VEDA commodities for solar (elc_spv), wind onshore (elc_won), wind offshore (elc_wof)
-- **Cluster-Specific Profiles**: Individual hourly capacity factor profiles for each renewable cluster
-- **Connection Economics**: Distance-based transmission costs and losses calculated per cluster
-- **Transmission Mapping**: Each cluster assigned to specific transmission bus with capacity and profile data
-
-### Existing Power Plant Assignment
-
-**Geographic Proximity Algorithm:**
-
-- **Nearest Bus Assignment**: Each power plant connected to geographically closest transmission bus
-- **Haversine Distance Calculation**: Great circle distance using Earth's radius (6,371 km)
-- **BallTree Spatial Indexing**: Efficient nearest neighbor search for large plant datasets
-- **Coordinate Validation**: Automatic removal of plants with missing geographic coordinates
-
-**Assignment Process:**
-
-1.  **Data Preparation**: Clean plant coordinates and bus locations
-2.  **Spatial Indexing**: Build BallTree with bus coordinates in radians
-3.  **Distance Calculation**: Query nearest bus for each power plant location
-4.  **Mapping Creation**: Generate plant-to-bus assignments with distance metrics
-5.  **Deduplication**: Remove duplicate plants (keeping first occurrence by GEM location ID)
-
-**Quality Metrics:**
-
-- **Average Connection Distance**: Typical 15-50 km depending on grid density
-- **Maximum Connection Distance**: Validates reasonable grid access assumptions
-- **Bus Voltage Compatibility**: Ensures plant capacity matches bus voltage level
-
-### New Technology Integration
-
-**Technology-Specific Renewable Energy Connections:**
-
-- **Cluster-to-Bus Mapping**: Technology-specific renewable clusters assigned to transmission buses
-- **Solar Cluster Assignment**: Solar clusters connected to nearest transmission buses with solar-specific profiles
-- **Wind Cluster Assignment**: Wind onshore and offshore clusters connected independently with wind-specific profiles
-- **Spatial Join Priority**: Clusters within transmission zone boundaries get direct bus assignment
-- **Nearest Bus Fallback**: Clusters outside zones connected to closest transmission node (≥150kV)
-- **Capacity Aggregation**: Technology-specific renewable potential calculated per bus from assigned clusters
-- **Profile Aggregation**: Capacity-weighted hourly profiles generated for each technology at each bus
-
-**Technology-Specific Connection Cost Modeling:**
-
-- **Cluster-Based Costs**: Transmission line construction costs calculated per renewable technology cluster
-- **Distance Calculation**: Great circle distance from cluster centroid to assigned transmission bus
-- **Technology Independence**: Solar, wind onshore, and wind offshore clusters costed separately
-- **Grid Code Compliance**: Technical requirements applied per technology type
-- **Capacity Constraints**: Transmission capacity limits assessed for each technology cluster
-- **Curtailment Assessment**: Technology-specific transmission-constrained dispatch potential
-
-**Economic Assumptions (Per Technology Cluster):**
-
-- **Connection Cost**: **$1.1 million per MW-km** for high-voltage transmission infrastructure per cluster
-- **Transmission Losses**: **0.6% per 100 km** (6% per 1,000 km) following industry standards for AC transmission
-- **Cost Formula**: `ncap_cost = 1.1 × cluster_distance_km` (M$/GW-km per technology cluster)
-- **Efficiency Formula**: `efficiency = 1 - 0.00006 × cluster_distance_km` (0.006% loss per km per cluster)
-- **Capacity Basis**: Cluster capacity derived from aggregated REZoning grid cell potential (MW)
-
-**Conventional Technology Siting:**
-
-- **New Plant Placement**: Future conventional plants assigned using same nearest-bus algorithm
-- **Technology-Specific Constraints**: Coal, gas, nuclear plants consider cooling water access
-- **Transmission Adequacy**: Ensure sufficient transmission capacity for planned generation
-- **Geographic Realism**: Respect land-use constraints and environmental restrictions
-
-**VEDA Syntax Integration:** VerveStacks creates "buses to attach" dataframes that specify where new technologies can be deployed:
-
-- **Thermal Buses**: Coal, gas, nuclear plants above capacity thresholds (typically 50-100 MW)
-- **Hydro Buses**: Hydro plants above technology-specific thresholds
-- **Storage Buses**: All storage technologies above capacity thresholds
-- **Demand Buses**: Load centers with non-zero demand allocation
-
-These dataframes use `~replicateinregions` VEDA syntax to automatically replicate new technology options at specific transmission buses, enabling geographically-realistic capacity expansion planning.
-
-### Multi-Technology Bus Assignment
-
-**Clustering Integration:** After bus clustering, all technology assignments are updated to maintain connectivity:
-
-1.  **Cluster Mapping**: Original plant-bus assignments mapped to cluster representatives
-2.  **Capacity Aggregation**: Multiple plants at clustered buses have combined capacity
-3.  **RE Cluster Integration**: Technology-specific renewable clusters assigned to transmission buses
-4.  **Profile Integration**: Capacity-weighted hourly generation profiles linked to transmission nodes per technology
-5.  **Load Balance**: Ensure generation-demand balance at each clustered bus including renewable clusters
-
-**Assignment Validation:**
-
-- **Connectivity Verification**: All technologies reachable through transmission paths
-- **Capacity Consistency**: Plant capacity compatible with bus voltage and transmission access
-- **Geographic Reasonableness**: Connection distances within realistic ranges
-- **Load-Generation Balance**: Regional supply-demand consistency maintained
-
-**Load Flow Considerations:**
-
-- **Generation-Load Balance**: Regional supply-demand matching
-- **Transmission Constraints**: Power flow limits and congestion analysis
-- **Operational Flexibility**: Ramping rates and minimum generation levels
-- **Ancillary Services**: Frequency regulation and voltage support capabilities
-
-## Model Output and Validation
-
-### PyPSA Network Files
-
-**Standardized Format:**
-
-- **Buses DataFrame**: Transmission nodes with coordinates and load assignments
-- **Lines DataFrame**: Transmission connections with capacity and impedance
-- **Generators DataFrame**: Power plants with technical and economic parameters
-- **Loads DataFrame**: Demand time series by transmission bus
-
-**Quality Metrics:**
-
-- **Network Connectivity**: All buses reachable through transmission paths
-- **Load-Generation Balance**: Regional supply-demand consistency
-- **Transmission Adequacy**: Sufficient capacity for expected power flows
-- **Geographic Realism**: Network topology consistent with actual infrastructure
-
-### Network Visualization Examples
-
-VerveStacks generates comprehensive network visualizations that demonstrate the voltage filtering and clustering methodology. These examples show how different grid definitions create models optimized for multi-period optimization with fine timeslices.
-
-**Germany: Voltage Filtering Comparison**
-
-The comparison between EUR and KAN grid definitions for Germany illustrates the voltage filtering approach:
-
-![Germany Network - EUR Grid (High Detail)](../_static/images/grid/DEU_network_visualization_eur.svg) { width="100%" }
-
-*Germany Transmission Network - EUR Grid Definition (795 buses, 1,029 lines)*
-
-![Germany Network - KAN Grid (Filtered)](../_static/images/grid/DEU_network_visualization_kan.svg) { width="100%" }
-
-*Germany Transmission Network - KAN Grid Definition (481 buses, 671 lines)*
-
-The EUR grid captures detailed high-voltage infrastructure, while the KAN grid applies voltage filtering to create a coarser network suitable for responsive multi-period optimization. This filtering achieves a **39% reduction in buses** (795→481) and **35% reduction in lines** (1,029→671), significantly reducing model complexity while preserving essential transmission corridors and connectivity patterns.
-
-**Additional Country Examples**
-
-![Italy Network Visualization](../_static/images/grid/ITA_network_visualization_kan.svg) { width="100%" }
-
-*Italy Transmission Network - Optimized for Energy System Modeling (265 buses, 365 lines)*
-
-![Japan Network Visualization](../_static/images/grid/JPN_network_visualization_kan.svg) { width="100%" }
-
-*Japan Transmission Network - Island Grid with Inter-Regional Connections (187 buses, 237 lines)*
-
-These visualizations demonstrate how VerveStacks adapts the grid modeling approach to different geographic and infrastructure contexts:
-
-- **Italy**: Continental network with strong north-south transmission corridors
-- **Japan**: Island nation with distinct regional grids and limited interconnections
-
-**Voltage Filtering Methodology:**
-
-The transition from detailed (EUR) to optimized (KAN) grid representations involves:
-
-- **Low-voltage elimination**: Removal of distribution-level infrastructure
-- **Strategic clustering**: Aggregation of nearby substations while preserving topology
-- **Capacity preservation**: Maintenance of total transmission capacity through parallel line aggregation
-- **Connectivity validation**: Ensuring all regions remain electrically connected
-
-This approach enables VerveStacks models to achieve computational efficiency necessary for fine timeslice resolution (up to 8760 hours) and multi-period investment optimization while maintaining geographic realism in transmission constraints.
-
-### Validation Outputs
-
-**Connectivity Analysis**: Network topology and islanding assessment **Capacity Utilization**: Transmission line loading and bottlenecks **Renewable Integration**: RE zone accessibility and grid connection costs **Model Statistics**: Bus count, line count, and network complexity metrics
-
-## Technical Implementation
-
-### Computational Efficiency
-
-**Adaptive Clustering:**
-
-- **Country-Specific Parameters**: Clustering distance based on country size and infrastructure density
-- **Complexity Management**: Target bus counts for computational tractability
-- **Quality Preservation**: Essential connectivity maintained through clustering process
-- **Scalability**: Consistent methodology across countries from Switzerland to China
-
-**Performance Optimization:**
-
-- **Spatial Indexing**: Efficient geographic queries using spatial data structures
-- **Parallel Processing**: Multi-threaded clustering and connectivity analysis
-- **Memory Management**: Optimized data structures for large-scale networks
-- **Caching**: Intermediate results stored for iterative model development
-
-## Integration with Energy System Models
-
-### VEDA Model Integration
-
-**Network Parameters:**
-
-- **Transmission Capacities**: NTC values for inter-regional power trade
-- **Investment Options**: Transmission expansion possibilities and costs
-- **Operational Constraints**: Power flow limits and stability requirements
-- **Regional Definitions**: Transmission zones for energy system optimization
-
-**Technology-Specific Renewable Energy Supply:**
-
-- **Solar Cluster Mapping**: Solar PV clusters connected to transmission buses with solar-specific profiles
-- **Wind Cluster Mapping**: Wind onshore and offshore clusters connected independently with wind-specific profiles
-- **Cluster Capacity**: Each cluster represents aggregated MW potential from 10-300 grid cells (50x50km each)
-- **Weighted Profiles**: Hourly capacity factors calculated using grid cell capacity as weights
-- **Access Costs**: Grid connection expenses calculated per technology cluster based on distance to transmission
-- **Technology Separation**: Independent curtailment analysis for solar, wind onshore, and wind offshore
-- **Storage Integration**: Battery and pumped hydro storage siting optimization per renewable technology
-
-## Real-World Applications
-
-### Grid Planning Studies
-
-**Transmission Expansion:**
-
-- **Bottleneck Identification**: Transmission constraints limiting renewable integration
-- **Investment Prioritization**: Cost-effective transmission upgrade strategies
-- **Cross-Border Trade**: International interconnection development
-- **Grid Modernization**: Smart grid infrastructure deployment
-
-**Renewable Integration Analysis:**
-
-- **Hosting Capacity**: Maximum renewable energy integration by transmission zone
-- **Grid Stability**: Voltage and frequency regulation with high VRE penetration
-- **Storage Requirements**: Grid-scale energy storage for renewable energy balancing
-- **Flexibility Services**: Demand response and sector coupling opportunities
-
-### Policy and Market Analysis
-
-**Energy Security:**
-
-- **Supply Diversity**: Geographic distribution of generation resources
-- **Import Dependence**: Reliance on cross-border electricity trade
-- **Critical Infrastructure**: Transmission system resilience and redundancy
-- **Emergency Response**: Grid restoration and blackout prevention
-
-**Market Design:**
-
-- **Nodal Pricing**: Locational marginal pricing and congestion management
-- **Transmission Rights**: Financial transmission rights and capacity allocation
-- **Grid Services**: Ancillary services markets and system operation
-- **Regulatory Framework**: Transmission access and grid code compliance
-
-## Conclusion
-
-VerveStacks grid representation methodology transforms complex transmission infrastructure data into practical network models suitable for energy system analysis. By combining geographic realism with computational efficiency, the platform enables sophisticated grid planning and renewable integration studies while maintaining model tractability.
-
-The multi-resolution clustering approach ensures that essential network characteristics are preserved while reducing computational complexity. Integration with renewable energy zones and existing power plants creates comprehensive models that support policy analysis, investment planning, and operational studies across diverse geographic and regulatory contexts.
-
-Through systematic processing of OpenStreetMap data and intelligent spatial clustering, VerveStacks democratizes access to professional-grade transmission network modeling, enabling users worldwide to conduct sophisticated grid analysis without requiring specialized infrastructure modeling expertise.
-
-!!! note
-    Grid modeling outputs include interactive network visualizations and comprehensive validation metrics for model verification and quality assurance.

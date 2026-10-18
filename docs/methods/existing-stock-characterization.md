@@ -1,54 +1,92 @@
 # Existing Stock Characterization
 
-**Comprehensive power plant inventory through multi-source data integration**
+**Every power unit in the country, with its own numbers, at its place on the grid**
 
-VerveStacks transforms fragmented global energy data into complete, spatially-resolved power plant inventories for each ISO. **Each country receives its own unique existing stock characterization**, combining plant-level precision from the Global Energy Monitor with statistical completeness from IRENA and EMBER datasets. Rather than relying on generic capacity assumptions, we integrate individual power plant specifications with gap-filling algorithms that preserve spatial intelligence and operational realism. This centralised process replaces what has traditionally been repeated in parallel by many research teams: each group cleaning the same source data, defining its own thresholds and mappings, and building bespoke stock representations that are difficult for others to reuse. By doing this once and documenting it fully, VerveStacks provides a common, auditable foundation that many studies and frameworks can share.
+<figure class="vs-film" markdown="0">
+  <video controls preload="none" playsinline poster="../../_static/films/deu_power_fleet.jpg">
+    <source src="../../_static/films/deu_power_fleet.mp4" type="video/mp4">
+  </video>
+  <figcaption><strong>Watch first: Germany's Power Fleet</strong> (1:48, narrated). Generated from a real build of the German model; every number on screen traces to a file. The sections below follow the film in the same order, with the rules and file names behind each step. Also: <a href="../../films/v/plants_DEU.html">interactive version</a> · <a href="../../films/v/plants_IND.html">India</a> · <a href="../../films/">all films</a>.</figcaption>
+</figure>
 
-**ISO-Specific Characterization**: Every country's existing stock reflects its unique energy infrastructure, technology mix, and operational constraints. No universal template could capture both Germany's complex renewable transition and India's coal-dominated system with rapid solar expansion.
+Each country model starts from an inventory of the power units that exist. The inventory is built from unit-level data, completed with national statistics where the unit data falls short, and checked against independent statistics. Doing this once, in the open, replaces work that many teams otherwise repeat separately.
 
-## Methodology Overview
+## The method in six steps
 
-The existing stock characterization follows a systematic three-stage process **applied individually to each ISO**:
+1.  **Units.** Take every unit in the country from Global Energy Monitor.
+2.  **Status.** Decide what counts as the existing fleet.
+3.  **Characterise.** Give each unit a fuel, a technology and its own cost and performance numbers.
+4.  **Group.** Keep large units individually; pool small ones.
+5.  **Fill the gaps.** Add the capacity the unit data misses, from IRENA and Ember.
+6.  **Check.** Compare the fleet with independent statistics.
 
-1.  **Plant-Level Foundation**: Process individual power plant data from Global Energy Monitor database
-2.  **Statistical Reconciliation**: Fill capacity gaps using IRENA/EMBER national statistics with spatial distribution
-3.  **Techno-Economic Enhancement**: Assign technology costs, efficiencies, performance parameters, and operational constraints
+|                                 | Germany | India |
+|---------------------------------|---------|-------|
+| Units in Global Energy Monitor  | 12,088  | 8,286 |
+| Kept as individual units        | 248     | 924   |
+| Pooled small units              | 10,342  | 5,513 |
+| Carbon-capture retrofit options | 85      | 320   |
 
-## Stage 1: Plant-Level Foundation
+***The two example countries***
 
-**Individual Power Plant Processing**
+## Step 1: Units
 
-VerveStacks begins with the most comprehensive global power plant database available - the Global Energy Monitor's integrated power facilities dataset containing 151,000+ individual power plants worldwide with precise locations, capacities, fuel types, commissioning years, and operational status.
+The starting point is Global Energy Monitor's Global Integrated Power data (release of March 2026): one record per unit, with location, capacity, fuel, technology, start year, retirement year and status.
 
-**Core Data Processing**
+## Step 2: Status
 
-**GEM Database Processing Rules**
-
-| **Filter/Transform** | **Business Logic** |
+| Status                      | Treatment                                                                                                                                                                          |
 |----------------------|--------------------------------------------------|
-| Status Filtering | Exclude plants with status: 'cancelled', 'shelved', 'retired' |
-| Technology Standardization | Use Technology field; fallback to Type if Technology is null |
-| Capacity Threshold | Dynamic fuel-specific thresholds per ISO (10-1000 MW based on system scale) |
-| Vintage Filtering | Include only plants with Start year ≤ 2022 (base year) |
-| Spatial Assignment | Map plants to grid buses (thermal) or REZ zones (renewables) |
+| Operating                   | In the fleet                                                                                                                                                                       |
+| Retired                     | Removed, unless the unit retired in or after the base year (2022). Those ran in the base year and stay, with their retirement date. Germany's last three reactors are the example. |
+| Mothballed                  | Kept as a separate group (prefix `ep_m_`) that can be brought back                                                                                                                 |
+| Under construction          | In the fleet, with its future start year                                                                                                                                           |
+| Announced, pre-construction | Not in the fleet. Offered to the model as an option to build.                                                                                                                      |
+| Cancelled, shelved          | Removed. Hydro is the exception: cancelled and shelved hydro projects are kept as options, because the site still exists.                                                          |
 
-**Dynamic Capacity Threshold System**
+***What happens to each status***
 
-VerveStacks implements a sophisticated capacity threshold system that adapts to each country's power system scale and complexity. Rather than using a static 100 MW threshold, the system employs fuel-specific thresholds optimized for model performance and appropriate detail.
+In India this step removes 869 units, of which 759 are coal units totalling 584 GW: more coal than the country operates.
 
-**Threshold Strategy by Fuel Type**
+## Step 3: Fuel, technology and numbers
 
-| **Fuel Group** | **Threshold Logic** | **Rationale** |
+Each unit gets a model fuel and technology from its Global Energy Monitor type, technology and fuel fields (tables below). Oil and gas units are split by their fuel detail.
+
+Each unit then gets its own numbers: efficiency by technology, size and age; costs adjusted for size and world region; lifetime; and, for thermal units, the limits on flexible operation. See *Costs and performance* below.
+
+**Heat.** Units that also supply heat are flagged from Global Energy Monitor's combined heat and power field, with a correction layer where that field is known to be wrong. A flagged unit gets a heat-to-power ratio by fuel and prime mover:
+
+| Unit type                | Maximum heat-to-power ratio | Mode                  |
+|------------------------------------|-------------------|-------------------|
+| Coal, steam              | 1.2                         | Extraction            |
+| Bioenergy, steam         | 2.3                         | Extraction            |
+| Gas combined cycle       | 0.5                         | Extraction            |
+| Gas or oil steam turbine | 1.0                         | Extraction            |
+| Gas turbine, engine      | 1.0                         | Fixed (back-pressure) |
+
+About three quarters of Germany's coal and gas capacity supplies heat. Heat demand is placed at the nodes where these units stand.
+
+## Step 4: Large units individually, small units pooled
+
+-   **Above the threshold** for its fuel, a unit keeps its identity: its own process in the model, at its grid node.
+-   **Below the threshold**, units are pooled by fuel, technology, location and age. Thermal units pool at their grid node; solar and wind at their resource cluster.
+-   **Nuclear** units are always individual.
+
+**Size thresholds**
+
+The size above which a unit is kept individually depends on the country and the fuel. A large system has a high threshold and a small system a low one, so every country ends up with a workable number of individual units.
+
+| **Fuel Group**                | **Threshold Logic**                     | **Rationale**                                                              |
 |-------------------|-------------------|------------------------------------|
-| Fossil Fuels (Coal, Gas, Oil) | Combined threshold targeting ≤200 units | Fossil plants create ~3x more model variables due to CCS retrofit options |
-| Nuclear | Always 0.0 (track all) | Critical infrastructure requiring individual modeling |
-| Hydro + Geothermal | Combined threshold targeting ≤100 units | Grid flexibility and storage characteristics |
-| Solar/Wind | Individual thresholds, minimum 200 MW | Utility-scale focus with economic viability considerations |
-| Other Renewables | Default 50 MW threshold | Standard renewable technology handling |
+| Fossil Fuels (Coal, Gas, Oil) | Combined threshold targeting ≤200 units | Fossil plants create \~3x more model variables due to CCS retrofit options |
+| Nuclear                       | Always 0.0 (track all)                  | Critical infrastructure requiring individual modeling                      |
+| Hydro + Geothermal            | Combined threshold targeting ≤100 units | Grid flexibility and storage characteristics                               |
+| Solar/Wind                    | Individual thresholds, minimum 200 MW   | Utility-scale focus with economic viability considerations                 |
+| Other Renewables              | Default 50 MW threshold                 | Standard renewable technology handling                                     |
+
+***Threshold Strategy by Fuel Type***
 
 **System-Scale Examples:**
-
-**Threshold Variations by Country Scale**
 
 | **Country**      | **Fossil (MW)** | **Hydro (MW)** | **Solar (MW)** | **Wind (MW)** |
 |---------------|---------------|---------------|---------------|---------------|
@@ -57,119 +95,83 @@ VerveStacks implements a sophisticated capacity threshold system that adapts to 
 | Germany (Medium) | 110             | 10             | 200            | 200           |
 | Small Countries  | 10              | 10             | 200            | 200           |
 
+***Threshold Variations by Country Scale***
+
 **Configuration Source:**
 
-Thresholds are automatically generated from the Global Energy Monitor database using the `count_power_plants_by_iso.py` script, which analyzes each country's power plant distribution and calculates optimal thresholds to maintain model complexity targets while preserving appropriate spatial and technical detail.
+Thresholds are generated from the Global Energy Monitor data by `Miscellaneous/count_power_plants_by_iso.py`: for each fuel group, the threshold is the size of the Nth largest unit, where N is the target count, rounded to 10 MW.
 
 !!! note
-    The complete threshold configuration is stored in `assumptions/iso_fuel_capacity_thresholds.csv` with metadata in `assumptions/iso_fuel_capacity_thresholds_metadata.yaml`. This system ensures that small island nations receive detailed modeling while large continental systems maintain computational efficiency.
 
-**Technology Mapping Logic**
+    The complete threshold configuration is stored in `assumptions/iso_fuel_capacity_thresholds.csv` with metadata in `assumptions/iso_fuel_capacity_thresholds_metadata.yaml`.
 
-The system uses a sophisticated fuel type mapping that handles the complexity of real-world power plant classifications:
+**Carbon-capture retrofits.** Individual coal units of 300 MW or more, and gas and oil units of 400 MW or more, get a retrofit option (process name ending `_rf`). Pooled units do not. Retrofit cost and the penalties on efficiency and output come from the US Environmental Protection Agency's retrofit data.
 
-``` python
-def custom_fuel_mapping(plant_record):
-    """Transform GEM fuel types to standardized model categories"""
-    if plant_record['Type'] != 'oil/gas':
-        return 'hydro' if plant_record['Type'] == 'hydropower' else plant_record['Type']
-    else:
-        fuel_detail = str(plant_record['Fuel']) if not_null(plant_record['Fuel']) else ''
-        return 'oil' if fuel_detail.lower().startswith('fossil liquids:') else 'gas'
+## Step 5: Fill the gaps
+
+Unit data misses small and distributed capacity. Global Energy Monitor sees 19 GW of German solar in 2022; IRENA reports 61 GW. The pipeline adds the difference.
+
+**Renewables, from IRENA, year by year.**
+
+``` text
+base year:    gap = IRENA capacity(2022) − unit capacity started by 2022
+later years:  gap = IRENA increase in the year − unit capacity started that year
 ```
 
-**Plant Aggregation Strategy**
+So the fleet follows IRENA's path through the latest statistical year, not only its base-year level.
 
-Plants are intelligently aggregated based on capacity thresholds and spatial proximity:
+| Country | Fuel      | Year               | Gap              |
+|---------|-----------|--------------------|------------------|
+| Germany | Solar     | 2022 / 2023 / 2024 | 41.8 / 9.3 / 8.4 |
+| India   | Wind      | 2022               | 8.6              |
+| India   | Bioenergy | 2022               | 7.9              |
+| India   | Hydro     | 2022               | 4.0              |
+| India   | Solar     | 2023 / 2024        | 4.2 / 9.1        |
 
-- **Large Plants (Above Fuel-Specific Threshold)**: Tracked individually with full spatial and technical detail
-- **Small Plants (Below Fuel-Specific Threshold)**: Aggregated by technology and region to reduce model complexity
-- **Mothballed Plants**: Tracked separately with 'ep_m\_' prefix for potential reactivation scenarios
-- **Dynamic Thresholds**: Automatically calculated per country and fuel type to optimize model performance
+***Gaps filled (GW)***
 
-**Threshold Generation Methodology**
+**Thermal, from Ember, in the base year.** Where Ember reports more coal or gas capacity than the unit data holds, the difference is added.
 
-The capacity thresholds are generated through systematic analysis of each country's power plant portfolio:
+**Where the added capacity goes.**
 
-**Generation Process**
-
-| **Step** | **Process** |
-|---------------|---------------------------------------------------------|
-| Data Analysis | Load operational plants ≥10 MW from GEM database |
-| Fuel Grouping | Separate plants into fossil, hydro-geo, solar-wind, and other categories |
-| Threshold Calculation | For each fuel group, find capacity of Nth largest plant (N = target count) |
-| Rounding | Round thresholds to nearest 10 MW for cleaner values |
-| Validation | Ensure thresholds meet model complexity targets |
-| Export | Generate CSV configuration file with metadata |
-
-**Target Complexity Limits:**
-
-- **Fossil Units**: ≤200 per country (due to CCS retrofit complexity)
-- **Hydro+Geothermal**: ≤100 per country (grid flexibility modeling)
-- **Solar/Wind**: ≤100 each per country (utility-scale focus)
-- **Minimum Solar/Wind**: 200 MW (economic viability threshold)
-
-**Quality Assurance:**
-
-- All thresholds validated against actual plant counts
-- Metadata includes generation parameters and methodology
-- Notes column indicates if targets were exceeded (e.g., `F207_HG30`)
-
-## Stage 2: Data Reconciliation
-
-**Gap-Filling Methodology**
-
-Even the comprehensive GEM database has coverage gaps, particularly for smaller renewable installations and distributed generation. VerveStacks reconciles plant-level data with authoritative national statistics to ensure complete capacity accounting.
-
-**IRENA Renewable Capacity Reconciliation**
-
-**IRENA Gap-Filling Process**
-
-| **Step** | **Methodology** |
+| Fuel             | Placement                                                                         |
 |-------------------|-----------------------------------------------------|
-| Baseline Comparison | Compare IRENA 2022 capacity vs. cumulative GEM capacity (≤2022) |
-| Gap Identification | Calculate missing capacity: IRENA_2022 - GEM_cumulative |
-| Spatial Distribution | Distribute gaps across REZ zones weighted by resource quality (70%) and potential (30%) |
-| Plant Creation | Generate realistic "Aggregated Plant - IRENA Gap" records with spatial attributes |
+| Solar            | By population. The missing solar is mostly rooftop, so it goes where people live. |
+| Wind             | To resource clusters, by resource quality and existing wind capacity              |
+| Bioenergy, hydro | To grid nodes                                                                     |
+| Coal, gas        | To grid nodes, by existing thermal capacity                                       |
 
-**EMBER Thermal Capacity Reconciliation**
+Added capacity carries the same node or cluster commodities as real units, for example `elc_spv_DEU_017`.
 
-**EMBER Gap-Filling Process**
+## Step 6: Check
 
-| **Step** | **Methodology** |
-|---|---|
-| Statistical Baseline | Compare EMBER 2022 thermal capacity vs. cumulative GEM capacity (≤2022) |
-| Thermal Gap Analysis | Identify missing coal, gas, oil, and bioenergy capacity |
-| Bus-Based Distribution | Distribute thermal gaps across transmission buses weighted by existing thermal density |
-| Infrastructure Realism | Ensure gap plants are located near existing thermal infrastructure and fuel supply |
+The finished fleet is compared with three independent sources. The comparison is written to the `Calibration` sheet of each model's workbook.
 
-**Spatial Intelligence Preservation**
+| Quantity   | Compared with                                       | Fuels   |
+|------------|-----------------------------------------------------|---------|
+| Capacity   | IRENA and Ember                                     | All     |
+| Generation | IRENA and Ember (capacity × reported utilisation)   | All     |
+| Fuel use   | UN energy statistics (generation ÷ unit efficiency) | Thermal |
 
-Critical to VerveStacks' spatial modeling capability is ensuring that gap-filled capacity maintains geographic precision:
+The check is a report, not a forced match. Differences that remain are visible. Known ones include definitions that differ between sources (pumped storage in hydro) and a mapping problem for oil capacity.
 
-- **Renewable Gaps**: Assigned to specific REZ grid cells based on resource quality rankings
-- **Thermal Gaps**: Assigned to transmission buses with existing thermal plant clusters
-- **Commodity Mapping**: All gap plants receive proper spatial commodities (e.g., `elc_spv-DEU_0042` not `elc_spv-DEU`)
-
-## Stage 3: Techno-Economic Enhancement
+## Costs and performance
 
 **Technology Cost Assignment**
 
-Every power plant receives comprehensive techno-economic parameters sourced from VerveStacks' curated technology database, with regional adjustments and size-based multipliers.
-
-**Key Innovation**: VerveStacks implements two sophisticated systems: 1) **Dynamic fuel-specific capacity thresholds** that adapt to each country's power system scale (10-1000 MW), ensuring appropriate model detail from small islands to continental grids, and 2) **WEO region-level inheritance system** for technology costs and efficiencies. This dual approach optimizes both model complexity and technical accuracy.
+Every unit receives cost and performance parameters from `ep_technoeconomic_assumptions.xlsx`, adjusted for region and size.
 
 **Cost Parameter Integration**
 
-**Techno-Economic Parameter Sources**
-
-| **Parameter** | **Source File** | **Application Logic** |
+| **Parameter**          | **Source File**                         | **Application Logic**                         |
 |----------------------|-----------------------------|----------------------|
-| CAPEX ($/kW) | ep_technoeconomic_assumptions.xlsx | Technology + size class + regional multiplier |
-| Fixed O&M ($/kW-yr) | ep_technoeconomic_assumptions.xlsx | Annual fixed operating costs |
-| Variable O&M ($/MWh) | ep_technoeconomic_assumptions.xlsx | Per-MWh operating costs |
-| Thermal Efficiency (%) | VS_mappings.xlsx (thermal_eff sheet) | Fuel-to-electricity conversion efficiency |
-| Capacity Factor (%) | Resource data or historical utilization | Annual availability factor |
+| CAPEX (\$/kW)          | ep_technoeconomic_assumptions.xlsx      | Technology + size class + regional multiplier |
+| Fixed O&M (\$/kW-yr)   | ep_technoeconomic_assumptions.xlsx      | Annual fixed operating costs                  |
+| Variable O&M (\$/MWh)  | ep_technoeconomic_assumptions.xlsx      | Per-MWh operating costs                       |
+| Thermal Efficiency (%) | VS_mappings.xlsx (thermal_eff sheet)    | Fuel-to-electricity conversion efficiency     |
+| Capacity Factor (%)    | Resource data or historical utilization | Annual availability factor                    |
+
+***Techno-Economic Parameter Sources***
 
 **Regional Cost Adjustments**
 
@@ -199,22 +201,22 @@ WHERE R.iso = '{country_iso_code}'
 
 **Life Extension Cost Integration**
 
-VerveStacks incorporates sophisticated life extension cost modeling that captures the economic reality of aging thermal infrastructure. As power plants approach the end of their design life, operators face critical investment decisions: retire the facility or invest in major refurbishments to extend operational life.
+VerveStacks includes life extension costs, which capture the economic reality of aging thermal infrastructure. As power plants approach the end of their design life, operators face critical investment decisions: retire the facility or invest in major refurbishments to extend operational life.
 
 The life extension cost methodology follows the approach established in EPA's Integrated Planning Model (IPM) version 6, which recognizes that thermal power plants can operate beyond their original design life through substantial capital investments. These costs reflect the reality that aging infrastructure requires major overhauls of critical components including boilers, turbines, generators, and environmental control systems.
 
-**Life Extension Cost Assumptions (IPM v6 Methodology)**
-
-| **Technology Type** | **Design Life (years)** | **Life Extension Cost ($/kW)** |
+| **Technology Type**                    | **Design Life (years)** | **Life Extension Cost (\$/kW)** |
 |-----------------------------|---------------|-----------------------------|
-| Biomass Steam | 40 | $253 |
-| Coal Steam | 40 | $203 |
-| Combined Cycle Gas Turbine | 30 | $82 |
-| Combustion Turbine (Peaker) | 30 | $242 |
-| Internal Combustion Engine | 30 | $226 |
-| Oil/Gas Steam | 40 | $174 |
-| Integrated Gasification Combined Cycle | 40 | $258 |
-| Landfill Gas | 20 | $135 |
+| Biomass Steam                          | 40                      | \$253                           |
+| Coal Steam                             | 40                      | \$203                           |
+| Combined Cycle Gas Turbine             | 30                      | \$82                            |
+| Combustion Turbine (Peaker)            | 30                      | \$242                           |
+| Internal Combustion Engine             | 30                      | \$226                           |
+| Oil/Gas Steam                          | 40                      | \$174                           |
+| Integrated Gasification Combined Cycle | 40                      | \$258                           |
+| Landfill Gas                           | 20                      | \$135                           |
+
+***Life Extension Cost Assumptions (IPM v6 Methodology)***
 
 **Economic Logic and Implementation**
 
@@ -222,19 +224,19 @@ The life extension cost framework operates on the principle that thermal power p
 
 Key characteristics of the life extension cost methodology:
 
-- **Threshold-Based Application**: Life extension costs are triggered only when plants operate beyond their technology-specific design life
-- **Technology-Specific Costs**: Reflect the varying complexity and capital intensity of different thermal technologies
-- **One-Time Investment**: Life extension costs represent a discrete capital investment, not ongoing maintenance
-- **Operational Realism**: Captures the actual decision-making process utilities face with aging assets
+-   **Threshold-Based Application**: Life extension costs are triggered only when plants operate beyond their technology-specific design life
+-   **Technology-Specific Costs**: Reflect the varying complexity and capital intensity of different thermal technologies
+-   **One-Time Investment**: Life extension costs represent a discrete capital investment, not ongoing maintenance
+-   **Operational Realism**: Captures the actual decision-making process utilities face with aging assets
 
 **Technology-Specific Considerations**
 
 The variation in life extension costs across technologies reflects fundamental differences in plant complexity and refurbishment requirements:
 
-- **Combined Cycle Gas Turbines** ($82/kW): Lower costs reflect modular design and standardized components
-- **Coal Steam Plants** ($203/kW): Moderate costs for mature technology with established refurbishment practices
-- **IGCC Plants** ($258/kW): Highest costs due to complex gasification systems and limited operational experience
-- **Combustion Turbines** ($242/kW): High costs despite simple design due to intensive operational duty cycles
+-   **Combined Cycle Gas Turbines** (\$82/kW): Lower costs reflect modular design and standardized components
+-   **Coal Steam Plants** (\$203/kW): Moderate costs for mature technology with established refurbishment practices
+-   **IGCC Plants** (\$258/kW): Highest costs due to complex gasification systems and limited operational experience
+-   **Combustion Turbines** (\$242/kW): High costs despite simple design due to intensive operational duty cycles
 
 This approach ensures that fossil plant retirement decisions reflect realistic economics rather than arbitrary assumptions, enabling more accurate modeling of energy transition pathways and stranded asset risks.
 
@@ -242,20 +244,20 @@ This approach ensures that fossil plant retirement decisions reflect realistic e
 
 Thermal power plants also receive detailed operational flexibility parameters that capture their constraints - critical for high-renewable energy system modeling:
 
-**Unit Commitment Parameters Added to Thermal Plants**
-
-| **Parameter** | **Units** | **Description** |
+| **Parameter**      | **Units**      | **Description**                             |
 |-------------------|-------------------|------------------------------------|
-| Min Stable Factor | % of capacity | Minimum operating level when online |
-| Min Up Time | Hours | Minimum continuous operation period |
-| Min Down Time | Hours | Minimum offline period between starts |
-| Max Ramp Up Rate | %/hour | Maximum power increase rate |
-| Max Ramp Down Rate | %/hour | Maximum power decrease rate |
-| Startup Time | Hours | Time required to reach minimum stable level |
-| Startup Cost | $/MW | Cost per MW of capacity started |
-| Shutdown Cost | $/MW | Cost per MW of capacity shut down |
+| Min Stable Factor  | \% of capacity | Minimum operating level when online         |
+| Min Up Time        | Hours          | Minimum continuous operation period         |
+| Min Down Time      | Hours          | Minimum offline period between starts       |
+| Max Ramp Up Rate   | %/hour         | Maximum power increase rate                 |
+| Max Ramp Down Rate | %/hour         | Maximum power decrease rate                 |
+| Startup Time       | Hours          | Time required to reach minimum stable level |
+| Startup Cost       | \$/MW          | Cost per MW of capacity started             |
+| Shutdown Cost      | \$/MW          | Cost per MW of capacity shut down           |
 
-The system uses sophisticated pattern matching to assign appropriate unit commitment characteristics based on technology type (coal, gas CCGT, gas OCGT, nuclear) and plant size class (Small/Medium/Large/XLarge).
+***Unit Commitment Parameters Added to Thermal Plants***
+
+The system uses pattern matching to assign appropriate unit commitment characteristics based on technology type (coal, gas CCGT, gas OCGT, nuclear) and plant size class (Small/Medium/Large/XLarge).
 
 ## Complete Assumption Tables
 
@@ -267,34 +269,32 @@ The following tables provide complete transparency about all data transformation
 
 VerveStacks maintains comprehensive data source documentation within the VS_mappings.xlsx file to ensure complete transparency and reproducibility:
 
-**Primary Data Sources and Update Frequencies**
-
-| **Data Source** | **Content & Coverage** | **Update Frequency** | **Quality** |
+| **Data Source**                 | **Content & Coverage**                                                      | **Update Frequency** | **Quality** |
 |------------------|-------------------------|------------------|------------|
-| **Global Energy Monitor (GEM)** | Individual power plants worldwide (151,000+ facilities) | Monthly updates | ⭐⭐⭐⭐⭐ |
-| **IRENA Statistics** | National renewable capacity & generation (2000-2022) | Annual updates | ⭐⭐⭐⭐⭐ |
-| **EMBER Climate** | Global electricity data by country & fuel (2000-2022) | Annual updates | ⭐⭐⭐⭐⭐ |
-| **World Energy Outlook (WEO)** | Technology costs & performance by region | Annual updates | ⭐⭐⭐⭐⭐ |
-| **UNSD Energy Statistics** | UN energy balances & trade flows | Annual updates | ⭐⭐⭐⭐ |
-| **REZoning Database** | 50x50km renewable resource potential grid | Static analysis | ⭐⭐⭐⭐ |
-| **SARAH/ERA5 Weather** | Hourly solar/wind profiles (2013 reference year) | Historical data | ⭐⭐⭐⭐⭐ |
-| **EPA CCS Retrofit** | Carbon capture retrofit potential & costs | Periodic updates | ⭐⭐⭐⭐ |
+| **Global Energy Monitor (GEM)** | Individual power units worldwide (March 2026 release)                       | Monthly updates      | ⭐⭐⭐⭐⭐  |
+| **IRENA Statistics**            | National renewable capacity & generation, annual                            | Annual updates       | ⭐⭐⭐⭐⭐  |
+| **EMBER Climate**               | Electricity generation and capacity by country and fuel, annual and monthly | Annual updates       | ⭐⭐⭐⭐⭐  |
+| **World Energy Outlook (WEO)**  | Technology costs & performance by region                                    | Annual updates       | ⭐⭐⭐⭐⭐  |
+| **UNSD Energy Statistics**      | UN energy balances & trade flows                                            | Annual updates       | ⭐⭐⭐⭐    |
+| **REZoning Database**           | 50x50km renewable resource potential grid                                   | Static analysis      | ⭐⭐⭐⭐    |
+| **ERA5 Weather**                | Hourly solar and wind profiles (default weather year 2013)                  | Historical data      | ⭐⭐⭐⭐⭐  |
+| **EPA CCS Retrofit**            | Carbon capture retrofit potential & costs                                   | Periodic updates     | ⭐⭐⭐⭐    |
+
+***Primary Data Sources and Update Frequencies***
 
 **Data Integration Methodology**
 
-**Source Integration Hierarchy**
-
-| **Priority** | **Data Source** | **Usage Logic** |
+| **Priority** | **Data Source**    | **Usage Logic**                                                            |
 |---------------|----------------------|------------------------------------|
-| 1st Priority | GEM Plant Database | Individual plant specifications for capacity ≥100 MW |
-| 2nd Priority | IRENA Statistics | Fill renewable capacity gaps vs. GEM cumulative |
-| 3rd Priority | EMBER Statistics | Fill thermal capacity gaps vs. GEM cumulative |
-| 4th Priority | WEO Assumptions | Technology costs & performance parameters |
-| 5th Priority | Default Values | Conservative fallbacks for missing parameters |
+| 1st Priority | GEM Plant Database | Individual unit specifications above the country's fuel-specific threshold |
+| 2nd Priority | IRENA Statistics   | Fill renewable capacity gaps year by year                                  |
+| 3rd Priority | EMBER Statistics   | Fill coal and gas capacity gaps in the base year                           |
+| 4th Priority | WEO Assumptions    | Technology costs & performance parameters                                  |
+| 5th Priority | Default Values     | Conservative fallbacks for missing parameters                              |
 
-### GEM Technology Mapping (gem_techmap) { #gem-technology-mapping-gem_techmap }
+***Source Integration Hierarchy***
 
-**Technology Standardization Rules**
+### GEM Technology Mapping (gem_techmap)
 
 | **GEM Type** | **GEM Technology**   | **Model Fuel** | **Model Name** |
 |--------------|----------------------|----------------|----------------|
@@ -311,27 +311,27 @@ VerveStacks maintains comprehensive data source documentation within the VS_mapp
 | hydropower   | run-of-river         | hydro          | hydro_ror      |
 | hydropower   | conventional storage | hydro          | hydro_res      |
 
-### IRENA-EMBER Type Mapping (irena_ember_typemap) { #irena-ember-type-mapping-irena_ember_typemap }
+***Technology Standardization Rules***
 
-**Statistical Data Harmonization**
+### IRENA-EMBER Type Mapping (irena_ember_typemap)
 
-| **Type** | **Source** | **Model Fuel** | **Description** |
-|---|---|---|---|
-| Solar photovoltaic | IRENA | solar | All solar PV installations |
-| Wind energy | IRENA | windon | Onshore wind turbines |
-| Offshore wind energy | IRENA | windoff | Offshore wind turbines |
-| Hydropower | IRENA | hydro | All hydroelectric generation |
-| Coal | EMBER | coal | All coal-fired generation |
-| Gas | EMBER | gas | All natural gas generation |
-| Oil | EMBER | oil | Oil-fired generation |
-| Bioenergy | IRENA | bioenergy | Biomass and biogas generation |
-| Geothermal | IRENA | geothermal | Geothermal energy generation |
+| **Type**             | **Source** | **Model Fuel** | **Description**               |
+|------------------|------------------|------------------|------------------|
+| Solar photovoltaic   | IRENA      | solar          | All solar PV installations    |
+| Wind energy          | IRENA      | windon         | Onshore wind turbines         |
+| Offshore wind energy | IRENA      | windoff        | Offshore wind turbines        |
+| Hydropower           | IRENA      | hydro          | All hydroelectric generation  |
+| Coal                 | EMBER      | coal           | All coal-fired generation     |
+| Gas                  | EMBER      | gas            | All natural gas generation    |
+| Oil                  | EMBER      | oil            | Oil-fired generation          |
+| Bioenergy            | IRENA      | bioenergy      | Biomass and biogas generation |
+| Geothermal           | IRENA      | geothermal     | Geothermal energy generation  |
+
+***Statistical Data Harmonization***
 
 ### Technology Classification Tables
 
 **WEO Power Generation Technologies (weo_pg_techs)**
-
-**Thermal Technology Definitions**
 
 | **Technology** | **Include** | **Description**                          |
 |----------------|-------------|------------------------------------------|
@@ -345,11 +345,11 @@ VerveStacks maintains comprehensive data source documentation within the VS_mapp
 | oil_st         | Y           | Oil-fired steam turbines                 |
 | bio_st         | Y           | Biomass steam turbines                   |
 
+***Thermal Technology Definitions***
+
 **Storage Technologies (storage_techs)**
 
 **Demand Technologies (dem_techs)**
-
-**Demand Sector Definitions**
 
 | **Technology** | **Description**                  |
 |----------------|----------------------------------|
@@ -357,6 +357,8 @@ VerveStacks maintains comprehensive data source documentation within the VS_mapp
 | dem_com        | Commercial electricity demand    |
 | dem_ind        | Industrial electricity demand    |
 | dem_tra        | Transport electrification demand |
+
+***Demand Sector Definitions***
 
 ## Techno-Economic Assumptions Reference
 
@@ -366,68 +368,68 @@ VerveStacks maintains comprehensive technology assumption gleaned from the world
 
 **Core Technology Parameters**
 
-**Techno-Economic Parameter Categories**
-
-| **Parameter Type** | **Content & Data Sources** |
+| **Parameter Type**            | **Content & Data Sources**                                                                                                                              |
 |----------------------|--------------------------------------------------|
-| **Base Technology Costs** | Base CAPEX, FIXOM, VAROM by technology \| *Sources: IEA WEO 2024, NREL Annual Technology Baseline, IRENA Global Energy Transformation studies* |
-| **Scale Economy Factors** | Plant size adjustment multipliers \| *Sources: Engineering cost curves, industry benchmarks, EIA capital cost studies* |
+| **Base Technology Costs**     | Base CAPEX, FIXOM, VAROM by technology \| *Sources: IEA WEO 2024, NREL Annual Technology Baseline, IRENA Global Energy Transformation studies*          |
+| **Scale Economy Factors**     | Plant size adjustment multipliers \| *Sources: Engineering cost curves, industry benchmarks, EIA capital cost studies*                                  |
 | **Regional Cost Adjustments** | Labor, materials, market condition multipliers \| *Sources: World Bank construction cost indices, ILO wage statistics, regional energy market analysis* |
-| **Regional Mapping** | ISO-to-WEO region parameter inheritance \| *Sources: IEA World Energy Outlook regional classifications, economic development indicators* |
-| **Efficiency by Vintage** | Technology efficiency with degradation curves \| *Sources: EPRI power plant performance database, manufacturer specifications, operational data* |
-| **Technology Lifetimes** | Asset lifetime assumptions by fuel and vintage \| *Sources: IEA technology roadmaps, EPRI technical assessments, regulatory depreciation schedules* |
+| **Regional Mapping**          | ISO-to-WEO region parameter inheritance \| *Sources: IEA World Energy Outlook regional classifications, economic development indicators*                |
+| **Efficiency by Vintage**     | Technology efficiency with degradation curves \| *Sources: EPRI power plant performance database, manufacturer specifications, operational data*        |
+| **Technology Lifetimes**      | Asset lifetime assumptions by fuel and vintage \| *Sources: IEA technology roadmaps, EPRI technical assessments, regulatory depreciation schedules*     |
+
+***Techno-Economic Parameter Categories***
 
 **Advanced Operational Parameters**
 
-**Unit Commitment Parameter Categories**
-
-| **Parameter Type** | **Content & Data Sources** |
+| **Parameter Type**       | **Content & Data Sources**                                                                                                                                                                    |
 |----------------------|--------------------------------------------------|
 | **Unit Commitment Data** | Min up/down times, ramp rates, startup costs by technology and size class \| *Sources: NERC generator performance standards, utility operational data, IEEE power system flexibility studies* |
-| **Technology Mapping** | Pattern matching for UC parameter assignment \| *Sources: Power plant classification standards, VEDA/TIMES technology definitions, operational constraint databases* |
-| **Documentation** | Data source methodology and validation notes \| *Sources: Compilation methodology, data quality assessments, validation procedures* |
+| **Technology Mapping**   | Pattern matching for UC parameter assignment \| *Sources: Power plant classification standards, VEDA/TIMES technology definitions, operational constraint databases*                          |
+| **Documentation**        | Data source methodology and validation notes \| *Sources: Compilation methodology, data quality assessments, validation procedures*                                                           |
+
+***Unit Commitment Parameter Categories***
 
 **WEO Technology Cost Integration**
 
-**WEO 2024 Power Generation Assumptions Integration**
-
-| **WEO Sheet** | **VerveStacks Application** |
+| **WEO Sheet**                   | **VerveStacks Application**                                                  |
 |----------------------|--------------------------------------------------|
-| Renewables | Solar PV, onshore/offshore wind cost projections by region |
-| Nuclear | Nuclear power plant costs and performance parameters |
-| Gas | CCGT, OCGT technology costs and efficiency assumptions |
-| Coal | Coal plant costs with subcritical/supercritical/ultra-supercritical variants |
-| Fossil fuels equipped with CCUS | CCS retrofit costs and performance penalties |
+| Renewables                      | Solar PV, onshore/offshore wind cost projections by region                   |
+| Nuclear                         | Nuclear power plant costs and performance parameters                         |
+| Gas                             | CCGT, OCGT technology costs and efficiency assumptions                       |
+| Coal                            | Coal plant costs with subcritical/supercritical/ultra-supercritical variants |
+| Fossil fuels equipped with CCUS | CCS retrofit costs and performance penalties                                 |
+
+***WEO 2024 Power Generation Assumptions Integration***
 
 **Authoritative Data Sources Summary**
 
 The technology assumption files represent a curated compilation from the world's leading energy institutions:
 
-**Primary Institutional Sources**
-
-| **Institution** | **Contribution to VerveStacks Technology Database** |
+| **Institution**                                              | **Contribution to VerveStacks Technology Database**                                       |
 |----------------------|--------------------------------------------------|
-| **International Energy Agency (IEA)** | WEO 2024 regional technology costs, efficiency assumptions, market projections |
-| **National Renewable Energy Laboratory (NREL)** | Annual Technology Baseline (ATB) cost projections, performance parameters |
-| **International Renewable Energy Agency (IRENA)** | Global Energy Transformation cost studies, renewable technology benchmarks |
-| **Electric Power Research Institute (EPRI)** | Power plant performance databases, operational constraint parameters, flexibility studies |
-| **North American Electric Reliability Corporation (NERC)** | Generator performance standards, grid reliability requirements, operational limits |
-| **World Bank Group** | Construction cost indices, regional economic multipliers, infrastructure cost benchmarks |
-| **International Labour Organization (ILO)** | Regional wage statistics, labor cost adjustments, economic development indicators |
-| **U.S. Energy Information Administration (EIA)** | Capital cost studies, technology performance data, market analysis |
-| **Institute of Electrical and Electronics Engineers (IEEE)** | Power system flexibility studies, technical standards, operational best practices |
+| **International Energy Agency (IEA)**                        | WEO 2024 regional technology costs, efficiency assumptions, market projections            |
+| **National Renewable Energy Laboratory (NREL)**              | Annual Technology Baseline (ATB) cost projections, performance parameters                 |
+| **International Renewable Energy Agency (IRENA)**            | Global Energy Transformation cost studies, renewable technology benchmarks                |
+| **Electric Power Research Institute (EPRI)**                 | Power plant performance databases, operational constraint parameters, flexibility studies |
+| **North American Electric Reliability Corporation (NERC)**   | Generator performance standards, grid reliability requirements, operational limits        |
+| **World Bank Group**                                         | Construction cost indices, regional economic multipliers, infrastructure cost benchmarks  |
+| **International Labour Organization (ILO)**                  | Regional wage statistics, labor cost adjustments, economic development indicators         |
+| **U.S. Energy Information Administration (EIA)**             | Capital cost studies, technology performance data, market analysis                        |
+| **Institute of Electrical and Electronics Engineers (IEEE)** | Power system flexibility studies, technical standards, operational best practices         |
+
+***Primary Institutional Sources***
 
 **Data Quality and Validation Standards**
 
-**Quality Assurance Framework**
+| **Validation Level**           | **Quality Control Process**                                                    |
+|----------------------|--------------------------------------------------|
+| **Source Verification**        | All parameters traced to peer-reviewed publications or institutional databases |
+| **Cross-Reference Validation** | Multiple source comparison for consistency (IEA vs NREL vs IRENA)              |
+| **Regional Calibration**       | Local market conditions validated against national energy statistics           |
+| **Temporal Consistency**       | Technology cost trends validated against historical deployment data            |
+| **Operational Validation**     | Unit commitment parameters validated against actual plant performance data     |
 
-| **Validation Level** | **Quality Control Process** |
-|---|---|
-| **Source Verification** | All parameters traced to peer-reviewed publications or institutional databases |
-| **Cross-Reference Validation** | Multiple source comparison for consistency (IEA vs NREL vs IRENA) |
-| **Regional Calibration** | Local market conditions validated against national energy statistics |
-| **Temporal Consistency** | Technology cost trends validated against historical deployment data |
-| **Operational Validation** | Unit commitment parameters validated against actual plant performance data |
+***Quality Assurance Framework***
 
 **Complete Technology Assumption Tables**
 
@@ -472,16 +474,17 @@ Each existing plant is assigned a lifetime using a two-priority rule:
 
 The practical effect of the 2055 floor is most visible for legacy plants commissioned in the 1960s and 1970s: a coal unit from 1971 would have exhausted its 50-year design life well before 2055, so it receives a lifetime of 84 years (2055 − 1971) instead. Modern plants commissioned after 2005 are typically governed by the design life rather than the floor.
 
-**Illustrative Lifetime Outcomes**
-
-| **Plant** | **COD** | **Design life** | **2055 − COD** | **Assigned lifetime** |
+| **Plant**                        | **COD** | **Design life** | **2055 − COD** | **Assigned lifetime**          |
 |-------------------------|---------|-----------|-----------|------------------|
-| Medupi U6 (supercritical coal) | 2015 | 50 yrs | 40 yrs | 50 yrs *(design life)* |
-| Kusile U3 (supercritical coal) | 2021 | 50 yrs | 34 yrs | 50 yrs *(design life)* |
-| Legacy subcritical unit | 1971 | 50 yrs | 84 yrs | 84 yrs *(2055 floor)* |
-| Plant with known closure in 2035 | 2000 | — | — | 35 yrs *(explicit retirement)* |
+| Medupi U6 (supercritical coal)   | 2015    | 50 yrs          | 40 yrs         | 50 yrs *(design life)*         |
+| Kusile U3 (supercritical coal)   | 2021    | 50 yrs          | 34 yrs         | 50 yrs *(design life)*         |
+| Legacy subcritical unit          | 1971    | 50 yrs          | 84 yrs         | 84 yrs *(2055 floor)*          |
+| Plant with known closure in 2035 | 2000    | —               | —              | 35 yrs *(explicit retirement)* |
+
+***Illustrative Lifetime Outcomes***
 
 !!! note
+
     If a coal phase-out policy or early retirement scenario is being modeled, the correct mechanism is to record a retirement year against the affected plants in the source database. This takes priority over both the design life and the 2055 floor, and is the only way to force retirement before the horizon ends.
 
 **CCS Retrofit Lifetime**
@@ -528,44 +531,21 @@ Carbon capture retrofit options are treated as discrete 20-year investments, reg
 
 ## Data Quality and Validation
 
-**Coverage Metrics**
+**How much the gap-fill adds varies widely.** It is small for large thermal fleets and large for distributed renewables.
 
-VerveStacks provides complete transparency about data coverage and gap-filling:
+| Example                | Share of capacity that comes from the gap-fill |
+|------------------------|------------------------------------------------|
+| Germany, solar, 2022   | About two thirds                               |
+| India, bioenergy, 2022 | About three quarters                           |
 
-**Typical Coverage Statistics**
+**Defaults when a field is missing.**
 
-| **Data Source** | **Coverage** | **Quality Notes** |
-|----------------------|-------------------|--------------------------------|
-| GEM Individual Plants | 75-90% (varies by country scale and fuel type) | Excellent for large thermal and utility-scale renewables |
-| IRENA Statistical Gaps | 5-15% | Primarily small-scale solar and distributed wind |
-| EMBER Statistical Gaps | 2-8% | Minor thermal capacity adjustments |
-| Spatial Assignment | 95%+ | High-quality bus/REZ mapping for most plants |
+| Missing    | Default                                            |
+|------------|----------------------------------------------------|
+| Efficiency | The typical value for the technology and vintage   |
+| Start year | 2028 for units under construction; 2015 otherwise  |
+| Location   | The unit is attached at country level and reported |
 
-**Validation Rules**
+**Lifetime.** Units that would retire before 2055 on their technical lifetime are kept available to 2055, with the cost of life extension.
 
-**Data Quality Assurance**
-
-| **Validation Check** | **Business Rule** |
-|----------------------|--------------------------------------------------|
-| Capacity Consistency | Total capacity matches IRENA/EMBER national statistics ±5% |
-| Spatial Completeness | >95% of capacity assigned to specific buses or REZ zones |
-| Technology Mapping | All fuel types mapped to standardized model categories |
-| UC Parameter Coverage | All thermal plants >50 MW receive UC parameters |
-| Threshold Appropriateness | Fuel-specific thresholds align with country power system scale |
-| Vintage Validation | Start years between 1950-2022 (base year) |
-
-**Error Handling**
-
-**Data Quality Exceptions**
-
-| **Exception Type** | **Resolution Strategy** |
-|----------------------|--------------------------------------------------|
-| Missing Efficiency | Default to technology-typical efficiency (e.g., 35% for coal) |
-| Invalid Start Year | Construction plants: 2028, Others: 2015 (conservative estimate) |
-| Unmapped Technology | Flag for manual review, exclude from automated processing |
-| Missing Spatial Data | Assign to country-level commodity with quality warning |
-
-This comprehensive methodology ensures that every ISO receives a complete, spatially-intelligent, and operationally-realistic characterization of its existing power generation fleet - the foundation for all subsequent energy system modeling and scenario analysis.
-
-!!! note
-    This methodology has been validated across 100+ countries and territories, from small island systems to continental grids, consistently delivering plant-level precision with statistical completeness for robust energy system optimization modeling.
+The comparison with IRENA, Ember and UN statistics is described in *Step 6* above.

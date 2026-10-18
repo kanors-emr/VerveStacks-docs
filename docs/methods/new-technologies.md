@@ -1,207 +1,193 @@
 # New Technology Characterization
 
-**Regionally differentiated, uncertainty-aware cost assumptions for new power generation and storage technologies**
+**What the model may build, what it costs, and where it can go**
 
-VerveStacks provides a single, consistent set of techno-economic assumptions for the **27 new-build power generation and storage technologies** that drive long-term capacity expansion in every ISO model. Rather than copying numbers from one study or letting each user assemble their own inputs, this module compiles a unified reference from two authoritative public sources — the IEA Global Energy and Climate (GEC) Model dataset (World Energy Outlook 2023) and the NREL Annual Technology Baseline (ATB 2024 v3) — and then maps the 9 native IEA world regions onto the specific region system of each VerveStacks model via GDP-weighted dominance.
+<figure class="vs-film" markdown="0">
+  <video controls preload="none" playsinline poster="../../_static/films/deu_new_technology_costs.jpg">
+    <source src="../../_static/films/deu_new_technology_costs.mp4" type="video/mp4">
+  </video>
+  <figcaption><strong>Watch first: New Technology Costs</strong> (2:08, narrated). Generated from a real build of the German model; every number on screen traces to a file. The sections below follow the film in the same order, with the rules and file names behind each step. Also: <a href="../../films/v/newtech_DEU.html">interactive version</a> · <a href="../../films/v/newtech_IND.html">India</a> · <a href="../../films/">all films</a>.</figcaption>
+</figure>
 
-**Separation of concerns.** Existing-stock characterization tells the model *what is on the ground today*. New-technology characterization tells it *what can be built tomorrow, at what cost, and how that cost evolves through 2050*.
+Existing-stock characterization tells the model what is on the ground today. This page covers what can be built tomorrow: the list of options, their cost from now to 2050, the cost of the money to build them, and the nodes where they are offered.
 
-## Methodology Overview
+The numbers come from one module, `4technology_characterization/`, which is shared by VerveStacks and the KiNESYS global model.
 
-The new-technology characterization follows a four-stage process, producing a single long-format reference file (`unified_reference_costs.csv`) that all downstream model-building scripts consume:
+!!! note
 
-1.  **Level from IEA GEC**: regional absolute cost levels and operating parameters (O&M, efficiency, capacity factor, construction time) for 9 world regions at 2022 / 2030 / 2050.
-2.  **Spread from NREL ATB**: Conservative / Moderate / Advanced trajectories are converted into hi / mid / lo multipliers applied to IEA regional costs, preserving regional differentiation while importing ATB's richer uncertainty characterization.
-3.  **Storage and SMR gap-fill**: technologies not covered by IEA GEC (utility-scale batteries, small modular reactors) are sourced directly from ATB, with regional scaling applied where appropriate.
-4.  **Region mapping**: the 9 IEA regions are projected onto each model's native region system using a GDP-weighted dominance rule computed from the KiNESYS `TIAM_RegionMap`.
+    **Status, October 2026.** The cost table holds everything described here. The country builds read the central reference path from it. The high, low and learning paths, and the country cost of capital, are emitted today for the KiNESYS models and are being brought into the country builds.
 
-## Data Sources
+## 1. The menu
 
-**IEA GEC Model (WEO 2023) — regional cost levels**
+A country model is offered these new plant types (`CONV_TECH_CATALOG` in `excel_manager.py`):
 
-The IEA GEC power-generation technology cost dataset accompanies the *World Energy Outlook 2023* and provides regionally differentiated techno-economic parameters for major generation technologies under the Stated Policies (STEPS) scenario.
+| Group          | Technologies                                                                                                                                                                                          |
+|-----------------|-------------------------------------------------------|
+| Power only     | Gas combined cycle, gas turbine, gas with carbon capture; coal subcritical, supercritical, ultra-supercritical and gasification; nuclear, small modular reactor; biomass, biomass with carbon capture |
+| Heat and power | Gas combined cycle (extraction), biomass chips (extraction); gas with carbon capture, biomass pellets with carbon capture                                                                             |
+| Heat only      | Gas boiler, biomass boiler, electric boiler, large air-source heat pump                                                                                                                               |
+| Storage        | Lithium-ion battery, 4-hour and 8-hour                                                                                                                                                                |
 
-- **Coverage**: 9 regions — European Union, United States, Japan, Russia, China, India, Middle East, Africa, Brazil
-- **Time points**: 2022, 2030, 2050
-- **Parameters extracted**:
-  - Overnight capital cost (USD 2022/kW)
-  - Annual fixed O&M cost (USD 2022/kW-yr)
-  - Gross efficiency on LHV basis (thermal plants)
-  - Capacity factor (renewable plants)
-  - Construction time in years (renewables only)
-- **Sheets parsed**: Gas, Coal, Fossil fuels equipped with CCUS, Nuclear, Renewables
-- **Role in the unified dataset**: primary source for **regional absolute cost levels** and all operating parameters.
+Three kinds of new capacity are handled elsewhere:
 
-**NREL ATB 2024 v3 — cost-trajectory uncertainty**
+-   **Solar and wind** are built in resource clusters with their own profiles and connection costs. See [Renewable Energy Characterization](renewable-characterization.md). Their capital costs come from the same cost table.
+-   **Hydro** is limited by sites, not by a flat cost. See [Hydro Availability Scenarios](hydro-availability-scenarios.md).
+-   **Carbon-capture retrofits** of existing units are created with the existing stock. See [Existing Stock Characterization](existing-stock-characterization.md).
 
-The ATB provides US-specific cost projections under three scenarios that reflect different rates of technological progress.
+## 2. Many sources, one table
 
-- **Scenarios**: Conservative, Moderate, Advanced
-- **Time points**: annual from 2022 to 2050
-- **Sheets used**: `Summary_CAPEX`, `Summary_FOM` (battery storage), `Financial and CRP Inputs` (technology lifetimes)
-- **Role in the unified dataset**:
-  - **Hi / lo cost spread multipliers** for generation technologies (ratio of Conservative and Advanced to Moderate, applied to IEA regional costs)
-  - **Absolute cost levels** for battery storage (no IEA GEC data available for storage)
-  - **Absolute cost levels** for Nuclear SMR (not covered by IEA GEC)
-  - **Technology lifetimes** from the TechLife CRP table
+No single source covers every technology, region and year. The module reads each source into a standard table, converts everything to one currency, and assembles one long file, `unified_reference_costs.csv`: 63 technologies, 9 regions, about 19,400 rows.
 
-## Compilation Strategy
+| Source                                                      | Role                                                                                                                                          |
+|-------------------------|-----------------------------------------------|
+| IEA World Energy Outlook 2025, power generation assumptions | Regional cost levels, fixed operating cost, efficiency and capacity factor for power-only technologies, in 9 regions                          |
+| NREL Annual Technology Baseline 2024 v3                     | The high and low spread around the central path; batteries; small modular reactors; technical lifetimes                                       |
+| Danish Energy Agency technology catalogues                  | Combined heat and power, heat-only plants, heat pumps, storage, and carbon capture (June 2026 datasheet for electricity and district heating) |
+| IRENA Renewable Power Generation Costs                      | Observed installed costs: the anchors and history for the learning paths                                                                      |
+| US EIA Annual Energy Outlook, Lazard                        | Variable operating cost where the main sources give none                                                                                      |
+| Damodaran (NYU Stern), World Bank indicators                | Cost of capital (section 5)                                                                                                                   |
 
-**Generation technologies (24 types)**
+***Sources and what each supplies***
 
-For each technology and region, the **mid** scenario capital cost equals the IEA GEC STEPS value directly. The **hi** and **lo** scenarios are derived by multiplying the mid value by spread multipliers computed from the ATB:
+**One currency.** Sources report in different price years and currencies. Every value is converted to US dollars of 2022, using the US GDP deflator and, for the Danish catalogues, the European Central Bank's annual euro–dollar rates.
 
-``` text
-capex_hi(region, year) = capex_mid(region, year) x [ATB Conservative / ATB Moderate](year)
-capex_lo(region, year) = capex_mid(region, year) x [ATB Advanced     / ATB Moderate](year)
-```
+**Every number keeps its source.** `source_versions.csv` records, for each input, the publisher, version, file hash and extraction date. A value in the cost table can be traced to the file it came from.
 
-This preserves IEA's regional cost differentiation while importing ATB's technology-learning uncertainty range. Technologies without an ATB match (e.g. `coal_subcritical`, `coal_ultrasupercritical`, `biomass_cofiring`, `gas_chp`, `gas_fuelcell`) receive hi / lo multipliers of 1.0 — only the mid trajectory is reported. When the ATB spread is available at years that do not exactly match the IEA data points (2022 / 2030 / 2050), the closest available ATB year is used.
+**Costs are overnight.** Interest during construction is not included; construction time is carried as its own parameter.
 
-**ATB to VerveStacks technology mapping for spread computation**
+## 3. Not one future
 
-| ATB Technology | ATB TechDetail | Mapped to            |
-|----------------|----------------|----------------------|
-| UtilityPV      | Class5         | `solar_pv`           |
-| CSP            | Class2         | `solar_csp`          |
-| LandbasedWind  | Class4         | `wind_onshore`       |
-| OffShoreWind   | Class3         | `wind_offshore`      |
-| Geothermal     | HydroFlash     | `geothermal`         |
-| Hydropower     | NPD4           | `hydro_large`        |
-| Nuclear        | Nuclear        | `nuclear`            |
-| Biopower       | Dedicated      | `biomass`            |
-| NaturalGas_FE  | CCAvgCF        | `gas_ccgt`           |
-| NaturalGas_FE  | CCCCSAvgCF     | `gas_ccs`            |
-| NaturalGas_FE  | CTAvgCF        | `gas_turbine`        |
-| Coal_FE        | newAvgCF       | `coal_supercritical` |
-| Coal_FE        | CCS95AvgCF     | `coal_ccs`           |
+Nobody knows what a plant will cost in 2050, so each technology carries a range. There are two families of paths.
 
-**Battery storage (2 types)**
-
-Battery storage has no IEA GEC entry. Costs come entirely from ATB for 4-hour and 8-hour utility-scale Li-ion systems:
-
-- Capital cost and fixed O&M are taken from the ATB `Summary_CAPEX` and `Summary_FOM` sheets for Utility-Scale Battery Storage.
-- ATB Moderate becomes `capex_mid`, Conservative becomes `capex_hi`, Advanced becomes `capex_lo`.
-- The same US-based cost is applied uniformly across all 9 regions, reflecting that Li-ion cells are a globally traded commodity with limited regional differentiation today.
-- Native ATB time points are preserved: 2022, 2025, 2030, 2035, 2040, 2045, 2050.
-- Roundtrip efficiency is 0.86 (ATB reference value).
-
-**Nuclear Small Modular Reactors (1 type)**
-
-IEA GEC does not break out SMRs. Costs come from ATB (`Nuclear` technology, `NuclearSMR` TechDetail) and are regionally differentiated using the IEA large-nuclear cost ratio:
+**The reference family** (`capex_mid`, `capex_hi`, `capex_lo`) follows institutional projections. The central path is the IEA regional value. High and low come from the ratio of NREL's Conservative and Advanced cases to its Moderate case:
 
 ``` text
-capex_smr(region, year) = capex_smr_us(year) x [IEA nuclear(region) / IEA nuclear(US)](year)
+capex_hi(region, year) = capex_mid(region, year) × ATB Conservative / ATB Moderate
+capex_lo(region, year) = capex_mid(region, year) × ATB Advanced     / ATB Moderate
 ```
 
-This assumes SMR regional cost drivers — labour, regulation, site preparation — correlate with large-nuclear cost drivers. The same scaling is applied to fixed O&M. ATB projects SMR capex crossing below large-nuclear capex by roughly 2040 in the Moderate scenario, reflecting expected learning from modular factory fabrication. SMR uses native ATB time points 2030, 2035, 2040, 2045, 2050 (no 2022 point), a 40-year lifetime (shorter design-certification horizon than large reactors), and a 3-year construction time (factory fabrication plus on-site assembly versus 7 years for large nuclear).
+Technologies with no NREL counterpart have a central path only.
 
-## Lifetime and Construction Time
+**The learning family** (`capex_l0`, `capex_l1`, `capex_l2`) exists for solar, onshore wind, offshore wind and batteries. Cost falls by a fixed percentage with every doubling of what the world has built (Wright's law). The three paths are slow, central and fast learning, anchored on observed costs. Regions sit at a premium above a global frontier.
 
-Lifetime and construction time are treated as time-invariant, technology-specific constants.
+| Technology and family | Low / fast | Central | High / slow |
+|-----------------------|------------|---------|-------------|
+| Nuclear, reference    | 2,401      | 4,234   | 7,770       |
+| Solar, learning       | 303        | 467     | 616         |
 
-**Lifetime (years)**
+***Examples, European Union, capital cost in 2050 (USD 2022 per kW)***
 
-- *From ATB TechLife CRP* — Solar PV / CSP (30), Wind onshore / offshore (30), Geothermal (30), Hydro large (100), Nuclear large (60), Biopower (45).
-- *Standard assumptions* — Hydro small (60), Biomass cofiring (40), Biomass CHP (25), Biomass CCS (30), Gas CCGT / turbine / CCS (30), Gas CHP (25), Gas fuel cell (20), all coal variants (40), Battery 4h / 8h (20), Nuclear SMR (40).
+Learning is an input, not a result. The model does not lower costs because it builds more: learning depends on world deployment, which one country's model does not decide.
 
-**Construction time (years)**
+## 4. Same plant, different place
 
-- *From IEA GEC Renewables sheet* — Solar PV (1.5), Wind onshore (1.5), Wind offshore (3), Hydro large / small (4), Biomass large (3), Biomass cofiring (2), Biomass CHP (2), Biomass CCS (3), CSP (3), Geothermal (4).
-- *Standard assumptions* — Nuclear large (7), Nuclear SMR (3), Gas CCGT / CHP (3), Gas turbine / fuel cell (2), Gas CCS (4), Coal sub / super / ultra / IGCC (4), Coal CCS variants (5), Battery 4h / 8h (1).
+Costs come in the nine regions of the IEA dataset: United States, European Union, Japan, Russia, China, India, Middle East, Africa and Brazil.
 
-## Technology Coverage
+| Region               | Capital cost |
+|----------------------|--------------|
+| China                | 496          |
+| India                | 620          |
+| European Union       | 885          |
+| United States, Japan | 974          |
 
-27 technologies across six families, each carrying the `en_` prefix used in the TIMES commodity and process naming conventions:
+***Gas combined cycle built in 2030, central path (USD 2022 per kW)***
 
-**Technology families**
+Each country takes the costs of its region, through the `ep_regionmap` sheet. The labels are the IEA's and are broader than they sound: "United States" also serves Canada, Mexico and Australia; "Brazil" serves Latin America.
 
-| Family | Technologies |
-|-------------------|-----------------------------------------------------|
-| Thermal — Gas | `en_gas_ccgt`, `en_gas_turbine`, `en_gas_chp`, `en_gas_fuelcell`, `en_gas_ccs` |
-| Thermal — Coal | `en_coal_subcritical`, `en_coal_supercritical`, `en_coal_ultrasupercritical`, `en_coal_igcc`, `en_coal_ccs`, `en_coal_oxyfuel_ccs`, `en_coal_igcc_ccs` |
-| Nuclear | `en_nuclear`, `en_nuclear_smr` |
-| Renewables | `en_solar_pv`, `en_solar_csp`, `en_wind_onshore`, `en_wind_offshore`, `en_hydro_large`, `en_hydro_small`, `en_geothermal` |
-| Bioenergy | `en_biomass`, `en_biomass_cofiring`, `en_biomass_chp`, `en_biomass_ccs` |
-| Storage | `en_battery_4h`, `en_battery_8h` |
+Technologies from the Danish catalogues are priced for Denmark. They are moved to other regions with the regional ratio of a comparable IEA technology. In the reference family, battery costs are the same in every region.
 
-## Regional Coverage and Model-Region Mapping
+## 5. The cost of money
 
-**Native IEA regions (9)**
-
-The unified reference file keeps costs at the native IEA granularity — no pre-aggregation to R10 or other schemes — so downstream users can choose their own mapping:
-
-1.  United States
-2.  European Union
-3.  Japan
-4.  China
-5.  India
-6.  Russia
-7.  Middle East
-8.  Africa
-9.  Brazil
-
-**GDP-weighted dominance mapping**
-
-To drop these 9 cost regions onto an arbitrary VerveStacks model region system (country-level, AR6 R10, KiNESYS `S100D`, etc.), each model region is mapped to the IEA region with the largest **GDP share** among the countries it contains. The GDP totals come from the `WEO_PG_assumptions` and `GDP` columns of the shared KiNESYS `TIAM_RegionMap` workbook. For each model region:
+A plant is paid for over decades, so the rate at which money is borrowed matters as much as the price. The module builds a cost of capital for each country and technology (`source_tables/std_wacc.csv`):
 
 ``` text
-ieapg(model_region) = argmax_{ieapg_r}  sum_{c in model_region, c in ieapg_r} GDP(c)
+cost of capital = cost for the industry, worldwide   (Damodaran, global industry file)
+                + premium for the country            (Damodaran, country risk premiums)
 ```
 
-A `gdp_share` value of 1.0 indicates a clean, single-region match; values below 1.0 indicate a heterogeneous model region where the dominant IEA region is used but a minority share of the GDP belongs to a different cost region. Typical examples:
+Rates are real: the nominal rate less 2.3 points of inflation.
 
-**Example region mappings (selected rows)**
+| Country | Gas plant | Coal plant |
+|---------|-----------|------------|
+| Germany | 3.5%      | 6.2%       |
+| India   | 5.4%      | 9.5%       |
 
-| Model region system | Model region | IEA region | GDP share |
-|----------------------|----------------------|---------------|---------------|
-| KiNESYS S100D (country) | `USA` | `ieapg_united_states` | 1.00 |
-| KiNESYS S100D (country) | `Australia` | `ieapg_united_states` | 1.00 |
-| KiNESYS S100D (country) | `Turkey` | `ieapg_european_union` | 1.00 |
-| KiNESYS DTC (demand-region) | `East_Europe` | `R10REF_ECON` | 0.81 |
-| KiNESYS DTC (demand-region) | `Other_AsiaEm_d` | `R10CHINA+` | 0.40 |
+***Real cost of capital***
 
-The mapping is computed by `map_ieapg_regions.py` and `map_ar6r10_regions.py` and stored as lightweight CSV files (`mapping.csv`, `mapping_KiNESYS_S100D.csv`, `mapping_KiNESYS_DTC_AR6R10.csv`, `mapping_S100D_AR6R10.csv`) so that the same unified reference can feed multiple model variants without rerunning the underlying cost compilation.
+Coal plants carry the rate of the coal industry, not of power generation, on the view that the risk being priced is exposure to the fuel. This is an interpretation, and it adds 2.7 to 4.1 points over gas depending on the country.
 
-## Output Format
+An alternative file takes renewable rates from IRENA's survey of financing costs.
 
-The compiled output (`unified_reference_costs.csv`) is in long format with one row per (technology, region, year, parameter) combination:
+The rate enters the model as a technology-specific discount rate, separate from the capital cost.
 
-**Unified reference schema**
+## 6. Where it can go
 
-| Column | Description |
+A new thermal plant is not offered everywhere. It is offered at every node that already hosts a coal, gas or nuclear unit above the country's size threshold for that fuel: places where fuel supply, cooling and grid connection exist.
+
+| Design          | Nodes open to new thermal plants | Of  |
+|-----------------|----------------------------------|-----|
+| Germany `kan20` | 27                               | 45  |
+| India `kan50`   | 40                               | 50  |
+
+The rule is not fuel-specific. A node that qualifies is offered every thermal option. Batteries are offered at every node that hosts a unit of any fuel above its threshold. See [Grid Representation](grid-representation.md).
+
+## Lifetime and construction time
+
+These are constants by technology.
+
+| Technology                      | Lifetime (years) | Construction (years) |
+|---------------------------------|------------------|----------------------|
+| Gas combined cycle              | 30               | 3                    |
+| Gas turbine                     | 30               | 2                    |
+| Gas with carbon capture         | 30               | 4                    |
+| Coal, all types                 | 40               | 4                    |
+| Nuclear                         | 60               | 7                    |
+| Small modular reactor           | 40               | 3                    |
+| Biomass                         | 45               | 3                    |
+| Biomass with carbon capture     | 30               | 3                    |
+| Heat and power plants           | 25               | 2 to 5               |
+| Heat-only plants and heat pumps | 20 to 25         | 1 to 3               |
+| Batteries                       | 20               | 1                    |
+
+## The cost table
+
+`unified_reference_costs.csv` has one row per technology, region, year and parameter.
+
+| Column          | Description                                                                                                                                                                                                                               |
 |---------------|---------------------------------------------------------|
-| `variable` | Technology identifier (e.g. `solar_pv`, `gas_ccgt`, `battery_4h`) |
-| `region` | IEA native region name (e.g. `United States`, `European Union`) |
-| `year` | Data year — native to source: 2022 / 2030 / 2050 for IEA; 2022–2050 at 5-year steps for ATB batteries |
-| `parameter` | One of: `capex_mid`, `capex_hi`, `capex_lo`, `fixed_om`, `efficiency`, `capacity_factor`, `lifetime`, `construction_time`, `roundtrip_efficiency` |
-| `value` | Numeric value |
-| `unit` | Unit string (e.g. `USD2022/kW`, `fraction_LHV`, `years`) |
+| `variable`      | Technology, for example `en_gas_ccgt`, `en_battery_4h`                                                                                                                                                                                    |
+| `region`        | One of nine, for example `ieapg_european_union`                                                                                                                                                                                           |
+| `year`          | The source's own years between 2020 and 2050. Values are not interpolated; the model interpolates between its own milestone years.                                                                                                        |
+| `parameter`     | Capital cost paths (`capex_mid`, `_hi`, `_lo`, `_l0`, `_l1`, `_l2`), `fixed_om`, `variable_om`, `efficiency`, `heat_efficiency`, the heat-and-power coefficients, `capture_rate`, `roundtrip_efficiency`, `lifetime`, `construction_time` |
+| `value`, `unit` | The number and its unit, for example `USD2022/kW`                                                                                                                                                                                         |
 
-No interpolation is performed — data points are kept at the native years provided by each source. TIMES performs its own internal interpolation between milestone years.
+***Columns***
 
-## Key Design Decisions
+| File                           | Role                                                                     |
+|--------------------------------|----------------------------------------|
+| `extractors/`                  | One reader per source, each writing a standard table to `source_tables/` |
+| `compile_unified_reference.py` | Assembles the cost table from the standard tables                        |
+| `learning_curves.py`           | Builds the learning family                                               |
+| `source_versions.csv`          | Version, hash and extraction date of every input                         |
+| `source_tables/std_wacc.csv`   | Cost of capital by country and technology                                |
+| `excel_manager.py`             | Reads the cost table into each country model                             |
 
-1.  **IEA for levels, ATB for spread.** IEA GEC provides the best available regionally differentiated cost estimates from a single consistent modelling framework. ATB provides richer uncertainty characterization (Conservative / Moderate / Advanced) but only for the US. Combining both gives regional differentiation with cost uncertainty — something no single source provides on its own.
-2.  **No AR6 scenario-database costs used.** An earlier approach attempted to use IPCC AR6 scenario-database costs, but these were found to be unreliable for absolute cost levels due to model heterogeneity, missing technologies, and implausible entries (particularly for offshore wind). They remain useful for cross-validation and are not discarded — simply not used as a primary input.
-3.  **Battery costs are not regionally differentiated.** IEA GEC does not cover storage. ATB US costs are applied uniformly across regions. This is a defensible first approximation because Li-ion battery cells are a globally traded commodity; users who need regional differentiation can introduce it in a scenario overlay.
-4.  **All costs are overnight.** Neither source includes interest during construction or other financing costs. Construction time is carried as a separate parameter so that models which compute IDC endogenously can do so consistently.
-5.  **Currency year is USD 2022.** Both IEA GEC (WEO 2023) and ATB 2024 v3 report in 2022 US dollars. No currency conversion is needed at compile time.
-6.  **Nuclear SMR uses ATB absolute costs with IEA regional scaling.** IEA GEC does not include SMR. ATB provides US SMR costs directly; these are scaled to other regions using the IEA large-nuclear cost ratio (region / US). This preserves the regional cost pattern while sourcing the SMR-specific learning trajectory from ATB.
-7.  **Model-region mapping is GDP-weighted.** Cost levels are assumed to track the economic weight of countries within each model region, not simple geographic membership. This keeps cost assignments stable when model-region boundaries change, and the `gdp_share` column surfaces cases where the dominant assignment hides significant heterogeneity.
+***Files***
 
-## Reproducibility
+## Limits to know about
 
-Every artefact in this module can be regenerated from public sources:
+-   **The country builds use the central reference path.** Scenario files for the other paths exist for the KiNESYS models and are being connected to the country builds.
+-   **Cost of capital is not yet read by the country builds.**
+-   **Region labels are coarse.** Nine regions cover the world.
+-   **Source terms.** The cost table is derived from published sources, some of which restrict redistribution of their data. The table is used inside the models; it is not offered as a dataset.
 
-**Artefacts and scripts**
+!!! info "See also"
 
-| File | Produced by |
-|---------------------------------|---------------------------------------|
-| `unified_reference_costs.csv` | `compile_unified_reference.py` |
-| `technology_descriptions.csv` | Emitted alongside the compilation step |
-| `mapping_KiNESYS_S100D.csv` | `map_ieapg_regions.py --region-col KiNESYS_S100D` |
-| `mapping_KiNESYS_DTC_AR6R10.csv` | `map_ar6r10_regions.py --region-col KiNESYS_DTC` |
-| `mapping_S100D_AR6R10.csv` | `map_ar6r10_regions.py --region-col KiNESYS_S100D` |
+    [Existing Stock Characterization](existing-stock-characterization.md)
 
-The input files (`GEC Model power generation technology costs dataset.xlsb`, `ATB_2024_v3_Workbook.xlsx`, `TIAM_RegionMap.xlsx`) are openly published by the IEA, NREL, and the KiNESYS framework respectively. Every number in every VerveStacks model is therefore traceable end-to-end — from the public source workbook, through a documented transformation, to the `~FI_T` row in the VEDA input tables.
+    :   Costs and performance of plants that already exist
+
+    [Grid Representation](grid-representation.md)
+
+    :   Nodes, and where new plants are offered
+
