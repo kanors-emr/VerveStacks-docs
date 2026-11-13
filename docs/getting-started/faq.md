@@ -12,7 +12,13 @@
 
 :   The proprietary VerveStacks model-generation pipeline is not publicly available to ensure the project’s sustainability and to create a new class of model users, rather than just model builders. The pipeline represents years of unfunded, expert development, and releasing it would risk returning modeling practice to its old cycle—where most effort is spent rebuilding models from scratch, rather than using and learning from them. By keeping the pipeline closed but releasing curated sets of high-quality model variants for open use, VerveStacks shifts focus to wide, impactful usage and transparency while protecting the resources needed to grow and maintain the project. This approach aims to establish “model usage” as the new norm for energy system analysis—similar to how operating systems made computers widely accessible and useful.
 
-<a id="faq-name-origin"></a>**Where does the name "VerveStacks" come from?**
+**Do models I build on VerveStacks have to stay open?**
+
+:   No. VerveStacks models are free to use and open to inspect, but what you do with one is yours. A model you modify or extend, the scenarios you add and the results you produce belong to you and can stay private. If you publish results, cite VerveStacks and the model version; if you redistribute a model, document your changes. Permitted uses and the conditions on commercial redistribution are on the License page. See the [License](../reference/license.md) page.
+
+<a id="faq-name-origin"></a>
+
+**Where does the name "VerveStacks" come from?**
 
 :   *Verve* captures the vigor, energy, and passion of modeling done well — a deliberate pun for an energy platform, and the human, exploratory side of the work rather than equations and solver logs. *Stacks* refers to the layered scenario-assumption sets (data, technology, policy, demand, grid, and temporal layers) that get assembled into a model fit for the question. The word came first; the backronym *Versatile Engine for Regional and Varied Energy scenarios* was fitted later. See the [glossary](../reference/glossary.md) for the canonical definition.
 
@@ -32,17 +38,17 @@
 
 **How are regions defined?**
 
-:   VerveStacks represents each country as a set of **high-voltage substation clusters** derived from OpenStreetMap transmission infrastructure, not as administrative divisions. Power plants, renewable-energy zones, and demand are all attached to these clusters. See [Demand Allocation to Grid Nodes](../methods/grid-representation.md#demand-allocation-to-grid-nodes) for the full allocation methodology.
+:   VerveStacks represents each country as a set of **grid nodes**: real high-voltage substations taken from OpenStreetMap transmission data, not administrative divisions. Power plants, wind and solar clusters, and demand are all attached to these nodes. See [Grid Representation](../methods/grid-representation.md).
 
 **Why does my state / prefecture / province have no electricity demand?**
 
-:   This is usually by design, not a bug. VerveStacks allocates demand to the physical transmission network — specifically, to high-voltage (≥ 110 kV by default) substation clusters — and then sparsifies the result so that only the buses which collectively cover ~80 % of national demand are retained. Consequences:
+:   This is by design. Demand is placed on the physical transmission network, at grid nodes, using population and industrial sites as keys. Consequences:
 
-    - An administrative region whose load is physically served by a substation just across its border will appear at that neighbouring substation.
-    - An administrative region with no transmission-level infrastructure at all will have its load absorbed by the nearest eligible bus, which may lie outside the region.
-    - A long tail of small-share buses is intentionally discarded to keep the TIMES model tractable.
+    -   An administrative region whose load is served by a substation just across its border will appear at that substation.
+    -   A region with no node of its own has its load carried by the nearest nodes, which may lie outside the region.
+    -   How many nodes a country has is a design choice. A coarser design has fewer, larger nodes.
 
-    This is a deliberate trade-off toward physical realism over administrative completeness. See [Design Intent](../methods/grid-representation.md#demand-allocation-design-intent) for the rationale, [the sparsification step](../methods/grid-representation.md#demand-allocation-sparsification) for how the long tail is dropped, and [Tuning Knobs and Known Limitations](../methods/grid-representation.md#demand-allocation-tuning) for the knobs (`coverage_target`, `min_voltage_kv`, `pop_min`) if you need to retain more regions.
+    See [the design intent](../methods/grid-representation.md#demand-allocation-design-intent) and [the method](../methods/grid-representation.md#demand-allocation-pipeline).
 
 **What time resolution is available?**
 
@@ -53,4 +59,6 @@
 :   Yes, all model files can be downloaded and customized using standard VEDA tools.
 
 !!! note
+
     More detailed FAQ entries will be added based on user feedback.
+
