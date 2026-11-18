@@ -1,15 +1,14 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 /* KanORS brand styles (shared with Veda 2.0 and Veda Online documentation) */
 
-/* Header and tabs use Inter, matching Veda 2.0. Body text stays Roboto. */
+/* Header and tabs use Nunito Sans (KanORS); reading text is set in typography.css. */
 .md-header,
 .md-tabs {
-  font-family: "Inter", sans-serif;
+  font-family: "Nunito Sans", sans-serif;
 }
 
 .md-header__topic {
-  font-family: "Inter", sans-serif;
+  font-family: "Nunito Sans", sans-serif;
   font-size: 0.9rem;
   line-height: 2.4rem;
 }
@@ -19,20 +18,20 @@
 }
 
 .md-tabs__link {
-  font-family: "Inter", sans-serif;
+  font-family: "Nunito Sans", sans-serif;
   font-size: 0.7rem;
   font-weight: 400;
 }
 
 /* Homepage: keep the site name fixed and bold. The page title is the same words and would slide in over it. */
-body:has(.vs-hero-banner) .md-header__topic:first-child {
+body:has(.vs-home) .md-header__topic:first-child {
   opacity: 1;
   transform: none;
   transition: none;
   font-weight: 700;
 }
 
-body:has(.vs-hero-banner) .md-header__topic:not(:first-child) {
+body:has(.vs-home) .md-header__topic:not(:first-child) {
   display: none;
 }
 

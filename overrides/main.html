@@ -39,8 +39,5 @@
 {% endblock %}
 
 {% block content %}
-  {% if page.is_homepage or page.file.src_uri == "index.md" %}
-    {% include "partials/hero-banner.html" %}
-  {% endif %}
   {% include "partials/content.html" %}
 {% endblock %}

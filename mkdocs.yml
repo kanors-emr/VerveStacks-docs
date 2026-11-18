@@ -41,9 +41,7 @@ theme:
       toggle:
         icon: material/weather-sunny
         name: Switch to light mode
-  font:
-    text: Roboto
-    code: Roboto Mono
+  font: false
 
 plugins:
   - search:
@@ -54,6 +52,8 @@ plugins:
 extra_css:
   - _static/custom.css
   - stylesheets/extra.css
+  - stylesheets/typography.css
+  - stylesheets/home.css
 
 extra_javascript:
   - _static/image-lightbox.js
