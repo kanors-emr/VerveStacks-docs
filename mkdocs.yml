@@ -87,7 +87,7 @@ markdown_extensions:
       permalink: true
       toc_depth: 3
 
-copyright: "&copy; KanORS-EMR, 2026"
+copyright: '&copy; KanORS-EMR, 2026 &middot; <a href="https://kanors-emr.github.io/VerveStacks-docs/films/">Method videos</a>'
 
 not_in_nav: |
   /case-studies/
@@ -113,6 +113,7 @@ nav:
 
   - Under the Hood:
     - The Reference Model: methods/reference-model.md
+    - Method videos: https://kanors-emr.github.io/VerveStacks-docs/films/
     - Existing Stock Characterization: methods/existing-stock-characterization.md
     - Electricity Demand: methods/electricity-demand.md
     - Weather to Capacity Factors: methods/weather-to-capacity-factors.md

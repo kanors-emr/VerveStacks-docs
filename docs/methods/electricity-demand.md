@@ -6,7 +6,7 @@
   <video controls preload="none" playsinline poster="../../_static/films/deu_electricity_demand.jpg">
     <source src="../../_static/films/deu_electricity_demand.mp4" type="video/mp4">
   </video>
-  <figcaption><strong>Watch first: Germany's Electricity Demand</strong> (1:55, narrated). Generated from a real build of the German model; every number on screen traces to a file. The sections below follow the film in the same order, with the rules and file names behind each step. Also: <a href="../../films/v/demand_DEU.html">interactive version</a> · <a href="../../films/v/demand_IND.html">India</a> · <a href="../../films/">all films</a>.</figcaption>
+  <figcaption><strong>Watch first: Germany's Electricity Demand</strong> (1:55, narrated). Generated from a real build of the German model; every number on screen traces to a file. The sections below follow the video in the same order, with the rules and file names behind each step. Also: <a href="../../films/v/demand_DEU.html">interactive version</a> · <a href="../../films/v/demand_IND.html">India</a> · <a href="../../films/">all method videos</a>.</figcaption>
 </figure>
 
 Demand in a VerveStacks model is built in five steps:

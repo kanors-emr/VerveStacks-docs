@@ -47,9 +47,9 @@ VerveStacks supplies that 95% for every country in the library, documented to it
 <figure class="vs-hfilm">
   <div class="vs-hfilm__frame" id="vs-hfilm">
     <img src="_static/films/deu_power_grid.jpg" alt="Still from the film Germany's Power Grid">
-    <button class="vs-play" type="button" aria-label="Play the film Germany's Power Grid" onclick="var f=document.getElementById('vs-hfilm');f.innerHTML='&lt;video controls autoplay playsinline src=&quot;'+f.querySelector('img').getAttribute('src').replace('.jpg','.mp4')+'&quot;&gt;&lt;/video&gt;';"></button>
+    <button class="vs-play" type="button" aria-label="Play the video Germany's Power Grid" onclick="var f=document.getElementById('vs-hfilm');f.innerHTML='&lt;video controls autoplay playsinline src=&quot;'+f.querySelector('img').getAttribute('src').replace('.jpg','.mp4')+'&quot;&gt;&lt;/video&gt;';"></button>
   </div>
-  <figcaption><strong>Germany's Power Grid</strong> · 1:59, narrated<br>From 795 substations to 45 nodes. One of six short films on how a country model is built. <a href="films/index.html">All films</a></figcaption>
+  <figcaption><strong>Germany's Power Grid</strong> · 1:59, narrated<br>From 795 substations to 45 nodes. One of six method videos on how a country model is built. <a href="films/index.html">All method videos</a></figcaption>
 </figure>
 
 </div>
@@ -64,7 +64,7 @@ Energy-system models have always had two barriers in front of them. Proprietary 
 
 VerveStacks starts from a separation. Building a model and using a model are different crafts. Building is the provisioning of data, pipelines and structure, and it is where most of a project's time goes. Using is asking questions, designing scenarios and interpreting what comes back, and it is where decisions are made. VerveStacks takes on the building, at scale and in the same way for every country, so that a new class of modellers can concentrate on use: expert users who know their system well and can now work with a model of it directly.
 
-For those who build, the same separation works the other way round. A VerveStacks model is an operating system for a national energy-system model (ESOM): a complete, calibrated base in which any part can be replaced, refined or extended without rebuilding the rest. Complexity is neither hidden nor handed over raw. The data is traceable, the methods are written down and filmed, and the defaults are chosen to travel from one country to the next.
+For those who build, the same separation works the other way round. A VerveStacks model is an operating system for a national energy-system model (ESOM): a complete, calibrated base in which any part can be replaced, refined or extended without rebuilding the rest. Complexity is neither hidden nor handed over raw. The data is traceable, the methods are written down and shown in video, and the defaults are chosen to travel from one country to the next.
 
 ## What is inside one model
 
@@ -97,7 +97,7 @@ Germany, as built on 1 October 2026. Every number comes from that build; every o
 | **Ministries, regulators, utilities** | A model of your own system to test plans, targets and trade-offs, without commissioning a build first. |
 | **Development banks and donors** | Comparable models across a portfolio of countries, and a shared base for technical assistance. |
 | **Modelling teams and consultancies** | A calibrated, high-resolution starting point, so project time goes into scenarios and interpretation. |
-| **Teachers and students** | A real country's system to learn on, with every step of its construction documented and filmed. |
+| **Teachers and students** | A real country's system to learn on, with every step of its construction documented in text and video. |
 
 ## Start here
 
@@ -105,7 +105,7 @@ Germany, as built on 1 October 2026. Every number comes from that build; every o
 
 - [Browse the countries](model-library/coverage-map.md) and open a model
 - [Run your first scenario](getting-started/first-scenario.md)
-- [See how a model is built](methods/existing-stock-characterization.md), step by step, in text and film
+- [See how a model is built](methods/existing-stock-characterization.md), step by step, in text and video
 - [Read what the model does not do](data-assumptions/limitations.md)
 
 </div>

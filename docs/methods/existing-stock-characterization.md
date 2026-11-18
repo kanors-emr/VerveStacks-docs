@@ -6,7 +6,7 @@
   <video controls preload="none" playsinline poster="../../_static/films/deu_power_fleet.jpg">
     <source src="../../_static/films/deu_power_fleet.mp4" type="video/mp4">
   </video>
-  <figcaption><strong>Watch first: Germany's Power Fleet</strong> (1:48, narrated). Generated from a real build of the German model; every number on screen traces to a file. The sections below follow the film in the same order, with the rules and file names behind each step. Also: <a href="../../films/v/plants_DEU.html">interactive version</a> · <a href="../../films/v/plants_IND.html">India</a> · <a href="../../films/">all films</a>.</figcaption>
+  <figcaption><strong>Watch first: Germany's Power Fleet</strong> (1:48, narrated). Generated from a real build of the German model; every number on screen traces to a file. The sections below follow the video in the same order, with the rules and file names behind each step. Also: <a href="../../films/v/plants_DEU.html">interactive version</a> · <a href="../../films/v/plants_IND.html">India</a> · <a href="../../films/">all method videos</a>.</figcaption>
 </figure>
 
 Each country model starts from an inventory of the power units that exist. The inventory is built from unit-level data, completed with national statistics where the unit data falls short, and checked against independent statistics. Doing this once, in the open, replaces work that many teams otherwise repeat separately.

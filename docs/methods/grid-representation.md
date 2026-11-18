@@ -6,7 +6,7 @@
   <video controls preload="none" playsinline poster="../../_static/films/deu_power_grid.jpg">
     <source src="../../_static/films/deu_power_grid.mp4" type="video/mp4">
   </video>
-  <figcaption><strong>Watch first: Germany's Power Grid</strong> (1:59, narrated). Generated from a real build of the German model; every number on screen traces to a file. The sections below follow the film in the same order, with the rules and file names behind each step. Also: <a href="../../films/v/grid_DEU.html">interactive version</a> · <a href="../../films/v/grid_IND.html">India</a> · <a href="../../films/">all films</a>.</figcaption>
+  <figcaption><strong>Watch first: Germany's Power Grid</strong> (1:59, narrated). Generated from a real build of the German model; every number on screen traces to a file. The sections below follow the video in the same order, with the rules and file names behind each step. Also: <a href="../../films/v/grid_DEU.html">interactive version</a> · <a href="../../films/v/grid_IND.html">India</a> · <a href="../../films/">all method videos</a>.</figcaption>
 </figure>
 
 A VerveStacks model does not treat a country as one point. It keeps a reduced copy of the country's high-voltage network: a set of **nodes**, each a real substation, joined by **corridors**. Plants, demand, wind and solar are all attached to nodes, so the model sees where power is made, where it is used, and what lies between.

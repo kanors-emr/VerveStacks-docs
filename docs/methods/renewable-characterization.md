@@ -6,7 +6,7 @@
   <video controls preload="none" playsinline poster="../../_static/films/deu_wind_and_sun.jpg">
     <source src="../../_static/films/deu_wind_and_sun.mp4" type="video/mp4">
   </video>
-  <figcaption><strong>Watch first: Germany's Wind and Sun</strong> (2:02, narrated). Generated from a real build of the German model; every number on screen traces to a file. The sections below follow the film in the same order, with the rules and file names behind each step. Also: <a href="../../films/v/renewables_DEU.html">interactive version</a> · <a href="../../films/v/renewables_IND.html">India</a> · <a href="../../films/">all films</a>.</figcaption>
+  <figcaption><strong>Watch first: Germany's Wind and Sun</strong> (2:02, narrated). Generated from a real build of the German model; every number on screen traces to a file. The sections below follow the video in the same order, with the rules and file names behind each step. Also: <a href="../../films/v/renewables_DEU.html">interactive version</a> · <a href="../../films/v/renewables_IND.html">India</a> · <a href="../../films/">all method videos</a>.</figcaption>
 </figure>
 
 ## Overview

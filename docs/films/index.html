@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>
-<title>VerveStacks Explainers</title>
+<title>VerveStacks Method Videos</title>
 <link rel="stylesheet" href="f/fonts.css">
 <style>
 /* KanORS identity: navy ground, periwinkle secondary, coral accent, Nunito Sans. The film player keeps the films' own dark screen. */
@@ -71,8 +71,8 @@ h1{font:800 clamp(32px,5.4vw,52px)/1.05 var(--f);letter-spacing:-.01em;margin:0;
   <div class="top">
     <div>
       <p class="eyebrow">How a VerveStacks model is built</p>
-      <h1>Six short films, one model</h1>
-      <p class="lede">Each film takes one part of a VerveStacks country model and shows how it is made from open data. They run about two minutes each, with narration. Watch in order, or jump to a section.</p>
+      <h1>Six short videos, one model</h1>
+      <p class="lede">Each video takes one part of a VerveStacks country model and shows how it is made from open data. They run about two minutes each, with narration. Watch in order, or jump to a section.</p>
     </div>
     <div>
       <p class="seglab" id="clab">Country</p>
@@ -82,14 +82,14 @@ h1{font:800 clamp(32px,5.4vw,52px)/1.05 var(--f);letter-spacing:-.01em;margin:0;
   <section class="player" id="player" hidden aria-label="Player">
     <div class="pbar">
       <div class="now" id="now"></div>
-      <button type="button" id="prev">← Previous film</button>
-      <button type="button" id="next">Next film →</button>
+      <button type="button" id="prev">← Previous video</button>
+      <button type="button" id="next">Next video →</button>
       <button type="button" id="close">Close</button>
     </div>
     <div id="frame"></div>
   </section>
   <div class="list" id="list"></div>
-  <p class="note">The films show the method with real pipeline outputs for the chosen country. Narration starts when you press play. India does not have a CO₂ storage film yet. VerveStacks is built by KanORS-EMR.</p>
+  <p class="note">The videos show the method with real pipeline outputs for the chosen country. Narration starts when you press play. India does not have a CO₂ storage video yet. VerveStacks is built by KanORS-EMR.</p>
 </div>
 <script>
 (function(){
@@ -141,8 +141,8 @@ function open(k,beat,play){
     frame=document.createElement('iframe');frame.dataset.key=key(k);frame.title=k;frame.allow='autoplay; fullscreen';
     frame.src='v/'+key(k)+'.html#e'+beat+(play?'p':'');box.appendChild(frame);
     const kk=key(k);timer=setTimeout(()=>{if(ready||!frame||frame.dataset.key!==kk)return;
-      const f=document.createElement('p');f.className='fallback';const a=document.createElement('a');a.href='v/'+kk+'.html#n'+beat;a.textContent='Open this film on its own page';
-      f.append('The film is taking a while to load here. ',a,'.');box.appendChild(f);},6000);}
+      const f=document.createElement('p');f.className='fallback';const a=document.createElement('a');a.href='v/'+kk+'.html#n'+beat;a.textContent='Open this video on its own page';
+      f.append('The video is taking a while to load here. ',a,'.');box.appendChild(f);},6000);}
   $('player').scrollIntoView({behavior:'smooth',block:'start'});}
 function closePlayer(){clearTimeout(timer);$('frame').textContent='';frame=null;ready=false;cur=null;curBeat=-1;$('player').hidden=true;mark();}
 

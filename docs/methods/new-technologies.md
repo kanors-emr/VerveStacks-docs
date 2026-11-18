@@ -6,7 +6,7 @@
   <video controls preload="none" playsinline poster="../../_static/films/deu_new_technology_costs.jpg">
     <source src="../../_static/films/deu_new_technology_costs.mp4" type="video/mp4">
   </video>
-  <figcaption><strong>Watch first: New Technology Costs</strong> (2:08, narrated). Generated from a real build of the German model; every number on screen traces to a file. The sections below follow the film in the same order, with the rules and file names behind each step. Also: <a href="../../films/v/newtech_DEU.html">interactive version</a> · <a href="../../films/v/newtech_IND.html">India</a> · <a href="../../films/">all films</a>.</figcaption>
+  <figcaption><strong>Watch first: New Technology Costs</strong> (2:08, narrated). Generated from a real build of the German model; every number on screen traces to a file. The sections below follow the video in the same order, with the rules and file names behind each step. Also: <a href="../../films/v/newtech_DEU.html">interactive version</a> · <a href="../../films/v/newtech_IND.html">India</a> · <a href="../../films/">all method videos</a>.</figcaption>
 </figure>
 
 Existing-stock characterization tells the model what is on the ground today. This page covers what can be built tomorrow: the list of options, their cost from now to 2050, the cost of the money to build them, and the nodes where they are offered.
